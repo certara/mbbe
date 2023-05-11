@@ -354,7 +354,7 @@ run.bootstrap <- function(nmfe.path,home.dir,nmodels,samp.size,numParallel=avail
   rval = tryCatch({
     plan(multisession,workers=numParallel)  
     for(this.model in 1:nmodels){
-      message("Starting first bootstrap sample model ",this.model,", Time = ",Sys.time())
+      message("Starting first bootstrap sample model ",this.model," at ", Sys.time())
       for(this.samp in 1:samp.size){ 
         future({ 
           setTxtProgressBar(pb,this.samp)
@@ -364,7 +364,7 @@ run.bootstrap <- function(nmfe.path,home.dir,nmodels,samp.size,numParallel=avail
           delete_files(getwd())
         })
       }
-      message("Starting last bootstrap sample model ",this.model,", Time = ",Sys.time())
+      message("Starting last bootstrap sample model ",this.model," at ", Sys.time())
     }
     plan(sequential) 
     close(pb)
@@ -387,7 +387,7 @@ run.bootstrap <- function(nmfe.path,home.dir,nmodels,samp.size,numParallel=avail
 #' @param crash_value value for failed calculation
 #' @examples
 #' get.parameters("c:/modelaveraging",4,100,0.1)
-get.parameters <- function(home.dir,nmodels,samp.size,delta.parms,crash_value){ 
+get.parameters <- function(home.dir,nmodels,samp.size,delta.parms,crash_value,use_check_identifiable){ 
   
   BICS <- data.frame(matrix(crash_value,nrow = samp.size,ncol=nmodels+1))
   colnames(BICS) <- c(paste0("Model",seq(1:nmodels)),"Best")
@@ -607,6 +607,7 @@ wait.for.bs = function(nmodels, samp.size){
       }
     }
   }
+  close(pb)
 }
 
 #' wait.for.sim
@@ -621,7 +622,7 @@ wait.for.bs = function(nmodels, samp.size){
 # names of runs will be sim(samp_num).exe
 wait.for.sim = function(samp.size){
   
-  PID <- vector("numeric",length=nmodels*samp.size)
+  PID <- vector("numeric",length=samp.size)
   this.run <- 0 
   for(this.samp in 1:samp.size){
     this.run <- this.run + 1
@@ -795,8 +796,7 @@ getNCA = function(home.dir,this.sample,NumGroups,Reference.groups,Test.groups,NC
   }
   write.csv(All.NCA.results,file=output.file,quote=FALSE,row.names = FALSE) 
 }
-
-Args.json = "u:/fda/mbbe/MBBEArgs.json"
+ 
 #' run.mbbe.json, reads json file, calls run.mbbe
 #' @param Args.json, path to JSON file with arguments
 #' @return
@@ -847,36 +847,36 @@ run.mbbe = function(crash_value,nmodels, ngroups,Reference.groups,
   msg <- check.requirements(model.source,nmodels,ngroups,Reference.groups,Test.groups,
                             nmfe.path,use_check_identifiable,simulation.data.path)
   if(msg$rval){
-    message("Copying source control files from ",model.source," to ",file.path(home.dir),"modelN, where N is the model number")
+    message("Copying source control files from ",model.source," to ",file.path(home.dir,"modelN")," where N is the model number")
     copy.model.files(model.source,home.dir,nmodels)
-    message("Sampling data, writing data to ",file.path(home.dir,"data_sampM.csv"," where M is the bootstrap sample number"))
+    message("Sampling data, writing data to ",file.path(home.dir,"data_sampM.csv")," where M is the bootstrap sample number at ",Sys.time())
     sample.data(home.dir,nmodels,samp.size)
     
-    message("Starting bootstrap runs in ",file.path(home.dir,"modelN","M"," where N is the model number and M is the sample number\nProgress bar will appear as models complete"))
+    message("Starting bootstrap runs in ",file.path(home.dir,"modelN","M")," where N is the model number and M is the sample number\nProgress bar will appear as models complete at ",Sys.time())
     if(!run.bootstrap(nmfe.path,home.dir,nmodels,samp.size)){
       message("Failed bootstrap")
     }else{
       # need to wait until all are done, this returns when all are started.
       Sys.sleep(40) # in case all model are still compiling
-      message("Waiting for boostrap models to complete")
+      message("Waiting for boostrap models to complete at " ,Sys.time())
       wait.for.bs(nmodels, samp.size)
       setwd(home.dir)
-      message("Getting boostrap model parameters")
-      parms <- get.parameters(home.dir,nmodels,samp.size,delta.parms,crash_value)
+      message("Getting boostrap model parameters at ",Sys.time())
+      parms <- get.parameters(home.dir,nmodels,samp.size,delta.parms,crash_value,use_check_identifiable)
       base.models <- get.base.model(nmodels) # get all nmodels base model
-      message("Constructing simulation models in ",file.path(home.dir,"SimM"," where M is the simulation number"))
+      message("Constructing simulation models in ",file.path(home.dir,"SimM"," where M is the simulation number at ",Sys.time()))
       final.models <- write.sim.controls(home.dir,parms,base.models,samp.size,
                                          use.simulation.data,simulation.data.path ) # don't really do anything with final models, already written to disc
       
-      message("Running simulation models in ",file.path(home.dir,"ModelN","SimM"))
+      message("Running simulation models in ",file.path(home.dir,"ModelN","SimM at ",Sys.time()))
       run.simulations(nmfe.path,home.dir,samp.size)
       Sys.sleep(40) # in case all model are still compiling, no executable yet
       wait.for.sim(samp.size)
-      message("Calculating NCA parameters, writing to ",file.pth(home.dir,"SimM","NCAresultsM"))
+      message("Calculating NCA parameters, writing to ",file.pth(home.dir,"SimM","NCAresultsM at ",Sys.time()))
       calc.NCA(home.dir,ngroups,Reference.groups,Test.groups,NCA.end.time,samp.size)
       # read NCA output and do stats
       BEsuccess <- data.frame(Cmax.success = as.logical(),AUCinf.success = as.logical(),AUClast.success = as.logical())
-      message("Statistics for NCA parameters")
+      message("Starting statistics for NCA parameters at " ,Sys.time())
       for(this.model in 1:nmodels){
         for(this.samp in 1:samp.size){
         }
@@ -887,4 +887,6 @@ run.mbbe = function(crash_value,nmodels, ngroups,Reference.groups,
   }
   plan(sequential)
 }
-
+# 
+Args.json = "u:/fda/mbbe/mbbe/MBBEArgs.json"
+run.mbbe.json(Args.json)
