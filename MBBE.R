@@ -384,9 +384,10 @@ run.bootstrap <- function(nmfe.path,home.dir,nmodels,samp.size,numParallel=avail
 #' @param nmodels how many models are there
 #' @param samp.size how many samples are there 
 #' @param delta.parms criteria for identifability test
+#' @param crash_value value for failed calculation
 #' @examples
 #' get.parameters("c:/modelaveraging",4,100,0.1)
-get.parameters <- function(home.dir,nmodels,samp.size,delta.parms){ 
+get.parameters <- function(home.dir,nmodels,samp.size,delta.parms,crash_value){ 
   
   BICS <- data.frame(matrix(crash_value,nrow = samp.size,ncol=nmodels+1))
   colnames(BICS) <- c(paste0("Model",seq(1:nmodels)),"Best")
@@ -834,7 +835,7 @@ run.mbbe.json <- function(Args.json){
 #' @export
 #'
 #' @examples
-run.mbbe = function( crash_value,nmodels, ngroups,Reference.groups,
+run.mbbe = function(crash_value,nmodels, ngroups,Reference.groups,
           Test.groups,numParallel, samp.size, home.dir,
           model.source, nmfe.path, delta.parms, use_check_identifiable,
           NCA.end.time,  rndseed, use.simulation.data, simulation.data.path){
@@ -861,7 +862,7 @@ run.mbbe = function( crash_value,nmodels, ngroups,Reference.groups,
       wait.for.bs(nmodels, samp.size)
       setwd(home.dir)
       message("Getting boostrap model parameters")
-      parms <- get.parameters(home.dir,nmodels,samp.size,delta.parms)
+      parms <- get.parameters(home.dir,nmodels,samp.size,delta.parms,crash_value)
       base.models <- get.base.model(nmodels) # get all nmodels base model
       message("Constructing simulation models in ",file.path(home.dir,"SimM"," where M is the simulation number"))
       final.models <- write.sim.controls(home.dir,parms,base.models,samp.size,
