@@ -11,9 +11,9 @@ Model Based Bioequivalence
 Currently hard coded to be saved in u:\fda\mbbe\modelaveraging (source.dir), and run in c:\fda\mbbe\modelaveraging (home.dir). Path to data file (U:\fda\mbbe\Modelaveraging\data_seq.csv) is harded code in the .mod files
 Algorithm: 
 
- 1. Read the nmodels (5 currently from the source directory (u:\fda\mbbe\modelaveraging\model1 - u:\fda\mbbe\modelaveraging\model5).\
- 2. Parse the data file name (U:\fda\mbbe\Modelaveraging\data_seq.csv). \
- 3. Read the data file name, count the number of subjects.\
+ 1. Read the nmodels (5 currently from the source directory (u:\fda\mbbe\modelaveraging\model1 - u:\fda\mbbe\modelaveraging\model5).
+ 2. Parse the data file name (U:\fda\mbbe\Modelaveraging\data_seq.csv). 
+ 3. Read the data file name, count the number of subjects.
  4. Generate samp.size bootstrap samples (currently 100), and write to data_rep??.csv where ?? is the sample number (currently 1-100).\
  5. Edit the model file to read the data_rep??.csv file, copy new model file to b?.mod in each model?/? folder where ? is the model number (currently 1-5).\
  6. Run bootstrap.\
