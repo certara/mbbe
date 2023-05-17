@@ -1,13 +1,12 @@
 ---
 title: "MBBE"
 author: "Mark Sale"
-date: "11 May 2023"
-output: html_document
+date: "11 May 2023" 
 --- 
 
 # Model Based Bioequivalence (MBBE)
  
-Model Based Bioequivalence
+Model Based Bioequivalence\
 Currently hard coded to be saved in u:\fda\mbbe\modelaveraging (source.dir), and run in c:\fda\mbbe\modelaveraging (home.dir). Path to data file (U:\fda\mbbe\Modelaveraging\data_seq.csv) is harded code in the .mod files
 Algorithm: 
 
@@ -31,22 +30,23 @@ run.mbbe.json(Args.json)
 Where Args.json is the path to the json file with the arguments. An example of the contents of an Args.json file is below:
 
 {
-"home.dir": "c:/fda/mbbe/",
-"model.source": "u:/fda/mbbe/mbbe/",
+"run_dir": "c:/fda/mbbe/",\
+"model_source": "u:/fda/mbbe/mbbe/",\
 "nmodels":        2,\
 "ngroups":        4,\
-"samp.size":        8,\
-"Reference.groups": [        1,        2 ],\
-"Test.groups": [        3,        4 ],\
+"samp_size":        8,\
+"reference_groups": [        1,        2 ],\
+"test_groups": [        3,        4 ],\
 "numParallel":       16,\
 "crash_value":   999999,\
-"nmfe.path": "c:/nm744/util/nmfe74.bat",\
-"delta.parms":      0.1,\
+"nmfe_path": "c:/nm744/util/nmfe74.bat",\
+"delta_parms":      0.1,\
 "use_check_identifiable": true,\
-"NCA.end.time":       72,\
+"NCA_end_time":       72,\
 "rndseed":        1,\
-"use.simulation.data": true,\
-"simulation.data.path": "U:/fda/mbbe/mbbe/data_sim.csv" \
-}\
+"use_simulation_data": true,\
+"simulation_data_path": "U:/fda/mbbe/mbbe/data_sim.csv" \
+}
+
 
   
