@@ -515,8 +515,6 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
       writeLines(text=paste(i,paste(temp, collapse=","),sep=","), con=conn, sep="\n")  
     })
     close(conn)
-    
-    write.csv(selected_parameters, file.path(run_dir, "Parameters.csv"), quote = FALSE)
     rval <- list(BICS = BICS, parameters = selected_parameters)
     return(rval)
 }
@@ -1199,6 +1197,12 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
     plan(sequential)
     setwd(initial_directory)
     write.csv(all_results, file="All_results.csv", quote=FALSE)
+    Cmax_power = all_results %>% select(Cmax_Assessment) %>% summarise(Power = mean(Cmax_Assessment))
+    AUClast_power = all_results %>% select(AUClast_Assessment) %>% summarise(Power = mean(AUClast_Assessment))
+    AUCinf_power = all_results %>% select(AUCinf_power) %>% summarise(Power = mean(AUCinf_power))
+    power = c(Cmax_power, AUCinf_power, AUClast_power)
+    print(power)
+    write.csv(power,"Power.csv")
 }
 #
 Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
