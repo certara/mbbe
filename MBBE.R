@@ -1,22 +1,6 @@
-# the term 'model' refers the the source model, the models to be averaged. The term sample refers to the bootstrap sample of the data set
+# The term 'model' refers the the source model, the models to be averaged. The term sample refers to the bootstrap sample of the data set
 # and the model run against that bootstrap sample of the data set, and the set of Monte Carlo simulations based on the best model from the
-# models run against that bootstrap sample of the data set convert all to snake case, functions and variables, lower case with _ note WRT
-# run_dir: 'Packages should not write in the users' home filespace, nor anywhere else on the file system apart from the R session's
-# temporary directory (or during installation in the location pointed to by TMPDIR: and such usage should be cleaned up). Installing into
-# the system's R installation (e.g., scripts to its bin directory) is not allowed. Limited exceptions may be allowed in interactive
-# sessions if the package obtains confirmation from the user.'  but does writing it in the json file constitute permission?
 rm(list = ls())
-# crash_value <- 999999 nmodels <- 2 # how many models in the model averaging?  ngroups <- 4 # number of treatment groups, i.e, 4 for ABBA
-# reference_groups <- c(1,2) # which of the group is reference test_groups <- c(3,4) # and which is test numParallel <- 16 samp_size <- 8
-# # # of samples for bootstrap and Monte Carlo simulation run_dir <- 'c:/fda/mbbe/' # where to run the models, model_source <-
-# 'u:/fda/mbbe' # model control files will be in model_source\model1, model_source\model2 etc.  # must be only 1 file, with .mod extension
-# in the folder nmfe_path <- 'c:/nm744/util/nmfe74.bat' delta_parms <- 0.1 # 10% different between parameters for identifiability testing
-# use_check_identifiable <- TRUE # whether to check NCA_end_time <- 72 # end time for AUClast in NCA rndseed <- 1 # random seed
-# use_simulation_data <- TRUE simulation_data_path <- 'U:\\fda\\mbbe\\Modelaveraging\\data_sim.csv' Args <- list(run_dir = 'c:/fda/mbbe/',
-# model_source = 'u:/fda/mbbe/', nmodels = 2 , ngroups = 4 , samp_size = 8 , reference_groups = c(1,2), test_groups = c(3,4), numParallel
-# = 16, crash_value = 999999, nmfe_path = 'c:/nm744/util/nmfe74.bat', delta_parms = 0.1, use_check_identifiable = TRUE, NCA_end_time = 72,
-# rndseed = 1, use_simulation_data = TRUE, simulation_data_path = 'U:/fda/mbbe/data_sim.csv') Args.json <- toJSON(Args) con <-
-# file('u:/fda/mbbe/MBBEArgs.json') writeLines(Args.json, con) close(con)
 library(RJSONIO)  # fromJSON
 library(dplyr)  # all
 library(stringr)  # str_trim, str_replace
@@ -90,6 +74,9 @@ check_requirements <- function(model_list, ngroups, reference_groups, test_group
 
     msg <- list()
     result = tryCatch({
+        if(is.null(model_list)){
+          return(list(rval = FALSE, msg = paste("Model list is NULL, error in json file?, exiting")))
+        }
         if (!file.exists(nmfe_path)) {
             # if DOS path, convert to R/linux
             return(list(rval = FALSE, msg = paste("Cannot find nmfe?? at", nmfe_path, ", exiting")))
@@ -564,7 +551,7 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
     for (this_samp in 1:samp_size) {
         which.model <- parms$BICS$Best[this_samp]
         if (which.model == -9999) {
-            message("skipping ", this_samp, " no acceptable model found")
+            message("skipping Sample #", this_samp, " no acceptable model found")
         } else {
             # use BS parameters, when you run out (as some BS samples fail), just start over, so need different random seed in $SIM model
             # is first index, e.g., parameters[[2]]$THETA1[1] is THETA[1] for model 2, first sample
@@ -1058,7 +1045,65 @@ run_mbbe_json <- function(Args.json) {
    }
   }
 
-
+calc_power = function(run_dir, samp_size){
+  
+  BEsuccess <- data.frame(Cmax.success = as.logical(), AUCinf.success = as.logical(), AUClast.success = as.logical())
+  message(Sys.time(), " Starting statistics for NCA parameters") 
+  all_results <- data.frame(Sample = as.integer(),  
+                            Cmax_Ratio = as.numeric(), Cmax_lower_CL = as.numeric(), Cmax_upper_CL = as.numeric(), Cmax_swR = as.numeric(), 
+                            Cmax_pe = as.numeric(), Cmax_critbound = as.numeric(), Cmax_Assessment = as.numeric(), Cmax_BE = as.logical(),  
+                            AUCinf_Ratio = as.numeric(), AUCinf_lower_CL = as.numeric(), AUCinf_upper_CL = as.numeric(), AUCinf_swR = as.numeric(), 
+                            AUCinf_pe = as.numeric(), AUCinf_critbound = as.numeric(), AUCinf_Assessment = as.numeric(), AUCinf_BE = as.logical(),  
+                            AUClast_Ratio = as.numeric(), AUClast_lower_CL = as.numeric(), AUClast_upper_CL = as.numeric(), AUClast_swR = as.numeric(), 
+                            AUClast_pe = as.numeric(), AUClast_critbound = as.numeric(), AUClast_Assessment = as.numeric(), AUClast_BE = as.logical()) 
+  
+  
+  for (this_samp in 1:samp_size) {
+    count <- 0 
+    boolFalse <- FALSE
+    # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
+    while(boolFalse == FALSE & count < 200) {
+      tryCatch({
+        data <- read.csv(file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv")), header = TRUE)
+        boolFalse <- TRUE
+      },error = function(e){
+        Sys.sleep(1)
+        count <- count + 1
+      },finally = {}) # fails will throw error below
+    }
+    
+    
+    tryCatch({
+      Cmax_result <- get_BEQDF(data %>%  filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence") 
+    },error = function(e){
+      Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,  
+                                swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
+    } )
+    colnames(Cmax_result) = c("Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_uppe_.CL","Cmax_swR","Cmax_pe","Cmax_critbound","Cmax_Assessment","Cmax_BE")
+    tryCatch({
+      AUClast_result <- get_BEQDF(data %>%  filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence") 
+    },error = function(e){
+      AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,  
+                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
+    } ) 
+    
+    colnames(AUClast_result) = c("AUClast_MetricColumn","AUClast_Ratio","AUClast_lower_CL","AUClast_upper_CL","AUClast_swR","AUClast_pe","AUClast_critbound","AUClast_Assessment","AUClast_BE")
+    
+    
+    tryCatch({
+      AUCinf_result <- get_BEQDF(data %>% filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence") 
+    },error = function(e){
+      AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,  
+                                  swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
+    } ) 
+    
+    colnames(AUCinf_result) <- c("AUCinf_MetricColumn","AUCinf_Ratio","AUCinf_lower_CL","AUCinf_upper_CL","AUCinf_swR","AUCinf_pe","AUCinf_critbound","AUCinf_Assessment","AUCinf_BE")
+    all_results <- rbind(all_results,c(Cmax_result,AUCinf_result,AUClast_result))
+  
+  
+  }
+  
+  }
 #' run_mbbe
 #'
 #' @param crash_value 
@@ -1085,7 +1130,6 @@ run_mbbe_json <- function(Args.json) {
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path) {
     message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
-    message("Number of groups = ", ngroups)
     message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable) 
     if (use_simulation_data) {
         message("Simulation data set = ", simulation_data_path)
@@ -1104,7 +1148,7 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
     }
     setwd(run_dir)
     set.seed(rndseed)
-    # setwd(run_dir) # need to save working directory and go back to it???
+     
     msg <- check_requirements(model_source, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, simulation_data_path)
     if (msg$rval) {
         message("Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),
@@ -1136,75 +1180,25 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
             message(Sys.time()," Calculating NCA parameters, writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
             # read NCA output and do stats
-            BEsuccess <- data.frame(Cmax.success = as.logical(), AUCinf.success = as.logical(), AUClast.success = as.logical())
-            message(Sys.time(), " Starting statistics for NCA parameters") 
-            all_results <- data.frame(Sample = as.integer(),  
-                                      Cmax_Ratio = as.numeric(), Cmax_lower_CL = as.numeric(), Cmax_upper_CL = as.numeric(), Cmax_swR = as.numeric(), 
-                                      Cmax_pe = as.numeric(), Cmax_critbound = as.numeric(), Cmax_Assessment = as.numeric(), Cmax_BE = as.logical(),  
-                                      AUCinf_Ratio = as.numeric(), AUCinf_lower_CL = as.numeric(), AUCinf_upper_CL = as.numeric(), AUCinf_swR = as.numeric(), 
-                                      AUCinf_pe = as.numeric(), AUCinf_critbound = as.numeric(), AUCinf_Assessment = as.numeric(), AUCinf_BE = as.logical(),  
-                                      AUClast_Ratio = as.numeric(), AUClast_lower_CL = as.numeric(), AUClast_upper_CL = as.numeric(), AUClast_swR = as.numeric(), 
-                                      AUClast_pe = as.numeric(), AUClast_critbound = as.numeric(), AUClast_Assessment = as.numeric(), AUClast_BE = as.logical()) 
-                                      
-                                      
-            for (this_samp in 1:samp_size) {
-                count <- 0 
-                boolFalse <- FALSE
-                # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-                while(boolFalse == FALSE & count < 200) {
-                  tryCatch({
-                    data <- read.csv(file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv")), header = TRUE)
-                    boolFalse <- TRUE
-                  },error = function(e){
-                    Sys.sleep(1)
-                    count <- count + 1
-                  },finally = {}) # fails will throw error below
-                }
-                 
-                
-                tryCatch({
-                  Cmax_result <- get_BEQDF(data %>%  filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence") 
-                },error = function(e){
-                  Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,  
-                                           swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-                } )
-                colnames(Cmax_result) = c("Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_uppe_.CL","Cmax_swR","Cmax_pe","Cmax_critbound","Cmax_Assessment","Cmax_BE")
-                tryCatch({
-                  AUClast_result <- get_BEQDF(data %>%  filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence") 
-                },error = function(e){
-                  AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,  
-                                           swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-                } ) 
-                 
-                colnames(AUClast_result) = c("AUClast_MetricColumn","AUClast_Ratio","AUClast_lower_CL","AUClast_upper_CL","AUClast_swR","AUClast_pe","AUClast_critbound","AUClast_Assessment","AUClast_BE")
-                
-     
-                tryCatch({
-                  AUCinf_result <- get_BEQDF(data %>% filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence") 
-                },error = function(e){
-                  AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,  
-                                              swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-                } ) 
-                
-                colnames(AUCinf_result) <- c("AUCinf_MetricColumn","AUCinf_Ratio","AUCinf_lower_CL","AUCinf_upper_CL","AUCinf_swR","AUCinf_pe","AUCinf_critbound","AUCinf_Assessment","AUCinf_BE")
-                all_results <- rbind(all_results,c(Cmax_result,AUCinf_result,AUClast_result))
+            all_results <- calc_power(run_dir, samp_size)
+            write.csv(all_results, file ="All_results.csv", quote=FALSE)
+            Cmax_power <- all_results %>% select(Cmax_Assessment) %>% summarise(Power = mean(Cmax_Assessment))
+            AUClast_power <- all_results %>% select(AUClast_Assessment) %>% summarise(Power = mean(AUClast_Assessment))
+            AUCinf_power <- all_results %>% select(AUCinf_power) %>% summarise(Power = mean(AUCinf_power))
+            power <- c(Cmax_power, AUCinf_power, AUClast_power)
+            print(power)
+            write.csv(power,"Power.csv")
+            plan(sequential)
+            setwd(initial_directory)
             } 
+        }else{ 
+          setwd(initial_directory)
+          message(msg$msg, " exiting")
     }
-        }else{
-        message(msg$msg)
-    }
-
-    plan(sequential)
-    setwd(initial_directory)
-    write.csv(all_results, file="All_results.csv", quote=FALSE)
-    Cmax_power = all_results %>% select(Cmax_Assessment) %>% summarise(Power = mean(Cmax_Assessment))
-    AUClast_power = all_results %>% select(AUClast_Assessment) %>% summarise(Power = mean(AUClast_Assessment))
-    AUCinf_power = all_results %>% select(AUCinf_power) %>% summarise(Power = mean(AUCinf_power))
-    power = c(Cmax_power, AUCinf_power, AUClast_power)
-    print(power)
-    write.csv(power,"Power.csv")
+ 
+    
 }
 #
-Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
-#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
+#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
+Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
 run_mbbe_json(Args.json)
