@@ -402,13 +402,14 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
               count <- 0 
               boolFalse <- FALSE
               # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-              while(boolFalse == FALSE & count < 200) {
+              while(boolFalse == FALSE & count < 50) {
+                data <-  NULL  
+                count <- count + 1
                 tryCatch({
                   data <- xml2::read_xml(xml_file, encoding = "ASCII")
                   boolFalse <- TRUE
                 }, error = function(e){
-                     Sys.sleep(1)
-                     count <- count + 1
+                     Sys.sleep(1) 
                 }, finally = {}) # fails will throw error below in outer tryCatch
               }
                
@@ -488,9 +489,10 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
         BICS$Max_Delta_parm[this_samp] <- identifiable_ok$max_delta_parm
 
     }
-    # write out results
+    # write out results, 
     write.csv(BICS, file.path(run_dir, "BICS.csv"), quote = FALSE)
-     
+    
+    # write out parameters, can't do write.csv, as rows have different number of parameters
     conn <- file(file.path(run_dir, "Parameters.csv"), open="w")
     
     newlist <- lapply(seq_len(length(selected_parameters)), function(i){
@@ -724,6 +726,8 @@ run_simulations <- function(nmfe_path, run_dir, samp_size, numParallel = availab
 #' @examples
 #' calc_NCA('c:/runmodels',4,c(1,2),c(3,4)),72,100,0.1)
 calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel = availableCores()) {
+    pb <- txtProgressBar(min = 0, max = samp_size, initial = 0)  
+  
     futs <- list() # list of futures
     plan(multisession, workers = numParallel)
     for (this_samp in 1:samp_size) {
@@ -734,11 +738,13 @@ calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_ti
     }
   # wait until all done
   for(this_fut in futs){
+    setTxtProgressBar(pb, this_fut)
     while (!resolved(this_fut)) { 
          Sys.sleep(0.2) 
      }
     }
     plan(sequential) 
+    close(pb)
 }
 #' read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
 #' compare with final parameters (Post.parms), see if any differ by delta_parms
@@ -1030,25 +1036,10 @@ get_NCA.Set.RSABE <- function(NCA.Set = data.frame(), alpha = 0.05, PartialRepli
     return(critbound.s2wR)
 }
 
-#' run_mbbe_json, reads json file, calls run_mbbe
-#' @param Args.json, path to JSON file with arguments
-#' @export
-#'
-#' @examples run_mbbe_json(Args.json)
-run_mbbe_json <- function(Args.json) {
-  if(!file.exists(Args.json)){
-    message(Args.json, " not found, exiting")
-  }else{
-    Args <- RJSONIO::fromJSON(Args.json) 
-    run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$numParallel, Args$samp_size, Args$run_dir, Args$model_source,
-           Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path )
-   }
-  }
-
 calc_power = function(run_dir, samp_size){
   
   BEsuccess <- data.frame(Cmax.success = as.logical(), AUCinf.success = as.logical(), AUClast.success = as.logical())
-  message(Sys.time(), " Starting statistics for NCA parameters") 
+  message(Sys.time(), " Starting statistics for NCA parameters, simulations 1-", samp_size) 
   all_results <- data.frame(Sample = as.integer(),  
                             Cmax_Ratio = as.numeric(), Cmax_lower_CL = as.numeric(), Cmax_upper_CL = as.numeric(), Cmax_swR = as.numeric(), 
                             Cmax_pe = as.numeric(), Cmax_critbound = as.numeric(), Cmax_Assessment = as.numeric(), Cmax_BE = as.logical(),  
@@ -1058,28 +1049,34 @@ calc_power = function(run_dir, samp_size){
                             AUClast_pe = as.numeric(), AUClast_critbound = as.numeric(), AUClast_Assessment = as.numeric(), AUClast_BE = as.logical()) 
   
   
-  for (this_samp in 1:samp_size) {
-    count <- 0 
+  pb <- txtProgressBar(min = 0, max = samp_size, initial = 0)   
+  for (this_samp in 1:samp_size) { 
+    setTxtProgressBar(pb, this_samp) 
     boolFalse <- FALSE
+    count <- 0
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-    while(boolFalse == FALSE & count < 200) {
+    while(boolFalse == FALSE & count < 20) {
+      data <-  NULL  
+      count <- count + 1
       tryCatch({
         data <- read.csv(file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv")), header = TRUE)
-        boolFalse <- TRUE
+        boolFalse <- TRUE 
       },error = function(e){
-        Sys.sleep(1)
-        count <- count + 1
+        Sys.sleep(1)  
       },finally = {}) # fails will throw error below
     }
     
-    
+    Cmax_result <- Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,  
+                                             swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
       Cmax_result <- get_BEQDF(data %>%  filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence") 
     },error = function(e){
       Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,  
                                 swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     } )
-    colnames(Cmax_result) = c("Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_uppe_.CL","Cmax_swR","Cmax_pe","Cmax_critbound","Cmax_Assessment","Cmax_BE")
+    colnames(Cmax_result) = c("Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_upper_.CL","Cmax_swR","Cmax_pe","Cmax_critbound","Cmax_Assessment","Cmax_BE")
+    AUClast_result <- AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,  
+                                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
       AUClast_result <- get_BEQDF(data %>%  filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence") 
     },error = function(e){
@@ -1089,7 +1086,8 @@ calc_power = function(run_dir, samp_size){
     
     colnames(AUClast_result) = c("AUClast_MetricColumn","AUClast_Ratio","AUClast_lower_CL","AUClast_upper_CL","AUClast_swR","AUClast_pe","AUClast_critbound","AUClast_Assessment","AUClast_BE")
     
-    
+    AUCinf_result <- AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,  
+                                                 swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
       AUCinf_result <- get_BEQDF(data %>% filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence") 
     },error = function(e){
@@ -1102,8 +1100,26 @@ calc_power = function(run_dir, samp_size){
   
   
   }
-  
+close(pb)
+return(all_results)
+}
+
+
+#' run_mbbe_json, reads json file, calls run_mbbe
+#' @param Args.json, path to JSON file with arguments
+#' @export
+#'
+#' @examples run_mbbe_json(Args.json)
+run_mbbe_json <- function(Args.json) {
+  if(!file.exists(Args.json)){
+    message(Args.json, " not found, exiting")
+  }else{
+    Args <- RJSONIO::fromJSON(Args.json) 
+    run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$numParallel, Args$samp_size, Args$run_dir, Args$model_source,
+             Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path )
   }
+}
+
 #' run_mbbe
 #'
 #' @param crash_value 
@@ -1154,40 +1170,43 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
         message("Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),
             "\n where N is the model number")
         nmodels <- copy_model_files(model_source, run_dir)
-        message(Sys.time(), " Sampling data, writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
+        message(Sys.time(), " Sampling data 1-", samp_size," writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
         sample_data(run_dir, nmodels, samp_size)
-
-        message(Sys.time(), " Starting bootstrap runs in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number",
+        message(Sys.time(), " Starting bootstrap runs 1-", samp_size," in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number",
            "\nProgress bar will appear as models start/complete")
         if (!run.bootstrap(nmfe_path, run_dir, nmodels, samp_size)) {
             message("Failed bootstrap")
         } else {
             # need to wait until all are done, this returns when all are started.
             Sys.sleep(60)  # in case all model are still compiling
-            message(Sys.time(),"  Waiting for bootstrap models to complete")
+            message(Sys.time()," Waiting for bootstrap models to complete")
             wait_for_bs(nmodels, samp_size)
             setwd(run_dir)
-            message(Sys.time(), " Getting bootstrap model parameters")
+            message(Sys.time(), " Getting bootstrap model parameters, samples 1-", samp_size)
             parms <- get_parameters(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable)
             base_models <- get_base_model(nmodels)  # get all nmodels base model
             message(Sys.time(), " Constructing simulation  models in ", file.path(run_dir, "SimM"), " where M is the simulation number")
             final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path)  # don't really do anything with final models, already written to disc
 
-            message(Sys.time(), " Running simulation models in ", file.path(run_dir, "SimM"), " where M is the simulation number")
+            message(Sys.time(), "Running simulation models 1-",samp_size," in ", file.path(run_dir, "SimM"), " where M is the simulation number")
             run_simulations(nmfe_path, run_dir, samp_size)
             Sys.sleep(60)  # in case all model are still compiling, no executable yet
             wait_for_sim(samp_size)
-            message(Sys.time()," Calculating NCA parameters, writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
+            message(Sys.time(),"Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
             # read NCA output and do stats
             all_results <- calc_power(run_dir, samp_size)
-            write.csv(all_results, file ="All_results.csv", quote=FALSE)
-            Cmax_power <- all_results %>% select(Cmax_Assessment) %>% summarise(Power = mean(Cmax_Assessment))
-            AUClast_power <- all_results %>% select(AUClast_Assessment) %>% summarise(Power = mean(AUClast_Assessment))
-            AUCinf_power <- all_results %>% select(AUCinf_power) %>% summarise(Power = mean(AUCinf_power))
-            power <- c(Cmax_power, AUCinf_power, AUClast_power)
-            print(power)
-            write.csv(power,"Power.csv")
+            if(!is.null(all_results)){
+              write.csv(all_results, file = file.path(run_dir,"All_results.csv"), quote=FALSE)
+              Cmax_power <- all_results %>% filter(Cmax_BE != -999) %>%  summarise(Power = mean(Cmax_BE))
+              AUClast_power <- all_results %>% filter(AUClast_BE != -999) %>% summarise(Power = mean(AUClast_BE))
+              AUCinf_power <- all_results %>% filter(AUCinf_BE != -999) %>% summarise(Power = mean(AUCinf_BE))
+              power <- c(Cmax_power, AUCinf_power, AUClast_power)
+              print(power)
+              write.csv(power,file.path(run_dir,"Power.csv"))
+            }else{
+              message("Failed in calc_power")
+            }
             plan(sequential)
             setwd(initial_directory)
             } 
@@ -1195,10 +1214,8 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
           setwd(initial_directory)
           message(msg$msg, " exiting")
     }
- 
-    
 }
 #
-#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
-Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
+Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
+#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
 run_mbbe_json(Args.json)
