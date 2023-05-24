@@ -9,6 +9,21 @@ library(future)  # future
 library(PKNCA)
 library(DescTools)  # splitPath
 library(installr)  # is.empty
+
+delete_files <-  function(folder){
+  # need .ext for use_identifiable, keep .lst, .xml, .mod, GMSF
+  # but can't delete all, need to keep $TABLE
+  try({
+  delfiles <- c("FDATA","FCON","FSUBS","FSUBS.o","FSIZES", "FREPORT","FSTREAM", "GFCOMPILE.BAT", "INTER","nmprd4p.mod" ) 
+  delfiles <- c(delfiles, dir(path = folder, pattern = "*.exe"), dir(path = folder, pattern = "*.f90"), dir(path = folder, pattern = "*.grd"), 
+                dir(path = folder, pattern="*.shk"), dir(path = folder, pattern="*.cpu"), dir(path = folder, pattern="*.shm"), 
+                dir(path = folder, pattern="*.lnk"), dir(path = folder, pattern = "*.phi"))
+  file.remove(file.path(folder, delfiles))
+  if(dir.exists(file.path(folder,"temp_dir"))){
+    unlink(file.path(folder,"temp_dir"),recursive = TRUE, force = TRUE)
+  }
+  })
+}
 #' get_block
 #' Get a block (e.g., $DATA) from a control file with multiple lines
 #' return block as a single character string
@@ -757,10 +772,12 @@ calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_ti
 #' check_identifiable('c:/runmodels',1,1,0.1)
 check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, nparms) {
     lstfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_sample, ".lst"))
+    extfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_sample, ".ext"))
     max_deltap <- -999
     max_delta_parmp <- -999
-    if (!file.exists(lstfile)) {
-        return(c(passes = FALSE, max_delta = -999, max_delta_parm = -999))
+    if (!file.exists(lstfile) | !file.exists(extfile)) {
+      message("Cannot find ", listfile, " or ", extfile, " for determining identifiability")
+      return(c(passes = FALSE, max_delta = -999, max_delta_parm = -999))
     } else {
         tryCatch({
             con <- file(lstfile, "r")
@@ -778,8 +795,7 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
             last_output <- last_output[1]
             last.iteration <- as.integer(substr(last_output, 16, 24))
             # read parameters from .ext
-            ext <- read.table (file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_sample, ".ext")), 
-                              header = TRUE,  skip = 1)
+            ext <- read.table (extfile, header = TRUE,  skip = 1)
             Pre.parms <- ext %>%
                 dplyr::filter(ITERATION == reset_iteration)
             Post.parms <- ext %>%
@@ -936,7 +952,7 @@ get_BEQDF <- function(NCA.Set = data.frame(), MetricColumn = "Cmax", SubjectColu
 # different within variabilities
 get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
     modelABE <- nlme::lme(logpk ~ treatment + period + sequence, subset = !is.na(logpk), random = ~treatment | ID, weights = nlme::varIdent(form = ~treatment),
-        data = NCA.Set, method = "REML", na.action = na.exclude, control = list(opt = "optim"))
+        data = NCA.Set, method = "REML", na.action = na.exclude, control = list(opt = "optim", msMaxIter = 1000, msMaxEval = 1000))
 
     # EMA method B modelABE <- lmer(logpk ~ sequence + period + treatment + (1 | ID), data = NCA.Set)
 
@@ -1103,7 +1119,57 @@ calc_power = function(run_dir, samp_size){
 close(pb)
 return(all_results)
 }
-
+make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups){
+  library(ggplot2)
+  BICS = BICS %>% 
+    mutate(Samp_num = row_number())
+  this_NCAs = NULL
+  all_NCAs = data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(), 
+                         Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
+  this_model = 1
+  for(this_model in 1:nmodels){
+    all_NCAs_this_model = data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(), 
+                                      Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
+    # gather all Cmax etc from models labeled by model superimpose distributions
+    which_models = BICS %>% filter(Best==this_model) %>% select(Samp_num)
+    # compile list of NCA with best
+    this_samp = which_models$Samp_num[1]
+    for(this_samp in which_models$Samp_num){
+      this_NCAs =  read.csv(file.path(run_dir,paste0("Sim",this_samp),paste0("NCAresults",this_samp, ".csv")))
+      this_NCAs$model = this_model
+      all_NCAs_this_model = rbind(all_NCAs_this_model, this_NCAs)
+    }
+    if(dim(all_NCAs_this_model)[1] > 0){
+      all_NCAs = rbind(all_NCAs, all_NCAs_this_model)
+      Cmax_plot = ggplot(all_NCAs_this_model,aes(x = Cmax),) + geom_histogram(aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
+        ggtitle(paste("Cmax, model =",this_model))
+      print(Cmax_plot)
+      ggsave(file.path(run_dir,paste0("Model_",this_model,"_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width= 9, height= 6)
+      AUCinf_plot = ggplot(all_NCAs_this_model,aes(x=AUCinf),) + geom_histogram(aes(color=treatment,fill=treatment),position = "identity",alpha=0.4) +
+        ggtitle(paste("AUCinf, model =",this_model))
+      print(AUCinf_plot)
+      ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width= 9, height= 6)
+      AUClast_plot = ggplot(all_NCAs_this_model,aes(x=AUClast),) + geom_histogram(aes(color=treatment,fill=treatment),position = "identity",alpha=0.4)+
+        ggtitle(paste("AUClast, model =",this_model))
+      print(AUClast_plot)
+      ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width= 9, height= 6)
+    }  
+  }
+  Cmax_plot = ggplot(all_NCAs,aes(x = Cmax),) + geom_histogram(aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
+    ggtitle("Cmax, all Models")
+  print(Cmax_plot)
+  ggsave(file.path(run_dir,"All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width= 9, height= 6)
+  AUCinf_plot = ggplot(all_NCAs,aes(x=AUCinf),) + geom_histogram(aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
+    ggtitle("AUCinf, all Models")
+  print(AUCinf_plot)
+  ggsave(file.path(run_dir,"All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width= 9, height= 6)
+  AUClast_plot = ggplot(all_NCAs,aes(x=AUClast),) + geom_histogram(aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
+    ggtitle("AUClast, all Models")
+  print(AUClast_plot)
+  ggsave(file.path(run_dir,"All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width= 9, height= 6)
+   
+  
+}
 
 #' run_mbbe_json, reads json file, calls run_mbbe
 #' @param Args.json, path to JSON file with arguments
@@ -1147,10 +1213,13 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path) {
     message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
     message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable) 
+    if (use_check_identifiable) {
+        message("Delta parameter for use_check_identifiable = ", delta_parms)
+    }  
     if (use_simulation_data) {
-        message("Simulation data set = ", simulation_data_path)
+      message("Simulation data set = ", simulation_data_path)
     } else {
-        message("Original analysis data set will be used for simulation")
+      message("Original analysis data set will be used for simulation")
     }
     
     initial_directory <- getwd()
@@ -1188,12 +1257,13 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
             message(Sys.time(), " Constructing simulation  models in ", file.path(run_dir, "SimM"), " where M is the simulation number")
             final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path)  # don't really do anything with final models, already written to disc
 
-            message(Sys.time(), "Running simulation models 1-",samp_size," in ", file.path(run_dir, "SimM"), " where M is the simulation number")
+            message(Sys.time(), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "SimM"), " where M is the simulation number")
             run_simulations(nmfe_path, run_dir, samp_size)
             Sys.sleep(60)  # in case all model are still compiling, no executable yet
             wait_for_sim(samp_size)
-            message(Sys.time(),"Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
+            message(Sys.time()," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+            make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
             # read NCA output and do stats
             all_results <- calc_power(run_dir, samp_size)
             if(!is.null(all_results)){
@@ -1216,6 +1286,6 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
     }
 }
 #
-Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
-#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
+#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
+Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
 run_mbbe_json(Args.json)
