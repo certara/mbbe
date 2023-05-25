@@ -312,7 +312,16 @@ sample_data <- function(run_dir, nmodels, samp_size) {
         }
     }
 }
+run_one_model <- function(run_dir, nmfe_path,this_model, this_samp){
+  nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
+  control_file <-   paste0("bsSamp", this_samp, ".mod")
+  output_file <- paste0("bsSamp", this_samp, ".lst")
+  exefile <- paste0("bsSamp", this_samp, ".exe")
 
+  command <- paste0(nmfe_path, " ", control_file, " " , output_file, " -nmexec=", exefile, " -rundir=", nmrundir)
+  shell(command, wait = TRUE)
+  delete_files(nmrundir)
+}
 #' run the bootstrap models/samples
 #'
 #' @param nmfe_path path to nmfe??.bat
@@ -322,45 +331,37 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 #' @param numParallel how many to run in parallel, default = availableCores()
 #' @examples
 #' run.bootstrap('c:/nmfe744/util/nmfe74.bat', 'c:/modelaveraging',8)
-run.bootstrap <- function(nmfe_path, run_dir, nmodels, samp_size, numParallel = future::availableCores()) {
-  run_one_model <- function(run_dir, nmfe_path,this_model, this_samp){
-    setwd(file.path(run_dir, paste0("model", this_model), this_samp))
-    command <- paste0(nmfe_path, " bsSamp", this_samp, ".mod bsSamp", this_samp, ".lst -nmexec=", paste0("bsSamp", this_model,
-                                                                                                         "_", this_samp, ".exe"))
-    shell(command, wait = TRUE)
-    delete_files(getwd())
-  }
+
+
+run_bootstrap <- function(nmfe_path, run_dir, nmodels, samp_size, numParallel = future::availableCores()) {
+
     futs <- list()
     run_count <- 0
-    rval <- tryCatch({
-      future::plan(multisession, workers = numParallel)
+    rval <- try({
         for (this_model in 1:nmodels) {
             pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
             message(Sys.time()," Starting first bootstrap sample model ", this_model)
             for (this_samp in 1:samp_size) {
               run_count <- run_count + 1
-                future::future({
-                  futs[run_count] <- run_one_model (run_dir, nmfe_path, this_model, this_samp)
-                })
-                utils::setTxtProgressBar(pb, this_samp)
+            #  future::future({
+                 # futs[run_count] <- future::future(run_one_model(run_dir, nmfe_path, this_model, this_samp))
+                  futs[run_count] <-  run_one_model(run_dir, nmfe_path, this_model, this_samp)
+             #   })
+              utils::setTxtProgressBar(pb, this_samp)
             }
             close(pb)
             message(Sys.time(), " Starting last bootstrap sample model ", this_model)
         }
-        close(pb)
-        return(TRUE)
-    }, error = function(cond) {
-        return(FALSE)
+
     })
 
-    # wait until all done
+    # wait until all done, this just starts NONMEM
     for(this_fut in futs){
       while (!future::resolved(this_fut)) {
         Sys.sleep(1)
       }
     }
-
-    #plan(sequential)
+   return(TRUE)
 }
 
 
@@ -387,30 +388,29 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
     nfailed_ident <- 0  # number of samples in this model that fail the identifabilit test
     # do by sample first only save parameters for the best model
     selected_parameters <- list()  # parameters for selected model,
-    this_samp = 1
+
     for (this_samp in 1:samp_size) {
         num_successful <- 1  # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
         parameters_this_sample <- list()
         this_model = 1
         all_identifiables <- rep(TRUE, nmodels)
         for (this_model in 1:nmodels) {
-
             xml_file <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_samp, ".xml"))
-            count <- 0
-            while (!file.exists(xml_file) & count < 200) {
-               Sys.sleep(1)
-               count <- count + 1
-             }
-            if(!file.exists(xml_file)){
-              BICS[this_samp, this_model] <- crash_value
-              next
-            }
+         #   count <- 0
+           # while (!file.exists(xml_file) & count < 100) {
+          #     Sys.sleep(1)
+          #     count <- count + 1
+          #   }
+          #  if(!file.exists(xml_file)){
+          #    BICS[this_samp, this_model] <- crash_value
+          #    next
+          #  }
             rval <- tryCatch({
               count <- 0
               boolFalse <- FALSE
               # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
               while(boolFalse == FALSE & count < 50) {
-                data <-  NULL
+                data <- NULL
                 count <- count + 1
                 tryCatch({
                   data <- xml2::read_xml(xml_file, encoding = "ASCII")
@@ -532,7 +532,7 @@ get_base_model <- function(run_dir, nmodels) {
         control <- control[1:grep(";;;;.*Start EST", control)]
         close(con)
         base_models <- append(base_models, list(control))
-      },error = function(e){
+      }, error = function(e){
         stop("Cannot find ", file.path(paste0(run_dir, "model", this_model), paste0("bs", this_model, ".mod")), "exiting")
       })
     }
@@ -595,7 +595,7 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
                     full_control <- c(full_control, paste0(parms$parameters[[which.model]][this_parm], "  ;; THETA(", this_parm, ")"))
                 }
                 full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-                sim_dir <- file.path(run_dir, paste0("Sim", this_samp))
+                sim_dir <- file.path(run_dir, paste0("sim", this_samp))
                 if (dir.exists(sim_dir)) {
                     unlink(sim_dir, recursive = TRUE, force = TRUE)
                 }
@@ -689,6 +689,16 @@ wait_for_sim = function(samp_size) {
         }
     }
 }
+
+run_one_sim <- function(run_dir, nmfe_path, this_samp){
+    nmrundir <- file.path(run_dir, paste0("sim", this_samp))
+    control_file <- paste0("sim", this_samp, ".mod")
+    output_file <- paste0("sim", this_samp, ".lst")
+    exefile <- paste0("sim", this_samp, ".exe")
+    command <- paste0(nmfe_path," ", control_file, " ", output_file," -nmexec=", exefile, " -rundir=", nmrundir)
+    shell(command, wait = TRUE)
+    delete_files(nmrundir)
+}
 #' run all simulations
 #' @param nmfe_path path to nmfe??.bat
 #' @param run_dir home directory
@@ -698,29 +708,20 @@ wait_for_sim = function(samp_size) {
 #' run_simulations('c:/nmfe75/util/nmfe75.bat','c:/mbbe',8,100)
 run_simulations <- function(nmfe_path, run_dir, samp_size, numParallel = future::availableCores()) {
 
-
-  run_one_sim <- function(run_dir, nmfe_path, this_samp){
-    setwd(file.path(run_dir, paste0("sim", this_samp)))
-    if (file.exists(paste0("sim", this_samp, ".mod"))) {
-      # no control file written if no models were acceptable
-      command <- paste0(nmfe_path, " sim", this_samp, ".mod sim", this_samp, ".lst -nmexec=sim", this_samp, ".exe")
-      shell(command, wait = TRUE)
-      delete_files(getwd())
-    }
-  }
   futs <- list()
-  future::plan(multisession, workers = numParallel)
     for (this_samp in 1:samp_size) {
-        future::future({
+     #   future::future({
+
+      #}
           futs[this_samp] <- run_one_sim(run_dir, nmfe_path, this_samp)
-        })
+      #  })
     }
     # but this returns once all nmtran runs are done, doesn't wait for nonmem run to be done
-    for(this_fut in futs){
-      while (!future::resolved(this_fut)) {
-        Sys.sleep(0.2)
-      }
-    }
+    #for(this_fut in futs){
+    #  while (!future::resolved(this_fut)) {
+    #    Sys.sleep(0.2)
+    #  }
+    #}
   #future::plan(sequential)
 }
 
@@ -734,29 +735,29 @@ run_simulations <- function(nmfe_path, run_dir, samp_size, numParallel = future:
 #' @param test_groups, array, which groups are  test
 #' @param NCA_end_time, numeric, end time for AUClast and AUCinf
 #' @param samp_size,numeric integer
-#' @param delta_parms, numeric absolute difference in parameters criteria for failig identifability
+#' @param delta_parms, numeric absolute difference in parameters criteria for failing identifability
 #' @examples
 #' calc_NCA('c:/runmodels',4,c(1,2),c(3,4)),72,100,0.1)
 calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel = availableCores()) {
-   # pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
+    pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
 
     futs <- list() # list of futures
     #future::plan(multisession, workers = numParallel)
     for (this_samp in 1:samp_size) {
-     #   future::future({
+  #      future::future({
             # writes to file, future can't return a value?
           futs[this_samp] <- getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
-      #  })
+   #    })
     }
   # wait until all done
   #for(this_fut in futs){
   #  utils::setTxtProgressBar(pb, this_fut)
   #  while (!future::resolved(this_fut)) {
-  #       Sys.sleep(0.2)
+  #     Sys.sleep(0.2)
   #   }
   #  }
-    #future::plan(sequential)
-   # close(pb)
+  #  #future::plan(sequential)
+    close(pb)
 }
 #' read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
 #' compare with final parameters (Post.parms), see if any differ by delta_parms
@@ -895,11 +896,11 @@ getNCA = function(run_dir, this_sample, NumGroups, reference_groups, test_groups
       Sys.sleep(1)
       count <- count + 1
     }
-    return(TRUE)
+   # return(TRUE)
   }, error = function(cond) {
     message("Error NCA calculation")
     message(cond)
-     return(FALSE)
+    # return(FALSE)
   })
 }
 
@@ -1139,7 +1140,7 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
     # compile list of NCA with best
     this_samp <- which_models$Samp_num[1]
     for(this_samp in which_models$Samp_num){
-      this_NCAs <-  utils::read.csv(file.path(run_dir,paste0("Sim",this_samp),paste0("NCAresults",this_samp, ".csv")))
+      this_NCAs <-  utils::read.csv(file.path(run_dir,paste0("sim",this_samp),paste0("NCAresults",this_samp, ".csv")))
       this_NCAs$model <- this_model
       all_NCAs_this_model <- rbind(all_NCAs_this_model, this_NCAs)
     }
@@ -1216,6 +1217,9 @@ run_mbbe_json <- function(Args.json) {
 #' @examples
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path, save_output = FALSE) {
+    #old_plan <- future::plan(multisession, workers = numParallel)
+    old_plan <- future::plan(sequential)
+    #on.exit(future::plan(old_plan))
     message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
     message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
     if (use_check_identifiable) {
@@ -1227,7 +1231,7 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
       message("Original analysis data set will be used for simulation")
     }
 
-    initial_directory <- getwd()
+    #initial_directory <- getwd()
     path_parents <- split_path(run_dir)
     cur_path <- path_parents[1]
     for (this_parent in 2:length(path_parents)) {
@@ -1248,25 +1252,25 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
         sample_data(run_dir, nmodels, samp_size)
         message(Sys.time(), " Starting bootstrap runs 1-", samp_size," in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number",
            "\nProgress bar will appear as models start/complete")
-        if (!run.bootstrap(nmfe_path, run_dir, nmodels, samp_size)) {
+        if (!run_bootstrap(nmfe_path, run_dir, nmodels, samp_size)) {
             message("Failed bootstrap")
         } else {
             # need to wait until all are done, this returns when all are started.
-            Sys.sleep(60)  # in case all model are still compiling
+            Sys.sleep(30)  # in case all model are still compiling
             message(Sys.time()," Waiting for bootstrap models to complete")
             wait_for_bs(nmodels, samp_size)
 
             message(Sys.time(), " Getting bootstrap model parameters, samples 1-", samp_size)
             parms <- get_parameters(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable)
             base_models <- get_base_model(run_dir, nmodels)  # get all nmodels base model
-            message(Sys.time(), " Constructing simulation  models in ", file.path(run_dir, "SimM"), " where M is the simulation number")
+            message(Sys.time(), " Constructing simulation  models in ", file.path(run_dir, "simM"), " where M is the simulation number")
             final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path)  # don't really do anything with final models, already written to disc
 
-            message(Sys.time(), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "SimM"), " where M is the simulation number")
+            message(Sys.time(), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "simM"), " where M is the simulation number")
             run_simulations(nmfe_path, run_dir, samp_size)
-            Sys.sleep(60)  # in case all model are still compiling, no executable yet
+            Sys.sleep(30)  # in case all model are still compiling, no executable yet
             wait_for_sim(samp_size)
-            message(Sys.time()," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "SimM", "NCAresultsM"), ",  where M is the simulation number")
+            message(Sys.time()," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "simM", "NCAresultsM"), ",  where M is the simulation number")
             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
             make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
             # read NCA output and do stats
@@ -1286,10 +1290,12 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
 
             }
         }else{
-          setwd(initial_directory)
+          #setwd(initial_directory)
+          future::plan(old_plan)
           message(msg$msg, " exiting")
           return
         }
+    future::plan(old_plan)
     return(
       list(
         "Cmax_power" = Cmax_power,
