@@ -751,25 +751,39 @@ run_simulations <- function(nmfe_path, run_dir, samp_size, numParallel = future:
 #' calc_NCA('c:/runmodels',4,c(1,2),c(3,4)),72,100,0.1)
 calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel = availableCores()) {
     #pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
-    futs <- list() # list of futures
-    run_count = 0
-    for (this_samp in 1:samp_size) {
-      message("Calc NCA for ",this_samp)
-      run_count = run_count + 1
-       # future::future({
-            # writes to file, future can't return a value?
-          futs[run_count] <- getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
-      # })
-    }
+    all_parms <- list()
+    parms <- list()
+    plan(sequential)
+    tryCatch({
+     # futs <- list() # list of futures
+      run_count <- 0
+      for (this_samp in 1:samp_size) {
+      #  message("Calc NCA for ",this_samp)
+        run_count <- run_count + 1
+        # future::future({
+              # writes to file, future can't return a value?
+           # parms[run_count] <- getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
+             getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
+         #})
+      }
+      #for(this_samp in 1:samp_size){
+      # # all_parms[this_samp] <- value(parms[this_samp])
+       # all_parms[this_samp] <- parms[this_samp]
+      #}
   # wait until all done
- # for(this_fut in futs){
-#    utils::setTxtProgressBar(pb, this_fut)
-#    while (!future::resolved(this_fut)) {
-#       Sys.sleep(0.2)
-#     }
-#    }
+      # for(this_fut in futs){
+      #   utils::setTxtProgressBar(pb, this_fut)
+      #   while (!future::resolved(this_fut)) {
+      #      Sys.sleep(0.2)
+      #    }
+      # }
+    }, error = function(cond){
+      message("Failed in Calc_NCA, sample = ", run_count," ", cond)
+      return() #list(success = FALSE, parms = -999))
+    })
   #  #future::plan(sequential)
   #  close(pb)
+  return() # list(success = TRUE, parms = all_parms))
 }
 #' read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
 #' compare with final parameters (Post.parms), see if any differ by delta_parms
@@ -859,6 +873,7 @@ getNCA = function(run_dir, this_sample, NumGroups, reference_groups, test_groups
           dplyr::filter(DV > 0)
 
       output_file <- file.path(run_dir, paste0("sim", this_sample), paste0("NCAresults", this_sample, ".csv"))
+      message(output_file)
       if (file.exists(output_file)) file.remove(output_file)
 
       #con <- file(output_file, "w") # need to do this to flush file, when using future
@@ -901,22 +916,22 @@ getNCA = function(run_dir, this_sample, NumGroups, reference_groups, test_groups
           }
           group_NCA_results <- data.frame(ID = AUCinf$ID, treatment = treatment, period = period_seq$OCC, sequence = period_seq$SEQ, Cmax = CMAX$PPORRES,
               AUCinf = AUCinf$PPORRES, AUClast = AUClast$PPORRES)
-       }
-        All_NCA_results <- rbind(All_NCA_results, group_NCA_results)
-
-      write.csv(All_NCA_results, file = output_file, quote = FALSE, row.names = FALSE)
+          All_NCA_results <- rbind(All_NCA_results, group_NCA_results)
+      }
       # wait for file to be written??, this doesn't seem to help
+
+    }
+      write.csv(All_NCA_results, file = output_file, quote = FALSE, row.names = FALSE)
       count <- 0
-      while(!file.exists(output_file) & count < 100){
+      while(!file.exists(output_file) & count < 50){
         Sys.sleep(1)
         count <- count + 1
       }
-    }
-   # return(TRUE)
+    return() #All_NCA_results)
   }, error = function(cond) {
     message("Error in NCA calculation, model =", this_model, " Sample = ", this_samp, "\n")
     message(cond)
-    # return(FALSE)
+    return(-999)
   })
 }
 
@@ -1233,6 +1248,7 @@ run_mbbe_json <- function(Args.json) {
 #' @examples
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path, save_output = FALSE) {
+    options(future.globals.onReference = "error")
     old_plan <- future::plan(multisession, workers = numParallel)
     #old_plan <- future::plan(sequential)
     on.exit(future::plan(old_plan))
@@ -1286,10 +1302,17 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
             run_simulations(nmfe_path, run_dir, samp_size)
             Sys.sleep(30)  # in case all model are still compiling, no executable yet
             wait_for_sim(samp_size)
-            plan(sequential)
+            #plan(sequential)
             message(Sys.time()," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "simM", "NCAresultsM"), ",  where M is the simulation number")
-            calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+           # NCA_result <- calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+           # if(NCA_results$success){
+          #    message("Successful calc_nca")
+          #  }else{
+          #    message("Failed calc_NCA")
+          #  }
             message(Sys.time()," Done calculating NCA parameters, making plots")
+            future::plan(old_plan)
             make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
             # read NCA output and do stats
             all_results <- calc_power(run_dir, samp_size)
@@ -1299,7 +1322,7 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
               AUClast_power <- all_results %>% filter(AUClast_BE != -999) %>% summarise(Power = mean(AUClast_BE))
               AUCinf_power <- all_results %>% filter(AUCinf_BE != -999) %>% summarise(Power = mean(AUCinf_BE))
               power <- c(Cmax_power, AUCinf_power, AUClast_power)
-              message(power)
+             # message(power)
               write.csv(power,file.path(run_dir,"Power.csv"))
             }else{
               message("Failed in calc_power")
