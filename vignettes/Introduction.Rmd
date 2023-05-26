@@ -13,14 +13,11 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
+Introduction to MBBE
 ```{r setup}
 library(mbbe)
 ```
-
-```{r import_data_system_file}
-data <- read.csv(system.file(package="mbbe", "examples", "pkdata.csv"))
-```
+ 
 
 ```{r preview_data}
 head(data)

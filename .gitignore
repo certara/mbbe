@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 inst/doc
+inst/examples/data_seq.csv
+inst/examples/data_sim.csv
+inst/examples/test_mbbe.r
