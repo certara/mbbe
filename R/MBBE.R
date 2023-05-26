@@ -929,7 +929,7 @@ getNCA = function(run_dir, this_sample, NumGroups, reference_groups, test_groups
       }
     return() #All_NCA_results)
   }, error = function(cond) {
-    message("Error in NCA calculation, model =", this_model, " Sample = ", this_samp, "\n")
+    message("Error in NCA calculation, model =", this_model, " Sample = ", this_sample, "\n")
     message(cond)
     return(-999)
   })
