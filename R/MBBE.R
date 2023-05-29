@@ -1,6 +1,10 @@
 
 #' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif
 #' @importFrom utils read.csv read.table setTxtProgressBar txtProgressBar write.csv
+#' @import future
+NULL
+
+`%>%` <- dplyr::`%>%`
 
 delete_files <-  function(folder){
   # need .ext for use_identifiable, keep .lst, .xml, .mod, GMSF
@@ -140,8 +144,8 @@ check_requirements <- function(model_list, ngroups, reference_groups, test_group
                     data <- utils::read.csv(data_file, stringsAsFactors = FALSE)
                     newIDs <- data %>%
                       dplyr::select(ID) %>%
-                      mutate(newID = if_else(ID == lag(ID), 0, 1)) %>%
-                      mutate(newID = if_else(is.na(newID), 1, newID)) %>%
+                      dplyr::mutate(newID = dplyr::if_else(ID == stats::lag(ID), 0, 1)) %>%
+                      dplyr::mutate(newID = dplyr::if_else(is.na(newID), 1, newID)) %>%
                       dplyr::filter(newID == 1)
                     num_newIDs <- dim(newIDs)[1]
                     num_oldIDs <- dim(data %>%
@@ -753,7 +757,7 @@ calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_ti
     #pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
     all_parms <- list()
     parms <- list()
-    plan(sequential)
+    future::plan(future::sequential)
     tryCatch({
      # futs <- list() # list of futures
       run_count <- 0
@@ -861,7 +865,7 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' @param NCA_end_time end time for AUClast and AUCinf
 #' @examples
 #' getNCA('c:/runmodels',1,4,c(1,2),c(3,4)),72,0.1)
-getNCA = function(run_dir, this_sample, NumGroups, reference_groups, test_groups, NCA_end_time) {
+getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_groups, NCA_end_time) {
   tryCatch({
     NMoutFile <- file.path(run_dir, paste0("sim", this_sample), "out.dat")
     if(file.exists(NMoutFile)){
@@ -1121,7 +1125,7 @@ calc_power = function(run_dir, samp_size){
     Cmax_result <- Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
                                              swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      Cmax_result <- get_BEQDF(data %>%  filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence")
+      Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence")
     },error = function(e){
       Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
                                 swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -1130,7 +1134,7 @@ calc_power = function(run_dir, samp_size){
     AUClast_result <- AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                                    swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      AUClast_result <- get_BEQDF(data %>%  filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence")
+      AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence")
     },error = function(e){
       AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                    swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -1141,7 +1145,7 @@ calc_power = function(run_dir, samp_size){
     AUCinf_result <- AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                                  swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      AUCinf_result <- get_BEQDF(data %>% filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence")
+      AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence")
     },error = function(e){
       AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -1158,7 +1162,7 @@ return(all_results)
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE){
 
   BICS <- BICS %>%
-    mutate(Samp_num = row_number())
+    dplyr::mutate(Samp_num = dplyr::row_number())
   this_NCAs <- NULL
   all_NCAs <- data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(),
                          Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
@@ -1167,7 +1171,7 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
     all_NCAs_this_model = data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(),
                                       Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
     # gather all Cmax etc from models labeled by model superimpose distributions
-    which_models = BICS %>% filter(Best==this_model) %>% select(Samp_num)
+    which_models = BICS %>% dplyr::filter(Best==this_model) %>% dplyr::select(Samp_num)
     # compile list of NCA with best
     this_samp <- which_models$Samp_num[1]
     for(this_samp in which_models$Samp_num){
@@ -1177,29 +1181,29 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
     }
     if(dim(all_NCAs_this_model)[1] > 0){
       all_NCAs <- rbind(all_NCAs, all_NCAs_this_model)
-      Cmax_plot <- ggplot2::ggplot(all_NCAs_this_model,aes(x = Cmax),) + ggplot2::geom_histogram(aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
+      Cmax_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x = Cmax),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
         ggplot2::ggtitle(paste("Cmax, model =",this_model))
 
       ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width= 9, height= 6)
-      AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model,aes(x=AUCinf),) + ggplot2::geom_histogram(aes(color=treatment,fill=treatment),position = "identity",alpha=0.4) +
+      AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x=AUCinf),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment),position = "identity",alpha=0.4) +
         ggplot2::ggtitle(paste("AUCinf, model =",this_model))
 
       ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width= 9, height= 6)
-      AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model,aes(x=AUClast),) + ggplot2::geom_histogram(aes(color=treatment,fill=treatment),position = "identity",alpha=0.4)+
+      AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x=AUClast),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment),position = "identity",alpha=0.4)+
         ggplot2::ggtitle(paste("AUClast, model =",this_model))
 
       ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width= 9, height= 6)
     }
   }
-  Cmax_plot <- ggplot2::ggplot(all_NCAs,aes(x = Cmax),) + ggplot2::geom_histogram(aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
+  Cmax_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x = Cmax),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill = treatment),position = "identity", alpha=0.4) +
     ggplot2::ggtitle("Cmax, all Models")
 
   ggplot2::ggsave(file.path(run_dir,"All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width= 9, height= 6)
-  AUCinf_plot <- ggplot2::ggplot(all_NCAs,aes(x=AUCinf),) + ggplot2::geom_histogram(aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
+  AUCinf_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x=AUCinf),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
     ggplot2::ggtitle("AUCinf, all Models")
 
   ggplot2::ggsave(file.path(run_dir,"All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width= 9, height= 6)
-  AUClast_plot <- ggplot2::ggplot(all_NCAs,aes(x=AUClast),) + ggplot2::geom_histogram(aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
+  AUClast_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x=AUClast),) + ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment), position = "identity", alpha=0.4) +
     ggplot2::ggtitle("AUClast, all Models")
 
   ggplot2::ggsave(file.path(run_dir,"All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width= 9, height= 6)
@@ -1249,7 +1253,7 @@ run_mbbe_json <- function(Args.json) {
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path, save_output = FALSE) {
     options(future.globals.onReference = "error")
-    old_plan <- future::plan(multisession, workers = numParallel)
+    old_plan <- future::plan(future::multisession, workers = numParallel)
     #old_plan <- future::plan(sequential)
     on.exit(future::plan(old_plan))
     message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
@@ -1318,9 +1322,9 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
             all_results <- calc_power(run_dir, samp_size)
             if(!is.null(all_results)){
               write.csv(all_results, file = file.path(run_dir,"All_results.csv"), quote=FALSE)
-              Cmax_power <- all_results %>% filter(Cmax_BE != -999) %>%  summarise(Power = mean(Cmax_BE))
-              AUClast_power <- all_results %>% filter(AUClast_BE != -999) %>% summarise(Power = mean(AUClast_BE))
-              AUCinf_power <- all_results %>% filter(AUCinf_BE != -999) %>% summarise(Power = mean(AUCinf_BE))
+              Cmax_power <- all_results %>% dplyr::filter(Cmax_BE != -999) %>%  dplyr::summarise(Power = mean(Cmax_BE))
+              AUClast_power <- all_results %>% dplyr::filter(AUClast_BE != -999) %>% dplyr::summarise(Power = mean(AUClast_BE))
+              AUCinf_power <- all_results %>% dplyr::filter(AUCinf_BE != -999) %>% dplyr::summarise(Power = mean(AUCinf_BE))
               power <- c(Cmax_power, AUCinf_power, AUClast_power)
              # message(power)
               write.csv(power,file.path(run_dir,"Power.csv"))
