@@ -741,54 +741,55 @@ run_simulations <- function(nmfe_path, run_dir, samp_size, numParallel = future:
 }
 
 #' calc_NCA
-#' call getNCA for each sample in 1:samp_size
-#' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-#' if check.identifability, do that with delta_parms as criteria
-#' @param run_dir, string home directory
-#' @param nGroups, integer how many groups, e.g., 4 for ABBA
-#' @param reference_groups, arrays which groups are reference
-#' @param test_groups, array, which groups are  test
-#' @param NCA_end_time, numeric, end time for AUClast and AUCinf
-#' @param samp_size,numeric integer
-#' @param delta_parms, numeric absolute difference in parameters criteria for failing identifability
+#' Parallelize call to getNCA for each sample in 1:samp_size
+#' and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+#' @param run_dir character;  folder path of run directory
+#' @param ngroups numeric; integer value specifying how many groups, e.g., 4 for ABBA
+#' @param reference_groups numeric vector; specifying which groups are reference
+#' @param test_groups numeric vector; specifying which groups are test
+#' @param NCA_end_time numeric; end time for AUClast and AUCinf
+#' @param samp_size numeric; integer value specifying sample size
+#' @param numParallel numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}
 #' @examples
-#' calc_NCA('c:/runmodels',4,c(1,2),c(3,4)),72,100,0.1)
-calc_NCA <- function(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel = availableCores()) {
-    #pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
-    all_parms <- list()
-    parms <- list()
-    future::plan(future::sequential)
-    tryCatch({
-     # futs <- list() # list of futures
-      run_count <- 0
-      for (this_samp in 1:samp_size) {
-      #  message("Calc NCA for ",this_samp)
-        run_count <- run_count + 1
-        # future::future({
-              # writes to file, future can't return a value?
-           # parms[run_count] <- getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
-             getNCA(run_dir, this_samp, ngroups, reference_groups, test_groups, NCA_end_time)
-         #})
-      }
-      #for(this_samp in 1:samp_size){
-      # # all_parms[this_samp] <- value(parms[this_samp])
-       # all_parms[this_samp] <- parms[this_samp]
-      #}
-  # wait until all done
-      # for(this_fut in futs){
-      #   utils::setTxtProgressBar(pb, this_fut)
-      #   while (!future::resolved(this_fut)) {
-      #      Sys.sleep(0.2)
-      #    }
-      # }
-    }, error = function(cond){
-      message("Failed in Calc_NCA, sample = ", run_count," ", cond)
-      return() #list(success = FALSE, parms = -999))
+#' run_dir <- "c:/Workspace/mbbe"
+#' ngroups <- 4
+#' reference_groups <- c(1,2)
+#' samp_size <- 6
+#' test_groups <- c(3,4)
+#' NCA_end_time <- 7
+#' numParallel <- 8
+#'
+#' calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+#'
+calc_NCA <-
+  function(run_dir,
+           ngroups,
+           reference_groups,
+           test_groups,
+           NCA_end_time,
+           samp_size,
+           numParallel = future::availableCores()) {
+
+    future::plan(future::multisession, workers = numParallel)
+
+    # Use future_map() from furrr package to parallelize the loop
+    output <- furrr::future_map(1:samp_size, function(this_samp) {
+      tryCatch({
+        getNCA(run_dir,
+               this_samp,
+               ngroups,
+               reference_groups,
+               test_groups,
+               NCA_end_time)
+      }, error = function(cond) {
+        message("Failed in calc_NCA, sample = ", this_samp, " ", cond)
+        return(NULL)
+      })
     })
-  #  #future::plan(sequential)
-  #  close(pb)
-  return() # list(success = TRUE, parms = all_parms))
-}
+
+    return()
+  }
+
 #' read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
 #' compare with final parameters (Post.parms), see if any differ by delta_parms
 #' open .lst

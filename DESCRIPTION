@@ -13,6 +13,7 @@ Imports:
   stringr,
   xml2,
   future,
+  furrr,
   PKNCA,
   DescTools
 Roxygen: list(markdown = TRUE)
