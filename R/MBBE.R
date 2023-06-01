@@ -4,20 +4,41 @@
 #' @import future
 NULL
 
-`%>%` <- dplyr::`%>%`
+`%>%` <- magrittr::`%>%`
 
-delete_files <-  function(folder){
+delete_files <-  function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, GMSF
   # but can't delete all, need to keep $TABLE
   try({
-  delfiles <- c("FDATA","FCON","FSUBS","FSUBS.o","FSIZES", "FREPORT","FSTREAM", "GFCOMPILE.BAT", "INTER","nmprd4p.mod" )
-  delfiles <- c(delfiles, dir(path = folder, pattern = "*.exe"), dir(path = folder, pattern = "*.f90"), dir(path = folder, pattern = "*.grd"),
-                dir(path = folder, pattern="*.shk"), dir(path = folder, pattern="*.cpu"), dir(path = folder, pattern="*.shm"),
-                dir(path = folder, pattern="*.lnk"), dir(path = folder, pattern = "*.phi"))
-  file.remove(file.path(folder, delfiles))
-  if(dir.exists(file.path(folder,"temp_dir"))){
-    unlink(file.path(folder,"temp_dir"),recursive = TRUE, force = TRUE)
-  }
+    delfiles <-
+      c(
+        "FDATA",
+        "FCON",
+        "FSUBS",
+        "FSUBS.o",
+        "FSIZES",
+        "FREPORT",
+        "FSTREAM",
+        "GFCOMPILE.BAT",
+        "INTER",
+        "nmprd4p.mod"
+      )
+
+    ExtensionsToDelete <- c("exe", "f90", "grd", "shk", "cpu", "shm", "lnk", "phi")
+    ExtensionsToDelete <- paste0("(*.", ExtensionsToDelete, ")")
+    ExtensionsToDeleteCollapsed <- paste(ExtensionsToDelete, collapse = "|")
+    delfiles <-
+      c(
+        delfiles,
+        dir(path = folder, pattern = ExtensionsToDeleteCollapsed)
+      )
+
+    file.remove(file.path(folder, delfiles))
+    if (dir.exists(file.path(folder, "temp_dir"))) {
+      unlink(file.path(folder, "temp_dir"),
+             recursive = TRUE,
+             force = TRUE)
+    }
   })
 }
 #' get_block
@@ -26,37 +47,26 @@ delete_files <-  function(folder){
 #'
 #' @param stem Block title, e.g., $DATA to look for
 #' @param control control file text
-#'s
+#' @return a block with specified header
+#' returns empty character if nothing is found
+#'
 #' @examples
-#' get_block('$DATA',c('$PROB test','$INPUT ...))
+#' get_block('$PROB', "$PROB test \n$INPUT ..."))
 get_block <- function(stem, control) {
+  OneLineSemicolon <- "(?:;(?:\\\\\\n|[^\\n])*(?=$|\\n))"
 
     tryCatch({
-        nlines <- length(control)
-        for (this_line in 1:nlines) {
-            # remove comments
-            comment.pos <- gregexpr(";", control[this_line])[[1]][1]
-            if (comment.pos > 0) {
-                control[this_line] <- stringr::str_trim(substr(control[this_line], 1, comment.pos - 1))
-            } else {
-                control[this_line] <- stringr::str_trim(control[this_line])
-            }
-        }
-        start_line <- grep(paste0("^\\", stem), control)
-        next_line <- grep("^\\$", control[start_line + 1:length(control)])[1]
-        if (installr::is.empty(next_line)) {
-            # $stem is last
-            last_line <- length(control)
-        } else {
-            last_line <- start_line + next_line
-        }
-        block <- ""
-        for (line in start_line:(last_line - 1)) {
-            block <- paste(block, control[line])
-        }
-        return(block)
+      CollapsedControl <- paste(control, collapse = "\n")
+
+      StatementsLineswoComm <-
+        gsub(OneLineSemicolon, "\n", CollapsedControl, perl = TRUE)
+
+      Blocks <- paste0("$", unlist(strsplit(StatementsLineswoComm, split = "\\$")))
+      Block <- Blocks[grepl(paste0("^\\", stem), Blocks)]
+      Block <- gsub("\r?\n", " ", Block)
+      Block
     }, error = function(err) {
-        return(FALSE)
+        character(0)
     })
 }
 #' check_requirements
