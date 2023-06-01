@@ -70,12 +70,11 @@ get_block <- function(stem, control) {
     })
 }
 #' check_requirements
-#' 1. Is there exactly 1 .mod file in each source folder
 #' 2. Does that .mod file contain ;;;;.*Start EST
 #' 3. is the sum of reference_groups and test_groups == ngroups?
 #' 4. Any duplicates in Reference and Test groups?
 #' 5. check if data file is present
-#' 6.  check if nmfe path is correct
+#' 6. check if nmfe path is correct
 #' 7. check for saddle_reset if requested
 #' 8. check for repeat IDs in data set
 #' 9. if use_simulation_data, see if data available
@@ -90,7 +89,6 @@ get_block <- function(stem, control) {
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
 #' @param simulation_data_path, if use_simulation_data, this is the path to the data file
 #' @examples
-#' check_requirements('c:/models',5,'c:/nm744/util',TRUE))
 check_requirements <- function(model_list, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path = NULL) {
 
     msg <- list()
@@ -1234,7 +1232,8 @@ run_mbbe_json <- function(Args.json) {
   }else{
     Args <- RJSONIO::fromJSON(Args.json)
     run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$numParallel, Args$samp_size, Args$run_dir, Args$model_source,
-             Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path )
+             Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
+             Args$simulation_data_path, Args$plan, Args$alpha_error, Args$BE_range, Args$save_output )
   }
 }
 
@@ -1262,13 +1261,18 @@ run_mbbe_json <- function(Args.json) {
 #'
 #' @examples
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
-    use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path, save_output = FALSE) {
+    use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path,  plan = c("multisession", "sequential", "multicore"),
+    alpha_error = 0.05, BE_range = c(0.8, 1.25), save_output = FALSE) {
     options(future.globals.onReference = "error")
-    old_plan <- future::plan(future::multisession, workers = numParallel)
-    #old_plan <- future::plan(sequential)
+    plan <- match.arg(plan)
+    if(plan == "multisession") {old_plan <- future::plan(future::multisession, workers = numParallel)}
+    if(plan == "multicore") {old_plan <- future::plan(future::multicore, workers = numParallel)}
+    if(plan == "sequential") {old_plan <- future::plan(future::sequential)}
     on.exit(future::plan(old_plan))
     message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
     message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
+    message("Range for bio equlvalence testing = ", BE_range)
+    message("Alpha error rate for bioqulvalence testing = ", alpha_error)
     if (use_check_identifiable) {
         message("Delta parameter for use_check_identifiable = ", delta_parms)
     }
@@ -1363,5 +1367,5 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
 }
 #
 #Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_mega.json"
-# Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
+#Args.json <- "u:/fda/mbbe/mbbe/MBBEArgs_sh.json"
 # run_mbbe_json(Args.json)

@@ -13,5 +13,9 @@
 "ngroups":        4,
 "samp_size":        6,
 "reference_groups": [ 1, 2 ],
-"test_groups": [3, 4 ]
+"test_groups": [3, 4 ],
+"plan": "multisession",
+"alpha_error": 0.05,
+"BE_range": [0.8,1.25],
+"save_output": true
 }
