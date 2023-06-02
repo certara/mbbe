@@ -3,9 +3,8 @@
 \name{calc_NCA}
 \alias{calc_NCA}
 \title{calc_NCA
-call getNCA for each sample in 1:samp_size
-and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-if check.identifability, do that with delta_parms as criteria}
+Parallelize call to getNCA for each sample in 1:samp_size
+and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)}
 \usage{
 calc_NCA(
   run_dir,
@@ -14,30 +13,38 @@ calc_NCA(
   test_groups,
   NCA_end_time,
   samp_size,
-  numParallel = availableCores()
+  numParallel = future::availableCores()
 )
 }
 \arguments{
-\item{run_dir, }{string home directory}
+\item{run_dir}{character;  folder path of run directory}
 
-\item{reference_groups, }{arrays which groups are reference}
+\item{ngroups}{numeric; integer value specifying how many groups, e.g., 4 for ABBA}
 
-\item{test_groups, }{array, which groups are  test}
+\item{reference_groups}{numeric vector; specifying which groups are reference}
 
-\item{NCA_end_time, }{numeric, end time for AUClast and AUCinf}
+\item{test_groups}{numeric vector; specifying which groups are test}
 
-\item{samp_size, numeric}{integer}
+\item{NCA_end_time}{numeric; end time for AUClast and AUCinf}
 
-\item{nGroups, }{integer how many groups, e.g., 4 for ABBA}
+\item{samp_size}{numeric; integer value specifying sample size}
 
-\item{delta_parms, }{numeric absolute difference in parameters criteria for failig identifability}
+\item{numParallel}{numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}}
 }
 \description{
 calc_NCA
-call getNCA for each sample in 1:samp_size
-and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-if check.identifability, do that with delta_parms as criteria
+Parallelize call to getNCA for each sample in 1:samp_size
+and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 }
 \examples{
-calc_NCA('c:/runmodels',4,c(1,2),c(3,4)),72,100,0.1)
+run_dir <- "c:/Workspace/mbbe"
+ngroups <- 4
+reference_groups <- c(1,2)
+samp_size <- 6
+test_groups <- c(3,4)
+NCA_end_time <- 7
+numParallel <- 8
+
+calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+
 }

@@ -4,7 +4,12 @@
 \alias{run_simulations}
 \title{run all simulations}
 \usage{
-run_simulations(nmfe_path, run_dir, samp_size, numParallel = availableCores())
+run_simulations(
+  nmfe_path,
+  run_dir,
+  samp_size,
+  numParallel = future::availableCores()
+)
 }
 \arguments{
 \item{nmfe_path}{path to nmfe??.bat}
@@ -13,7 +18,7 @@ run_simulations(nmfe_path, run_dir, samp_size, numParallel = availableCores())
 
 \item{samp_size}{number of bootstrap sample for each model}
 
-\item{numParallel}{number of models to run in parallel, default = avaiableCores()}
+\item{numParallel}{number of models to run in parallel, default = availableCores()}
 }
 \description{
 run all simulations
