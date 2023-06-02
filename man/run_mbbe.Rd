@@ -19,7 +19,11 @@ run_mbbe(
   NCA_end_time,
   rndseed,
   use_simulation_data,
-  simulation_data_path
+  simulation_data_path,
+  plan = c("multisession", "sequential", "multicore"),
+  alpha_error = 0.05,
+  BE_range = c(0.8, 1.25),
+  save_output = FALSE
 )
 }
 \arguments{

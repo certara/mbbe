@@ -5,7 +5,7 @@
 \title{for each model get the control file used for the bootstrap
 return a list of the models}
 \usage{
-get_base_model(nmodels)
+get_base_model(run_dir, nmodels)
 }
 \arguments{
 \item{nmodels}{how many models are there}

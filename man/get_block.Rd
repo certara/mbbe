@@ -11,11 +11,17 @@ get_block(stem, control)
 \arguments{
 \item{stem}{Block title, e.g., $DATA to look for}
 
-\item{control}{control file text
-s}
+\item{control}{control file text}
+}
+\value{
+a block with specified header
+returns empty character if nothing is found
 }
 \description{
 get_block
 Get a block (e.g., $DATA) from a control file with multiple lines
 return block as a single character string
+}
+\examples{
+get_block('$PROB', "$PROB test \n$INPUT ..."))
 }

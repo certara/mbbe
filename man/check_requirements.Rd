@@ -3,17 +3,14 @@
 \name{check_requirements}
 \alias{check_requirements}
 \title{check_requirements
-\enumerate{
-\item Is there exactly 1 .mod file in each source folder
-\item Does that .mod file contain ;;;;.*Start EST
-\item is the sum of reference_groups and test_groups == ngroups?
-\item Any duplicates in Reference and Test groups?
-\item check if data file is present
-\item check if nmfe path is correct
-\item check for saddle_reset if requested
-\item check for repeat IDs in data set
-\item if use_simulation_data, see if data available
-}}
+2. Does that .mod file contain ;;;;.*Start EST
+3. is the sum of reference_groups and test_groups == ngroups?
+4. Any duplicates in Reference and Test groups?
+5. check if data file is present
+6. check if nmfe path is correct
+7. check for saddle_reset if requested
+8. check for repeat IDs in data set
+9. if use_simulation_data, see if data available}
 \usage{
 check_requirements(
   model_list,
@@ -49,18 +46,12 @@ check_requirements(
 }
 \description{
 check_requirements
-\enumerate{
-\item Is there exactly 1 .mod file in each source folder
-\item Does that .mod file contain ;;;;.*Start EST
-\item is the sum of reference_groups and test_groups == ngroups?
-\item Any duplicates in Reference and Test groups?
-\item check if data file is present
-\item check if nmfe path is correct
-\item check for saddle_reset if requested
-\item check for repeat IDs in data set
-\item if use_simulation_data, see if data available
-}
-}
-\examples{
-check_requirements('c:/models',5,'c:/nm744/util',TRUE))
+2. Does that .mod file contain ;;;;.*Start EST
+3. is the sum of reference_groups and test_groups == ngroups?
+4. Any duplicates in Reference and Test groups?
+5. check if data file is present
+6. check if nmfe path is correct
+7. check for saddle_reset if requested
+8. check for repeat IDs in data set
+9. if use_simulation_data, see if data available
 }
