@@ -89,10 +89,30 @@ get_block <- function(stem, control) {
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
 #' @param simulation_data_path, if use_simulation_data, this is the path to the data file
 #' @examples
-check_requirements <- function(model_list, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path = NULL) {
+check_requirements <- function(run_dir, samp_size, model_list, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path = NULL) {
 
     msg <- list()
-    result = tryCatch({
+    result <- tryCatch({
+         # check files that need to be written to
+        files = c(file.path(run_dir,"All_results.csv"), file.path(run_dir, "BICS.csv"), file.path(run_dir, "Parameters.csv"),
+                  file.path(run_dir,"Power.csv"))
+        for(i in 1:samp_size){
+          files = c(file,file.path(run_dir, paste0("data_samp", i, ".csv")))
+          files = c(file,file.path(run_dir, paste0("sim", i),  paste0("NCAresults",i,".csv")))
+        }
+        for(file in files){
+          if(file.exists(file)){
+            count <- 0
+           # message("Deleting ", file )
+            while(file.exists(file) & count < 10){
+              file.remove(file)
+              count <- count + 1
+            }
+            if(file.exists(file)){
+              return(list(rval = FALSE, msg = paste("Unable to delete required output file ", file, " exiting")))
+              }
+          }
+        }
         if(is.null(model_list)){
           return(list(rval = FALSE, msg = paste("Model list is NULL, error in json file?, exiting")))
         }
@@ -144,22 +164,30 @@ check_requirements <- function(model_list, ngroups, reference_groups, test_group
                     pos <- gregexpr(pattern = "\\s", data_line)
                     data_file <- stringr::str_trim(substr(data_line, 1, pos[[1]][1]), side = "both")
                   }
+
+
                   if (!file.exists(data_file)) {
                     msg <- append(msg, list(rval = FALSE, msg = paste0("Cannot find ", data_file, ", exiting")))
                   } else {
                     # repeat IDs??
 
                     data <- utils::read.csv(data_file, stringsAsFactors = FALSE)
+                    # no ID found
+                    cols <- colnames(data)
+                    if(!"ID" %in% cols){
+                      msg <- append(msg, list(rval = FALSE, msg = paste0("ID column not found in data set ",data_file)))
+                    }
                     newIDs <- data %>%
                       dplyr::select(ID) %>%
-                      dplyr::mutate(newID = dplyr::if_else(ID == stats::lag(ID), 0, 1)) %>%
+                      dplyr::mutate(newID = dplyr::if_else(ID == dplyr::lag(ID, 1), 0, 1))
+                    newIDs <- newIDs %>%
                       dplyr::mutate(newID = dplyr::if_else(is.na(newID), 1, newID)) %>%
                       dplyr::filter(newID == 1)
                     num_newIDs <- dim(newIDs)[1]
                     num_oldIDs <- dim(data %>%
-                      dplyr::distinct(ID))[1]
+                                        dplyr::distinct(ID))[1]
                     if (num_newIDs != num_oldIDs) {
-                      msg = append(msg, list(rval = FALSE, msg = paste0("There appears to be repeat IDs in", data_file, "\n, for bootstrap sampling IDs must not repeat, exiting")))
+                      msg <- append(msg, list(rval = FALSE, msg = paste0("There appears to be repeat IDs in", data_file, "\n, for bootstrap sampling IDs must not repeat, ")))
                     }
                   }
 
@@ -355,7 +383,7 @@ run_bootstrap <- function(nmfe_path, run_dir, nmodels, samp_size, numParallel = 
     rval <- try({
         for (this_model in 1:nmodels) {
             pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
-            message(Sys.time()," Starting first bootstrap sample model ", this_model)
+            message(format(Sys.time(), digits = 0)," Starting first bootstrap sample model ", this_model)
             for (this_samp in 1:samp_size) {
               run_count <- run_count + 1
               future::future({
@@ -365,7 +393,7 @@ run_bootstrap <- function(nmfe_path, run_dir, nmodels, samp_size, numParallel = 
               utils::setTxtProgressBar(pb, this_samp)
             }
             close(pb)
-            message(Sys.time(), " Starting last bootstrap sample model ", this_model)
+            message(format(Sys.time(), digits = 0), " Starting last bootstrap sample model ", this_model)
         }
 
     })
@@ -775,13 +803,12 @@ calc_NCA <-
            reference_groups,
            test_groups,
            NCA_end_time,
-           samp_size,
-           numParallel = future::availableCores()) {
+           samp_size) {
 
-    future::plan(future::multisession, workers = numParallel)
+    future::plan(future::sequential)
 
     # Use future_map() from furrr package to parallelize the loop
-    output <- furrr::future_map(1:samp_size, function(this_samp) {
+    #output <- furrr::future_map(1:samp_size, function(this_samp) {
       tryCatch({
         getNCA(run_dir,
                this_samp,
@@ -790,10 +817,10 @@ calc_NCA <-
                test_groups,
                NCA_end_time)
       }, error = function(cond) {
-        message("Failed in calc_NCA, sample = ", this_samp, " ", cond)
+        message("Failed in calc_NCA ", cond)
         return(NULL)
       })
-    })
+   # })
 
     return()
   }
@@ -948,10 +975,10 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
   })
 }
 
-calc_power = function(run_dir, samp_size){
+calc_power = function(run_dir, samp_size, alpha, NTID){
 
   BEsuccess <- data.frame(Cmax.success = as.logical(), AUCinf.success = as.logical(), AUClast.success = as.logical())
-  message(Sys.time(), " Starting statistics for NCA parameters, simulations 1-", samp_size)
+  message(format(Sys.time(), digits = 0), " Starting statistics for NCA parameters, simulations 1-", samp_size)
   all_results <- data.frame(Sample = as.integer(),
                             Cmax_Ratio = as.numeric(), Cmax_lower_CL = as.numeric(), Cmax_upper_CL = as.numeric(), Cmax_swR = as.numeric(),
                             Cmax_pe = as.numeric(), Cmax_critbound = as.numeric(), Cmax_Assessment = as.numeric(), Cmax_BE = as.logical(),
@@ -981,7 +1008,9 @@ calc_power = function(run_dir, samp_size){
     Cmax_result <- Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
                                              swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence")
+
+      Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence",
+                               alpha, PartialReplicate = FALSE , NTID)
     },error = function(e){
       Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
                                 swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -990,7 +1019,8 @@ calc_power = function(run_dir, samp_size){
     AUClast_result <- AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                                    swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence")
+      AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence",
+                                  alpha, PartialReplicate =FALSE , NTID)
     },error = function(e){
       AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                    swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -1001,7 +1031,8 @@ calc_power = function(run_dir, samp_size){
     AUCinf_result <- AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                                  swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
     tryCatch({
-      AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence")
+      AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence",
+                                 alpha, PartialReplicate = FALSE , NTID)
     },error = function(e){
       AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
@@ -1080,7 +1111,7 @@ run_mbbe_json <- function(Args.json) {
     Args <- RJSONIO::fromJSON(Args.json)
     run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$numParallel, Args$samp_size, Args$run_dir, Args$model_source,
              Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
-             Args$simulation_data_path, Args$plan, Args$alpha_error, Args$BE_range, Args$save_output )
+             Args$simulation_data_path, Args$plan, Args$alpha_error, Args$NTID, Args$save_output )
   }
 }
 
@@ -1109,16 +1140,16 @@ run_mbbe_json <- function(Args.json) {
 #' @examples
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path,  plan = c("multisession", "sequential", "multicore"),
-    alpha_error = 0.05, BE_range = c(0.8, 1.25), save_output = FALSE) {
+    alpha_error = 0.05, NTID, save_output = FALSE) {
     options(future.globals.onReference = "error")
     plan <- match.arg(plan)
     if(plan == "multisession") {old_plan <- future::plan(future::multisession, workers = numParallel)}
     if(plan == "multicore") {old_plan <- future::plan(future::multicore, workers = numParallel)}
     if(plan == "sequential") {old_plan <- future::plan(future::sequential)}
     on.exit(future::plan(old_plan))
-    message(Sys.time()," Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
+    message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
     message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
-    message("Range for bio equlvalence testing = ", BE_range)
+    message("Narrow Therapeutic Index  =  ", NTID)
     message("Alpha error rate for bioqulvalence testing = ", alpha_error)
     if (use_check_identifiable) {
         message("Delta parameter for use_check_identifiable = ", delta_parms)
@@ -1141,43 +1172,43 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
 
     set.seed(rndseed)
 
-    msg <- check_requirements(model_source, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path)
+    msg <- check_requirements(run_dir, samp_size, model_source, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path)
     if (msg$rval) {
         message("Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),
             "\n where N is the model number")
         nmodels <- copy_model_files(model_source, run_dir)
-        message(Sys.time(), " Sampling data 1-", samp_size," writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
+        message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size," writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
         sample_data(run_dir, nmodels, samp_size)
-        message(Sys.time(), " Starting bootstrap runs 1-", samp_size," in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number",
+        message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size," in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number",
            "\nProgress bar will appear as models start/complete")
         if (!run_bootstrap(nmfe_path, run_dir, nmodels, samp_size)) {
             message("Failed bootstrap")
         } else {
             # need to wait until all are done, this returns when all are started.
             Sys.sleep(30)  # in case all model are still compiling
-            message(Sys.time()," Waiting for bootstrap models to complete")
+            message(format(Sys.time(), digits = 0)," Waiting for bootstrap models to complete")
             wait_for_bs(nmodels, samp_size)
 
-            message(Sys.time(), " Getting bootstrap model parameters, samples 1-", samp_size)
+            message(format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
             parms <- get_parameters(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable)
             base_models <- get_base_model(run_dir, nmodels)  # get all nmodels base model
-            message(Sys.time(), " Constructing simulation  models in ", file.path(run_dir, "simM"), " where M is the simulation number")
+            message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "simM"), " where M is the simulation number")
             final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path)  # don't really do anything with final models, already written to disc
 
-            message(Sys.time(), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "simM"), " where M is the simulation number")
+            message(format(Sys.time(), digits = 0), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "simM"), " where M is the simulation number")
             run_simulations(nmfe_path, run_dir, samp_size)
             Sys.sleep(30)  # in case all model are still compiling, no executable yet
             wait_for_sim(samp_size)
             #plan(sequential)
-            message(Sys.time()," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "simM", "NCAresultsM"), ",  where M is the simulation number")
+            message(format(Sys.time(), digits = 0)," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "simM", "NCAresultsM"), ",  where M is the simulation number")
            # NCA_result <- calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
-             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
+             calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
            # if(NCA_results$success){
           #    message("Successful calc_nca")
           #  }else{
           #    message("Failed calc_NCA")
           #  }
-            message(Sys.time()," Done calculating NCA parameters, making plots")
+            message(format(Sys.time(), digits = 0)," Done calculating NCA parameters, making plots")
             future::plan(old_plan)
             make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
             # read NCA output and do stats

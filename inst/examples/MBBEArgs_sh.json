@@ -16,6 +16,6 @@
 "test_groups": [3, 4 ],
 "plan": "multisession",
 "alpha_error": 0.05,
-"BE_range": [0.8,1.25],
+"NTID": true,
 "save_output": true
 }
