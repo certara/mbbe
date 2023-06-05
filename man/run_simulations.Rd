@@ -4,12 +4,7 @@
 \alias{run_simulations}
 \title{run all simulations}
 \usage{
-run_simulations(
-  nmfe_path,
-  run_dir,
-  samp_size,
-  numParallel = future::availableCores()
-)
+run_simulations(nmfe_path, run_dir, samp_size)
 }
 \arguments{
 \item{nmfe_path}{path to nmfe??.bat}

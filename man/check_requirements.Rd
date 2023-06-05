@@ -13,6 +13,8 @@
 9. if use_simulation_data, see if data available}
 \usage{
 check_requirements(
+  run_dir,
+  samp_size,
   model_list,
   ngroups,
   reference_groups,

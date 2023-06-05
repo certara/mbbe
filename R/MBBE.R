@@ -89,139 +89,246 @@ get_block <- function(stem, control) {
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
 #' @param simulation_data_path, if use_simulation_data, this is the path to the data file
 #' @examples
-check_requirements <- function(run_dir, samp_size, model_list, ngroups, reference_groups, test_groups, nmfe_path, use_check_identifiable, use_simulation_data, simulation_data_path = NULL) {
+check_requirements <- function(run_dir,
+                               samp_size,
+                               model_list,
+                               ngroups,
+                               reference_groups,
+                               test_groups,
+                               nmfe_path,
+                               use_check_identifiable,
+                               use_simulation_data,
+                               simulation_data_path = NULL) {
+  msg <- ""
 
-  msg <- list()
-  result <- tryCatch({
-    # check files that need to be written to, try to delete them
-    files_to_remove <- c(file.path(run_dir,"All_results.csv"), file.path(run_dir, "BICS.csv"), file.path(run_dir, "Parameters.csv"),
-              file.path(run_dir,"Power.csv"))
-    for(i in 1:samp_size){
-      files_to_remove <- c(files_to_remove, file.path(run_dir, paste0("data_samp", i, ".csv")))
-      files_to_remove <- c(files_to_remove, file.path(run_dir, paste0("sim", i),  paste0("NCAresults",i,".csv")))
-      files_to_remove <- c(files_to_remove, file.path(run_dir, paste0("sim", i),  paste0("sim",i,".mod")))
-      files_to_remove <- c(files_to_remove, file.path(run_dir, paste0("sim", i),  "OUT.DAT"))
-    }
-    for(file in files_to_remove){
-      if(file.exists(file)){
-        count <- 0
-        # message("Deleting ", file )
-        while(file.exists(file) & count < 10){
-          file.remove(file)
-          count <- count + 1
-        }
-        if(file.exists(file)){
-          return(list(rval = FALSE, msg = paste("Unable to delete required output file ", file, " exiting")))
-        }
-      }
-    }
-    if(is.null(model_list)){
-      return(list(rval = FALSE, msg = paste("Model list is NULL, error in json file?, exiting")))
-    }
-    if (!file.exists(nmfe_path)) {
-      # if DOS path, convert to R/linux
-      return(list(rval = FALSE, msg = paste("Cannot find nmfe?? at", nmfe_path, ", exiting")))
-    }
-    # check number in Reference and Test groups
-    if (sum(length(reference_groups), length(test_groups)) != ngroups) {
+  # check files that need to be written to, try to delete them
+  files_to_remove <-
+    file.path(run_dir,
+              c(
+                "All_results.csv",
+                "BICS.csv",
+                "Parameters.csv",
+                "Power.csv"
+              ))
+  files_to_remove <-
+    c(
+      files_to_remove,
+      file.path(run_dir, paste0("data_samp", 1:samp_size, ".csv")),
+      file.path(
+        run_dir,
+        paste0("sim", 1:samp_size),
+        paste0("NCAresults", 1:samp_size, ".csv")
+      ),
+      file.path(
+        run_dir,
+        paste0("sim", 1:samp_size),
+        paste0("sim", 1:samp_size, ".mod")
+      ),
+      file.path(run_dir, paste0("sim", 1:samp_size),  "OUT.DAT")
+    )
 
-      return(list(rval = FALSE, msg = paste("number of Reference groups ", length(reference_groups), "+ Test groups ", length(test_groups),
-                                            "doesn't equal the number of groups", ngroups, ", exiting")))
-    }
-    # no duplicated in Reference and Test groups
-    if (anyDuplicated(c(reference_groups, test_groups)) > 0) {
-      return(list(rval = FALSE, msg = paste("There are duplicated group numbers between Reference and Test group, exiting")))
-    }
-    if (anyDuplicated(reference_groups) > 0) {
-      return(list(rval = FALSE, msg = paste("There are duplicated group numbers in the Reference group, exiting")))
-    }
-    if (anyDuplicated(test_groups) > 0) {
-      return(list(rval = FALSE, msg = paste("There are duplicated group numbers in the test group, exiting")))
-    }
-  }, error = function(err) {
+  files_to_remove <-
+    files_to_remove[file.exists(files_to_remove)]
 
-    msg = list(rval = FALSE, msg = paste("Error in finding nfme??.bat,", nmfe_path, ", exiting"))
-  })
-  nmodels <- length(model_list)
-  for (this_model in 1:nmodels) {
-    # need to fix this for modellist
-    result <- tryCatch({
-      for (this_model in 1:nmodels) {
-        if (!file.exists(model_list[this_model])) {
-          return(list(rval = FALSE, msg = paste("Cannot find", file.path(source.dir, paste0("model", this_model)), ", exiting")))
-        } else {
+  count <- 0
+  # message("Deleting ", file )
+  while (any(!file.remove(files_to_remove)) & count < 10) {
+    files_to_remove <-
+      files_to_remove[file.exists(files_to_remove)]
 
-          con <- file(model_list[this_model], "r")
-          suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
-          close(con)
-          data_line <- get_block("$DATA", control)
-          data_line <- stringr::str_trim(stringr::str_replace(data_line, "\\$DATA", ""), side = "both")
-          any.quotes = grep("^\"", data_line)
-          if (length(any.quotes) > 0) {
-            # find 2nd
-            pos <- gregexpr(pattern = "\"", data_line)
-            data_file <- substr(data_line, 1, pos[[1]][2])
-          } else {
-            # find first white space
-            pos <- gregexpr(pattern = "\\s", data_line)
-            data_file <- stringr::str_trim(substr(data_line, 1, pos[[1]][1]), side = "both")
-          }
+    count <- count + 1
+    sleep(0.5)
+  }
+
+  if (length(files_to_remove[file.exists(files_to_remove)]) > 0) {
+    msg <- paste("Unable to delete required output file(s) ",
+                 paste(files_to_remove, collapse = ", "))
+  }
+
+  if (is.null(model_list)) {
+    msg <-
+      paste(msg,
+            "Model list is NULL, error in json file?",
+            sep = "\n")
+  }
+
+  if (!file.exists(nmfe_path)) {
+    msg <-
+      paste(msg,
+            paste0("Cannot find nmfe?? at ", nmfe_path),
+            sep = "\n")
+  }
 
 
-          if (!file.exists(data_file)) {
-            msg <- append(msg, list(rval = FALSE, msg = paste0("Cannot find ", data_file, ", exiting")))
-          } else {
-            # repeat IDs??
+  # check number in Reference and Test groups
+  if (sum(length(reference_groups), length(test_groups)) != ngroups) {
+    msg <-
+      paste(
+        msg,
+        paste(
+          "Number of Reference groups",
+          length(reference_groups),
+          "+ Test groups",
+          length(test_groups),
+          "doesn't equal the number of groups",
+          ngroups
+        ),
+        sep = "\n"
+      )
+  }
 
-            data <- utils::read.csv(data_file, stringsAsFactors = FALSE)
-            # no ID found
-            cols <- colnames(data)
-            if(!"ID" %in% cols){
-              msg <- append(msg, list(rval = FALSE, msg = paste0("ID column not found in data set ",data_file)))
-            }
-            newIDs <- data %>%
-              dplyr::select(ID) %>%
-              dplyr::mutate(newID = dplyr::if_else(ID == dplyr::lag(ID, 1), 0, 1))
-            newIDs <- newIDs %>%
-              dplyr::mutate(newID = dplyr::if_else(is.na(newID), 1, newID)) %>%
-              dplyr::filter(newID == 1)
-            num_newIDs <- dim(newIDs)[1]
-            num_oldIDs <- dim(data %>%
-                                dplyr::distinct(ID))[1]
-            if (num_newIDs != num_oldIDs) {
-              msg <- append(msg, list(rval = FALSE, msg = paste0("There appears to be repeat IDs in", data_file, "\n, for bootstrap sampling IDs must not repeat, ")))
-            }
-          }
+  # no duplicated in Reference and Test groups
+  if (anyDuplicated(c(reference_groups, test_groups)) > 0) {
+    msg <-
+      paste(msg,
+            "There are duplicated group numbers between Reference and Test group",
+            sep = "\n")
+  }
 
-          # $EST must be on one line, need to fix this contains ;;;; Start EST?
-          contains_start <- grepl(";;;;.*Start\\s+EST", control, ignore.case = TRUE)
-          if (!any(contains_start)) {
-            msg = append(msg, list(rval = FALSE, msg = paste0("The control file ", model_list[this_model], " does not contain \";;;; Start EST\", required before the $EST and the $THETA records and after $OMEGA and $SIGMA")))
-          }
-          if (use_check_identifiable) {
-            EST.line <- get_block("$EST", control)
-            if (!grepl("SADDLE_RESET\\s*=\\s*1", EST.line, fixed = FALSE)) {
-              msg = append(msg, list(rval = FALSE, msg = paste0("Identifiability check requested, but SADDLE_RESET not set to 1 in ",
-                                                                model_list[this_model], ", exiting")))
-            }
-          }
-          if (use_simulation_data) {
-            if (!file.exists(simulation_data_path)) {
-              msg <- append(msg, list(rval = FALSE, msg = paste0("Cannot find simulation data set", simulation_data_path, ", exiting")))
-            }
-          }
-        }
-      }
-    }, error = function(err) {
-      msg = append(msg, list(rval = FALSE, msg = paste("Error in number of model files in", model_list, ", exiting")))
-    })
-    if (length(msg) > 0) {
-      return(msg)
+  if (anyDuplicated(reference_groups) > 0) {
+    msg <-
+      paste(msg,
+            "There are duplicated group numbers in the Reference group",
+            sep = "\n")
+  }
+
+  if (anyDuplicated(test_groups) > 0) {
+    ReturnedValue$rval <- FALSE
+    ReturnedValue$msg <-
+      paste(ReturnedValue$msg,
+            "There are duplicated group numbers in the test group",
+            sep = "\n")
+  }
+
+  # need to fix this for modellist
+  for (this_model in length(model_list)) {
+    if (!file.exists(model_list[this_model])) {
+      msg <-
+        paste(msg,
+              paste0("Cannot find ", model_list[this_model]),
+              sep = "\n")
+      next
+    }
+
+    control <-
+      readLines(model_list[this_model], encoding = "UTF-8", warn = FALSE)
+
+    data_line <- get_block("$DATA", control)
+    if (nchar(data_line) == 0) {
+      msg <- paste(msg,
+                   paste0("In the model file ", model_list[this_model], " DATA block not found."),
+                   sep = "\n")
+      next
+    }
+
+    data_line <-
+      gsub("(\\s*\\$DATA\\s*)|(\\s*$)", "", data_line)
+    any.quotes <- grep("^\"", data_line)
+    if (length(any.quotes) > 0) {
+      data_file <-
+        sapply(regmatches(
+          data_line,
+          gregexpr('(\").*?(\")', data_line, perl = TRUE)
+        ),
+        function(y)
+          gsub("^\"|\"$", "", y))[1]
+
     } else {
-      return(list(rval = TRUE, msg = paste("passes requirements check")))
+      # find first white space
+      data_file <- unlist(strsplit(data_line, " "))[1]
+    }
+
+    if (!file.exists(data_file)) {
+      msg <-
+        paste(msg,
+              paste("Cannot find", data_file),
+              sep = "\n")
+      next
+    }
+
+
+    # repeat IDs??
+    Data <-
+      utils::read.csv(data_file, stringsAsFactors = FALSE)
+    # no ID found
+    if (!"ID" %in% colnames(Data)) {
+      msg <-
+        append(msg, list(
+          rval = FALSE,
+          msg = paste("ID column not found in data set ", data_file)
+        ))
+    }
+
+    IDtimesChanged <-
+      which(c(FALSE, tail(Data$ID, -1) != head(Data$ID, -1)))
+
+    if (length(IDtimesChanged) + 1 != length(unique(Data$ID))) {
+      msg <-
+        paste(
+          msg,
+          paste0(
+            "There appears to be repeat IDs in ",
+            data_file,
+            "\n, for bootstrap sampling IDs must not repeat. "
+          ),
+          sep = "\n"
+        )
+    }
+
+
+    # $EST must be on one line, need to fix this contains ;;;; Start EST?
+    contains_start <-
+      grepl(";;;;.*Start\\s+EST", control, ignore.case = TRUE)
+
+    if (!any(contains_start)) {
+      msg <- paste(
+        msg,
+        paste0(
+          "The control file ",
+          model_list[this_model],
+          " does not contain \";;;; Start EST\", required before the $EST and the $THETA records and after $OMEGA and $SIGMA"
+        ),
+        sep = "\n"
+      )
+    }
+
+    if (use_check_identifiable) {
+      EST.line <- get_block("$EST", control)
+      if (!grepl("SADDLE_RESET\\s*=\\s*1", EST.line, fixed = FALSE)) {
+        msg <-
+          paste(
+            msg,
+            paste0(
+              "Identifiability check requested, but SADDLE_RESET not set to 1 in ",
+              model_list[this_model]
+            ),
+            sep = "\n"
+          )
+      }
     }
   }
+
+  if (use_simulation_data) {
+    if (!file.exists(simulation_data_path)) {
+      msg <- paste(msg,
+                   paste0("Cannot find simulation data set",
+                          simulation_data_path),
+                   sep = "\n")
+    }
+  }
+
+  ReturnedValue <- list()
+  if (nchar(msg) > 0) {
+    ReturnedValue$rval <- FALSE
+    ReturnedValue$msg <- paste(msg, "Exiting", "\n")
+  } else {
+    ReturnedValue$rval <- TRUE
+    ReturnedValue$msg <- "Passes requirements check"
+  }
+
+  ReturnedValue
 }
+
 #' split_path
 #' split a path into parents
 #'
@@ -245,7 +352,7 @@ copy_model_files <- function(model_source, run_dir) {
 
   if (!file.exists(run_dir)) {
     # split run_dir, check each parent
-    normpath <- DescTools::SplitPath(run_dir)$normpath
+    normpath <- normalizePath(run_dir)
     parents <- split_path(run_dir)
     nparents <- length(parents)
     cur_path <- parents[1]  # should be the drive
@@ -683,7 +790,7 @@ wait_for_bs = function(nmodels, samp_size) {
     for (this_samp in 1:samp_size) {
       this_run <- this_run + 1
       exename <- paste0("bsSamp", this_model, "_", this_samp, ".exe")
-      PID[this_run] <- max(0, installr::get_pid(exename))
+      PID[this_run] <- max(0, get_pid(exename))
     }
   }
   # loop until all are 0
@@ -694,7 +801,7 @@ wait_for_bs = function(nmodels, samp_size) {
       for (this_samp in 1:samp_size) {
         this_run <- this_run + 1
         if (PID[this_run] > 0) {
-          PID[this_run] <- max(0, installr::get_pid(paste0("bsSamp", this_model, "_", this_samp, ".exe")))
+          PID[this_run] <- max(0, get_pid(paste0("bsSamp", this_model, "_", this_samp, ".exe")))
           if (PID[this_run] == 0) {
             models.done <- models.done + 1
             utils::setTxtProgressBar(pb, models.done)
@@ -722,7 +829,7 @@ wait_for_sim = function(samp_size) {
   this_run <- 0
   for (this_samp in 1:samp_size) {
     this_run <- this_run + 1
-    PID[this_run] <- max(0, installr::get_pid(paste0("sim", this_samp, ".exe")))
+    PID[this_run] <- max(0, get_pid(paste0("sim", this_samp, ".exe")))
   }
   # loop until all are 0
   while (any(PID > 0)) {
@@ -731,7 +838,7 @@ wait_for_sim = function(samp_size) {
     for (this_samp in 1:samp_size) {
       this_run <- this_run + 1
       if (PID[this_run] > 0) {
-        PID[this_run] <- max(0, installr::get_pid(paste0("sim", this_samp, ".exe")))  # get_pid returns NULL is no such process
+        PID[this_run] <- max(0, get_pid(paste0("sim", this_samp, ".exe")))  # get_pid returns NULL is no such process
 
       }
     }
@@ -1143,12 +1250,22 @@ run_mbbe_json <- function(Args.json) {
 run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
                      use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path,  plan = c("multisession", "sequential", "multicore"),
                      alpha_error = 0.05, NTID, save_output = FALSE) {
+  oldOptions <- options()
+  on.exit(options(oldOptions))
   options(future.globals.onReference = "error")
+
   plan <- match.arg(plan)
-  if(plan == "multisession") {old_plan <- future::plan(future::multisession, workers = numParallel)}
-  if(plan == "multicore") {old_plan <- future::plan(future::multicore, workers = numParallel)}
-  if(plan == "sequential") {old_plan <- future::plan(future::sequential)}
-  on.exit(future::plan(old_plan))
+  if (plan == "multisession") {
+    old_plan <-
+      future::plan(future::multisession, workers = numParallel)
+  } else if (plan == "multicore") {
+    old_plan <- future::plan(future::multicore, workers = numParallel)
+  } else if (plan == "sequential") {
+    old_plan <- future::plan(future::sequential)
+  }
+
+  on.exit(future::plan(old_plan), add = TRUE)
+
   message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
   message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
   message("Narrow Therapeutic Index  =", NTID)
@@ -1210,7 +1327,7 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
       future::plan(old_plan)
       make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
       # read NCA output and do stats
-      all_results <- calc_power(run_dir, samp_size)
+      all_results <- calc_power(run_dir, samp_size, alpha = alpha, NTID = NTID)
       if(!is.null(all_results)){
         output_file = file.path(run_dir,"All_results.csv")
         count <- 0
@@ -1242,8 +1359,11 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
   }else{
     future::plan(old_plan)
     message(msg$msg, " exiting")
-    return
+    Cmax_power <- NA
+    AUClast_power <- NA
+    AUCinf_power <- NA
   }
+
   future::plan(old_plan)
   return(
     list(

@@ -12,8 +12,7 @@ calc_NCA(
   reference_groups,
   test_groups,
   NCA_end_time,
-  samp_size,
-  numParallel = future::availableCores()
+  samp_size
 )
 }
 \arguments{
