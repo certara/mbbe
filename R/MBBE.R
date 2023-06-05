@@ -1368,12 +1368,22 @@ run_mbbe <-
       all_results <- calc_power(run_dir, samp_size, alpha = alpha, NTID = NTID)
       if (nrow(all_results) != 0) {
         output_file <- file.path(run_dir, "All_results.csv")
-        count <- 0
-        while (file.exists(output_file) & count < 20) {
-          count <- count + 1
+        if (file.exists(output_file)) {
           file.remove(output_file)
-          Sys.sleep(0.25)
+          count <- 0
+          while (file.exists(output_file) & count < 20) {
+            count <- count + 1
+            file.remove(output_file)
+            Sys.sleep(0.25)
+          }
         }
+
+        if (count == 20) {
+          message("Unable to remove old ", output_file)
+        }
+
+        write.csv(all_results, file = output_file, quote = FALSE)
+
         count <- 0
         while (!file.exists(output_file) & count < 20) {
           write.csv(all_results, file = output_file, quote = FALSE)
@@ -1381,12 +1391,13 @@ run_mbbe <-
           Sys.sleep(0.25)
         }
 
-        if (!file.exists(output_file)) {
+        if (count == 20) {
           message("Unable to write to ", output_file)
         }
-        Cmax_power <- all_results %>% dplyr::filter(Cmax_BE != -999) %>%  dplyr::summarise(Power = mean(Cmax_BE))
-        AUClast_power <- all_results %>% dplyr::filter(AUClast_BE != -999) %>% dplyr::summarise(Power = mean(AUClast_BE))
-        AUCinf_power <- all_results %>% dplyr::filter(AUCinf_BE != -999) %>% dplyr::summarise(Power = mean(AUCinf_BE))
+
+        Cmax_power <- mean(all_results[all_results$Cmax_BE != -999, "Cmax_BE"], na.rm = TRUE)
+        AUClast_power <- mean(all_results[all_results$AUClast_BE != -999, "AUClast_BE"], na.rm = TRUE)
+        AUCinf_power <- mean(all_results[all_results$AUCinf_BE != -999, "AUCinf_BE"], na.rm = TRUE)
         power <- c(Cmax_power, AUCinf_power, AUClast_power)
 
         write.csv(power,file.path(run_dir,"Power.csv"))
@@ -1396,21 +1407,17 @@ run_mbbe <-
 
     }
   }else{
-    future::plan(old_plan)
     message(msg$msg, " exiting")
     Cmax_power <- NA
     AUClast_power <- NA
     AUCinf_power <- NA
   }
 
-  future::plan(old_plan)
-  return(
-    list(
-      "Cmax_power" = Cmax_power,
-      "AUClast_power" = AUClast_power,
-      "AUCinf_power" = AUCinf_power,
-      "run_dir" = run_dir
-    )
+  list(
+    "Cmax_power" = Cmax_power,
+    "AUClast_power" = AUClast_power,
+    "AUCinf_power" = AUCinf_power,
+    "run_dir" = run_dir
   )
 }
 #
