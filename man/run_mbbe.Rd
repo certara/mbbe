@@ -22,7 +22,7 @@ run_mbbe(
   simulation_data_path,
   plan = c("multisession", "sequential", "multicore"),
   alpha_error = 0.05,
-  BE_range = c(0.8, 1.25),
+  NTID,
   save_output = FALSE
 )
 }
