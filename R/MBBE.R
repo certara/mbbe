@@ -1084,77 +1084,79 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
   })
 }
 
-calc_power = function(run_dir, samp_size, alpha, NTID){
-
+calc_power <- function(run_dir, samp_size, alpha, NTID){
   BEsuccess <- data.frame(Cmax.success = as.logical(), AUCinf.success = as.logical(), AUClast.success = as.logical())
   message(format(Sys.time(), digits = 0), " Starting statistics for NCA parameters, simulations 1-", samp_size)
-  all_results <- data.frame(Sample = as.integer(),
-                            Cmax_Ratio = as.numeric(), Cmax_lower_CL = as.numeric(), Cmax_upper_CL = as.numeric(), Cmax_swR = as.numeric(),
-                            Cmax_pe = as.numeric(), Cmax_critbound = as.numeric(), Cmax_Assessment = as.numeric(), Cmax_BE = as.logical(),
-                            AUCinf_Ratio = as.numeric(), AUCinf_lower_CL = as.numeric(), AUCinf_upper_CL = as.numeric(), AUCinf_swR = as.numeric(),
-                            AUCinf_pe = as.numeric(), AUCinf_critbound = as.numeric(), AUCinf_Assessment = as.numeric(), AUCinf_BE = as.logical(),
-                            AUClast_Ratio = as.numeric(), AUClast_lower_CL = as.numeric(), AUClast_upper_CL = as.numeric(), AUClast_swR = as.numeric(),
-                            AUClast_pe = as.numeric(), AUClast_critbound = as.numeric(), AUClast_Assessment = as.numeric(), AUClast_BE = as.logical())
-
 
   pb <- utils::txtProgressBar(min = 0, max = samp_size, initial = 0)
+  all_results <- data.frame()
   for (this_samp in 1:samp_size) {
     utils::setTxtProgressBar(pb, this_samp)
-    boolFalse <- FALSE
-    count <- 0
+
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-    while(boolFalse == FALSE & count < 20) {
-      data <-  NULL
+    NCAData <-  data.frame()
+    FileIsReady <- FALSE
+    count <- 0
+    while (!FileIsReady & count < 20) {
       count <- count + 1
       tryCatch({
-        data <- utils::read.csv(file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv")), header = TRUE)
-        boolFalse <- TRUE
+        NCAData <- utils::read.csv(file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv")), header = TRUE)
+        FileIsReady <- TRUE
       }, error = function(e){
         Sys.sleep(1)
-      },finally = {}) # fails will throw error below
+      })
     }
 
-    Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                             swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    tryCatch({
+    if (nrow(NCAData) == 0) {
+      warning("Cannot read NCA results file ",
+              file.path(run_dir, paste0("sim", this_samp), paste0("NCAresults", this_samp, ".csv"),
+                        "\nSkipping this file."),
+              call. = FALSE,
+              immediate. = TRUE)
+      next
+    }
 
-      Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax", SequenceColumn = "sequence",
-                               alpha, PartialReplicate = FALSE , NTID)
-    },error = function(e){
-      Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    } )
-    colnames(Cmax_result) <- c("Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_upper_.CL","Cmax_swR","Cmax_pe","Cmax_critbound","Cmax_Assessment","Cmax_BE")
-    AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
-                                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    tryCatch({
-      AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast", SequenceColumn = "sequence",
-                                  alpha, PartialReplicate =FALSE , NTID)
-    },error = function(e){
-      AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL=-999,
-                                   swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    } )
+    AllMetricsResult <- data.frame()
+    for (Metric in c("Cmax", "AUClast", "AUCinf")) {
+      tryCatch({
+        MetricResult <- get_BEQDF(
+          NCAData,
+          MetricColumn = "Cmax",
+          alpha = alpha,
+          PartialReplicate = FALSE,
+          NTID = NTID
+        )
+      }, error = function(e) {
+        MetricResult <-
+          data.frame(
+            MetricColumn = "Cmax",
+            Ratio = -999,
+            lower.CL = -999,
+            upper.CL = -999,
+            swR = -999,
+            pe = -999,
+            critbound = -999,
+            VarianceCriterion = logical(0),
+            Assessment = -999,
+            BE = logical(0)
+          )
+      })
 
-    colnames(AUClast_result) = c("AUClast_MetricColumn","AUClast_Ratio","AUClast_lower_CL","AUClast_upper_CL","AUClast_swR","AUClast_pe","AUClast_critbound","AUClast_Assessment","AUClast_BE")
+      colnames(MetricResult) <- paste(Metric, colnames(MetricResult), sep = "_")
+      if (nrow(AllMetricsResult) == 0) {
+        AllMetricsResult <- MetricResult
+      } else {
+        AllMetricsResult <- cbind.data.frame(AllMetricsResult, MetricResult)
+      }
+    }
 
-    AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
-                                                 swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    tryCatch({
-      AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf", SequenceColumn = "sequence",
-                                 alpha, PartialReplicate = FALSE , NTID)
-    },error = function(e){
-      AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL=-999,
-                                  swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-    } )
-
-    colnames(AUCinf_result) <- c("AUCinf_MetricColumn","AUCinf_Ratio","AUCinf_lower_CL","AUCinf_upper_CL","AUCinf_swR","AUCinf_pe","AUCinf_critbound","AUCinf_Assessment","AUCinf_BE")
-    all_results <- rbind(all_results,c(Cmax_result,AUCinf_result,AUClast_result))
-
-
+    all_results <- rbind.data.frame(all_results, AllMetricsResult)
   }
+
   close(pb)
-  return(all_results)
+  all_results
 }
+
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE){
 
   BICS <- BICS %>%
@@ -1214,13 +1216,31 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #'
 #' @examples run_mbbe_json(Args.json)
 run_mbbe_json <- function(Args.json) {
-  if(!file.exists(Args.json)){
+  if (!file.exists(Args.json)) {
     message(Args.json, " not found, exiting")
-  }else{
+  } else{
     Args <- RJSONIO::fromJSON(Args.json)
-    run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$numParallel, Args$samp_size, Args$run_dir, Args$model_source,
-             Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
-             Args$simulation_data_path, Args$plan, Args$alpha_error, Args$NTID, Args$save_output )
+    run_mbbe(
+      Args$crash_value,
+      Args$ngroups,
+      Args$reference_groups,
+      Args$test_groups,
+      Args$numParallel,
+      Args$samp_size,
+      Args$run_dir,
+      Args$model_source,
+      Args$nmfe_path,
+      Args$delta_parms,
+      Args$use_check_identifiable,
+      Args$NCA_end_time,
+      Args$rndseed,
+      Args$use_simulation_data,
+      Args$simulation_data_path,
+      Args$plan,
+      Args$alpha_error,
+      Args$NTID,
+      Args$save_output
+    )
   }
 }
 
@@ -1247,9 +1267,27 @@ run_mbbe_json <- function(Args.json) {
 #' @export
 #'
 #' @examples
-run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numParallel, samp_size, run_dir, model_source, nmfe_path, delta_parms,
-                     use_check_identifiable, NCA_end_time, rndseed, use_simulation_data, simulation_data_path,  plan = c("multisession", "sequential", "multicore"),
-                     alpha_error = 0.05, NTID, save_output = FALSE) {
+run_mbbe <-
+  function(crash_value,
+           ngroups,
+           reference_groups,
+           test_groups,
+           numParallel,
+           samp_size,
+           run_dir,
+           model_source,
+           nmfe_path,
+           delta_parms,
+           use_check_identifiable,
+           NCA_end_time,
+           rndseed,
+           use_simulation_data,
+           simulation_data_path,
+           plan = c("multisession", "sequential", "multicore"),
+           alpha_error = 0.05,
+           NTID,
+           save_output = FALSE) {
+
   oldOptions <- options()
   on.exit(options(oldOptions))
   options(future.globals.onReference = "error")
@@ -1328,21 +1366,22 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, numPar
       make_NCA_plots(parms$BICS, run_dir, samp_size, nmodels, reference_groups, test_groups)
       # read NCA output and do stats
       all_results <- calc_power(run_dir, samp_size, alpha = alpha, NTID = NTID)
-      if(!is.null(all_results)){
-        output_file = file.path(run_dir,"All_results.csv")
+      if (nrow(all_results) != 0) {
+        output_file <- file.path(run_dir, "All_results.csv")
         count <- 0
-        while(file.exists(output_file) & count < 20){
+        while (file.exists(output_file) & count < 20) {
           count <- count + 1
           file.remove(output_file)
           Sys.sleep(0.25)
         }
         count <- 0
-        while(!file.exists(output_file) & count < 20){
-          write.csv(all_results, file = output_file, quote=FALSE)
+        while (!file.exists(output_file) & count < 20) {
+          write.csv(all_results, file = output_file, quote = FALSE)
           count <- count + 1
           Sys.sleep(0.25)
         }
-        if(!file.exists(output_file)){
+
+        if (!file.exists(output_file)) {
           message("Unable to write to ", output_file)
         }
         Cmax_power <- all_results %>% dplyr::filter(Cmax_BE != -999) %>%  dplyr::summarise(Power = mean(Cmax_BE))
