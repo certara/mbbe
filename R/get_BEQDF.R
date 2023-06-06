@@ -25,6 +25,8 @@
 #'
 #' @return The data frame with results for the current `NCA.Set`.
 #'
+#'
+
 get_BEQDF <-
   function(NCA.Set = data.frame(),
            MetricColumn = "Cmax",
