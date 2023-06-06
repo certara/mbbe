@@ -1112,7 +1112,8 @@ calc_power = function(run_dir, samp_size, alpha, NTID){
     }
 
     Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                             swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999)
+                                             swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
+                                             Assessment = -999, BE = -999)
     tryCatch({
 
       Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax",
@@ -1127,7 +1128,8 @@ calc_power = function(run_dir, samp_size, alpha, NTID){
 
 
       AUClast_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                   swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999)
+                                            swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
+                                            Assessment = -999, BE = -999)
     tryCatch({
       AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast",
                                   SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
@@ -1141,14 +1143,16 @@ calc_power = function(run_dir, samp_size, alpha, NTID){
 
 
     AUCinf_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999)
+                                swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
+                                Assessment = -999, BE = -999)
     tryCatch({
       AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf",
                                  SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
                                  PeriodColumn = "period", RefValue = "Reference", alpha =  alpha, PartialReplicate = FALSE , NTID)
     }, error = function(e){
       AUCinf_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                  swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999)
+                                    swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
+                                  Assessment = -999, BE = -999)
     } )
 
     colnames(AUCinf_result) <- c("AUCinf_MetricColumn","AUCinf_Ratio","AUCinf_lower_CL","AUCinf_upper_CL","AUCinf_swR","AUCinf_pe",
