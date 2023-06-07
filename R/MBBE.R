@@ -6,6 +6,14 @@ NULL
 
 `%>%` <- magrittr::`%>%`
 
+#' Title
+#'
+#' @param folder
+#'
+#' @return
+#' @export
+#'
+#' @examples
 delete_files <-  function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
   # but can't delete all, need to keep $TABLE
@@ -395,29 +403,44 @@ sample_data <- function(run_dir, nmodels, samp_size) {
   }
 }
 
+#' One a single NONMEM model
+#'
+#'
+#' @param run_dir
+#' @param nmfe_path
+#' @param this_model which of the models used for model avering is this, integer if bootstrap, NULL if monte carlo
+#' @param this_samp  which sample (from bootstrap or Monte Carlo) is this, integer
+#' @param BS Logical, TRUE if boostrap, FALSE if Monte Carlo
+#'
+#' @return
+#' @export
+#'
+#' @examples run_one_model("c:/MBBE/rundir", c:/nm74g64/util/nmfe74.bat, 1, 1, TRUE)
 run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS){
   if(BS){
     nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
     control_file <-   paste0("bsSamp", this_model, "_", this_samp, ".mod")
     output_file <- paste0("bsSamp", this_model, "_", this_samp, ".lst")
     exefile <- paste0("bsSamp", this_model, "_", this_samp, ".exe")
-}else{
+  }else{
     nmrundir <- file.path(run_dir, paste0("MBBEsim", this_samp))
     control_file <- paste0("MBBEsim", this_samp, ".mod")
     output_file <- paste0("MBBEsim", this_samp, ".lst")
     exefile <- paste0("MBBEsim", this_samp, ".exe")
-}
-    command <- paste0(nmfe_path, " ", control_file, " ", output_file, " -nmexec=", exefile, " -rundir=", nmrundir)
-    shell(command, wait = TRUE)
-    delete_files(nmrundir)
+  }
+  command <- paste0(nmfe_path, " ", control_file, " ", output_file, " -nmexec=", exefile, " -rundir=", nmrundir)
+  shell(command, wait = TRUE)
+  delete_files(nmrundir)
 
 }
-#' run the bootstrap models/samples
+#' run the bootstrap or monte carlo models/samples
 #'
 #' @param nmfe_path path to nmfe??.bat
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
+#' @param BS logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation
+#' @param plan - future plan, one of sequential, multicore, multisession
 #' @param num_parallel how many to run in parallel, default = availableCores()
 #' @examples
 #' run.bootstrap('c:/nmfe744/util/nmfe74.bat', 'c:/modelaveraging',8)
@@ -495,8 +518,9 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
 #' @param samp_size how many samples are there
 #' @param delta_parms criteria for identifiability test
 #' @param crash_value value for failed calculation
+#' @param use_check_identifiable - logical, is check_identifiable to be used
 #' @examples
-#' get_parameters('c:/modelaveraging',4,100,0.1)
+#' get_parameters('c:/modelaveraging',4,100,0.1, TRUE)
 get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable) {
 
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
@@ -630,9 +654,10 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
 
 #' for each model get the control file used for the bootstrap
 #' return a list of the models
+#' @param run_dir directory where models are run
 #' @param nmodels how many models are there
 #' @examples
-#' get_base_model(4)
+#' get_base_model("c:/mbbe/rundir", 4)
 get_base_model <- function(run_dir, nmodels) {
 
   # need error trapping for no ;;;;;.*Start EST
@@ -658,8 +683,11 @@ get_base_model <- function(run_dir, nmodels) {
 #'
 #' @param run_dir Folder where models are to be run
 #' @param parms list that include BICs and parameters for each sample/model
+#' @param parms list that include BICs and parameters for each sample/model
 #' @param base_models list of the text in each model used for the bootstrap
 #' @param samp_size how many samples are there
+#' @param use_simulation_data logical - TRUE is a file other than the bootstrap data file is to be used for simulation
+#' @param simulation_data_path if use_simulation_data==TRUE, the path to the file tto be used for simulation
 #' @examples
 #' write_sim_controls('c:/modelaveraging',parms,base_models,100)
 write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path = NULL) {
@@ -744,9 +772,9 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
 #' @param reference_groups numeric vector; specifying which groups are reference
 #' @param test_groups numeric vector; specifying which groups are test
 #' @param NCA_end_time numeric; end time for AUClast and AUCinf
-#' @param samp_size numeric; integer value specifying sample size
 #' @param num_parallel numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}
-#' @examples
+#' @param samp_size numeric; integer value specifying sample size
+#' #' @examples
 #' run_dir <- "c:/Workspace/mbbe"
 #' ngroups <- 4
 #' reference_groups <- c(1,2)
@@ -800,6 +828,7 @@ calc_NCA <-
 #' @param this_model integer
 #' @param this_sample integer
 #' @param delta_parms absolute difference in parameters criteria for failing identifability
+#' @param nparms number of parameters in the .ext file (can be less thn the total)
 #' @examples
 #' check_identifiable('c:/runmodels',1,1,0.1)
 check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, nparms) {
@@ -967,6 +996,18 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
   })
 }
 
+#' Calculate power
+#'
+#' Calculated power by doing EMA standards statistics on each Monte Carlo simulation, then counting the number that pass BE
+#' @param run_dir character, run directory
+#' @param samp_size integer, how many samples
+#' @param alpha numeric, range, >0 and < 1 alpha error rate
+#' @param NTID logical, is the narrow therapeutic index drug
+#'
+#' @return
+#' @export
+#'
+#' @examples calc_power("c:/mbbe/rundir", 200, 0.05, FALSE)
 calc_power = function(run_dir, samp_size, alpha, NTID){
 
   BEsuccess <- data.frame(Cmax.success = as.logical(),
@@ -1070,6 +1111,20 @@ calc_power = function(run_dir, samp_size, alpha, NTID){
   close(pb)
   return(all_results)
 }
+#' Title
+#'
+#' @param BICS
+#' @param run_dir
+#' @param samp_size
+#' @param nmodels
+#' @param reference_groups
+#' @param test_groups
+#' @param saveplots
+#'
+#' @return
+#' @export
+#'
+#' @examples
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE){
   rval = tryCatch({
     BICS <- BICS %>%
@@ -1306,8 +1361,8 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, num_pa
           AUClast_power <- NULL
           AUCinf_power <- NULL
         }
-
       }
+    }
     }else{
       message(msg$msg, " exiting")
       Cmax_power <- NULL
@@ -1323,7 +1378,6 @@ run_mbbe <- function(crash_value, ngroups, reference_groups, test_groups, num_pa
         "run_dir" = run_dir
       )
     )
-  }
 }
 
 
