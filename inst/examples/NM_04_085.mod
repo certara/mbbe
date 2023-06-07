@@ -2,7 +2,7 @@ $PROBLEM    tacrolimis for ML
 $INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
   EVID GROUP   DROP   BLQ DV SEQ
 
-$DATA      U:\fda\mbbe\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND  
+$DATA      U:\fda\mbbe\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND    
 $OMEGA  
   1  FIX  	;  ETA(1) CL
   1  FIX  	;  ETA(2) V2 
@@ -27,15 +27,15 @@ $SIGMA
 $SUBROUTINE ADVAN4 ;; advan4
 $PK
 
-  IF(GROUP.EQ.1) BOVV = THETA(16)*ETA(9)
-  IF(GROUP.EQ.2) BOVV = THETA(16)*ETA(13)
-  IF(GROUP.EQ.3) BOVV = THETA(16)*ETA(17)
-  IF(GROUP.EQ.4) BOVV = THETA(16)*ETA(21)
+  IF(GROUP.EQ.1) BOVV = THETA(14)*ETA(9)
+  IF(GROUP.EQ.2) BOVV = THETA(14)*ETA(13)
+  IF(GROUP.EQ.3) BOVV = THETA(14)*ETA(17)
+  IF(GROUP.EQ.4) BOVV = THETA(14)*ETA(21)
 
-  IF(GROUP.EQ.1) BOVCL = THETA(17)*ETA(10)
-  IF(GROUP.EQ.2) BOVCL = THETA(17)*ETA(14)
-  IF(GROUP.EQ.3) BOVCL = THETA(17)*ETA(18)
-  IF(GROUP.EQ.4) BOVCL = THETA(17)*ETA(22)
+  IF(GROUP.EQ.1) BOVCL = THETA(15)*ETA(10)
+  IF(GROUP.EQ.2) BOVCL = THETA(15)*ETA(14)
+  IF(GROUP.EQ.3) BOVCL = THETA(15)*ETA(18)
+  IF(GROUP.EQ.4) BOVCL = THETA(15)*ETA(22)
 
   BOVKA=0 
   BOVALAG1=0 
@@ -49,12 +49,12 @@ $PK
   IF(TRT.EQ.1) THEN ;; REFERENCE
   KA 	= EXP(THETA(5) + BOVKA  )  
   F1	= 1
-  ALAG1	= EXP(THETA(12)+THETA(14)*ETA(5))
+  ALAG1	= EXP(THETA(12))
   ; NO D1
   ELSE   ;; TEST
   KA 	= EXP(THETA(6) + BOVKA )  
   F1 	= EXP(THETA(7))
-  ALAG1	= EXP(THETA(13)+THETA(15)*ETA(6))
+  ALAG1	= EXP(THETA(13))
   ; NO D1
   END IF   
 
@@ -71,12 +71,20 @@ $ERROR
   PROP = EXP(THETA(8))
   LLOQ = 50 
   SD = SQRT(PROP**2*IPRED**2 + ADD**2) ; Residual weight ADD AND P PROP IN SD AND CV UNITS, NOT VARIANCE
+  IF (BLQ.EQ.0) THEN
+   F_FLAG=0 ; ELS
    Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
-  
-  ;;;; Start EST
+  ENDIF
 
-$ESTIMATION METHOD=0 INTER MAX=9999 SADDLE_RESET=1  NOABORT
+  IF (BLQ.EQ.1) THEN
+   F_FLAG=1 ; LIKELIHOOD
+   Y=PHI((LLOQ-IPRED)/SD)
+  ENDIF
+
+
+  ;;;; Start EST
  
+$ESTIMATION METHOD=COND LAPLACE INTER MAX=9999 SADDLE_RESET=1  NOABORT
 
 $THETA  
   (-1,3.8,10) 		; THETA(1) LN(CL1)
@@ -86,25 +94,23 @@ $THETA
   (-5,-0.4,5)	 	; THETA(5) LN(KA) REFERENCE
   (-5,0.6,5)	 	; THETA(6) LN(KA) TEST 
   (-3,0.15,1)	 	; THETA(7) LN(F) TEST  
-  (-.8 FIX)		; THETA(8) LN(PROPERROR)
-  (-0.1 FIX)		; THETA(9) LN(ADDERROR)
-  (-2 FIX) 		; THETA(10) LN(K32)
-  (-2 FIX) 		; THETA(11) LN(K23)
-  (-2 FIX)		; THETA(12) LN(ALAG) REFERENCE 
-  (-2 FIX) 		; THETA(13) LN(ALAG) test
-  (-0.9 FIX)		; THETA(14) LN(ALAGETA) REFERENCE 
-  (-0.9 FIX) 		; THETA(15) LN(ALAGETA) test
+  (-6,-0.8,2)		; THETA(8) LN(PROPERROR)
+  (-7,1,3)		; THETA(9) LN(ADDERROR)
+  (-5,-2.53064,5) 		; THETA(10) LN(K32)
+  (-5,-0.89632,5) 		; THETA(11) LN(K23)
+  (-5,-2,5)		; THETA(12) LN(ALAG) REFERENCE 
+  (-5,-2,5) 		; THETA(13) LN(ALAG) test
   ; NO D1
   ;;no eta on ka
-  (-0.3 FIX)	; THETA(16) BOVV 
-  (-0.3 FIX)	; THETA(17) BOVCL 
+  (-4,-0.3,5)	; THETA(14) BOVV 
+  (-4,-0.3,5)	; THETA(15) BOVCL 
   ;; NO BOVKA 
   ;; NO BOVALAG1  
   ;; NO COVARIANCE BETWEEN V AND CL  
 
 
 ;; Phenotype 
-;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 3), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 0), ('COVARVCL', 1)])
+;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 2), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 0), ('COVARVCL', 1)])
 ;; Genotype 
-;; [1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1]
+;; [1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1]
 ;; Num non-influential tokens = 0

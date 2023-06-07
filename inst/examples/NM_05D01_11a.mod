@@ -74,21 +74,14 @@ $ERROR
   PROP = EXP(THETA(8))
   LLOQ = 50 
   SD = SQRT(PROP**2*IPRED**2 + ADD**2) ; Residual weight ADD AND P PROP IN SD AND CV UNITS, NOT VARIANCE
- ; IF (BLQ.EQ.0) THEN
- ; F_FLAG=0 ; ELS
+ 
   Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
-;  ENDIF
-
-;  IF (BLQ.EQ.1) THEN
-;  F_FLAG=1 ; LIKELIHOOD
-;  Y=PHI((LLOQ-IPRED)/SD)
-;  ENDIF;
+ 
 
   ;;;; Start EST
 
 $ESTIMATION METHOD=0 INTER MAX=9999 SADDLE_RESET=1 NOABORT
-
-;$COVARIANCE PRINT=E UNCOND PRECOND=2
+ 
 
 $THETA  
   (-1,3.8,10) 		; THETA(1) LN(CL1)

@@ -8,8 +8,36 @@ is.empty <- function(x, mode = NULL, ...)
     mode <- class(x)
   identical(vector(mode, 1), c(x, vector(class(x), 1)))
 }
+#' get_block
+#' Get a block (e.g., $DATA) from a control file with multiple lines
+#' return block as a single character string
+#'
+#' @param stem Block title, e.g., $DATA to look for
+#' @param control control file text
+#' @return a block with specified header
+#' returns empty character if nothing is found
+#'
+#' @examples
+#' get_block('$PROB', "$PROB test \n$INPUT ..."))
+get_block <- function(stem, control) {
+  OneLineSemicolon <- "(?:;(?:\\\\\\n|[^\\n])*(?=$|\\n))"
 
-remove_old_files <- function(run_dir, samp_size, model_list){
+  tryCatch({
+    CollapsedControl <- paste(control, collapse = "\n")
+
+    StatementsLineswoComm <-
+      gsub(OneLineSemicolon, "\n", CollapsedControl, perl = TRUE)
+
+    Blocks <- paste0("$", unlist(strsplit(StatementsLineswoComm, split = "\\$")))
+    Block <- Blocks[grepl(paste0("^\\", stem), Blocks)]
+    Block <- gsub("\r?\n", " ", Block)
+    Block
+  }, error = function(err) {
+    character(0)
+  })
+}
+
+remove_old_files <- function(run_dir, samp_size){
   msg  <- ""
   # check files that need to be written to, try to delete them
   files_to_remove <-
@@ -53,102 +81,6 @@ remove_old_files <- function(run_dir, samp_size, model_list){
                  paste(files_to_remove, collapse = ", "))
   }
 
-  if (is.null(model_list)) {
-    msg <-
-      paste(msg,
-            "Model list is NULL, error in json file?",
-            sep = "\n")
-  }else{
-    for (this_model in length(model_list)) {
-      if (!file.exists(model_list[this_model])) {
-        msg <-
-          paste(msg,
-                paste0("Cannot find ", model_list[this_model]),
-                sep = "\n")
-        next
-      }else{
-        control <-
-          readLines(model_list[this_model], encoding = "UTF-8", warn = FALSE)
 
-        data_line <- get_block("$DATA", control)
-        if (nchar(data_line) == 0) {
-          msg <- paste(msg,
-                       paste0("In the model file ", model_list[this_model], " DATA block not found."),
-                       sep = "\n")
-          next
-        }
-
-        data_line <-
-          gsub("(\\s*\\$DATA\\s*)|(\\s*$)", "", data_line)
-        any.quotes <- grep("^\"", data_line)
-        if (length(any.quotes) > 0) {
-          data_file <-
-            sapply(regmatches(
-              data_line,
-              gregexpr('(\").*?(\")', data_line, perl = TRUE)
-            ),
-            function(y)
-              gsub("^\"|\"$", "", y))[1]
-
-        } else {
-          # find first white space
-          data_file <- unlist(strsplit(data_line, " "))[1]
-        }
-
-        if (!file.exists(data_file)) {
-          msg <-
-            paste(msg,
-                  paste("Cannot find", data_file),
-                  sep = "\n")
-          next
-        }
-
-
-        # repeat IDs??
-        Data <-
-          utils::read.csv(data_file, stringsAsFactors = FALSE)
-        # no ID found
-        if (!"ID" %in% colnames(Data)) {
-          msg <-
-            append(msg, list(
-              rval = FALSE,
-              msg = paste("ID column not found in data set ", data_file)
-            ))
-        }
-
-        IDtimesChanged <-
-          which(c(FALSE, tail(Data$ID, -1) != head(Data$ID, -1)))
-
-        if (length(IDtimesChanged) + 1 != length(unique(Data$ID))) {
-          msg <-
-            paste(
-              msg,
-              paste0(
-                "There appears to be repeat IDs in ",
-                data_file,
-                "\n, for bootstrap sampling IDs must not repeat. "
-              ),
-              sep = "\n"
-            )
-        }
-
-        # $EST must be on one line, need to fix this contains ;;;; Start EST?
-        contains_start <-
-          grepl(";;;;.*Start\\s+EST", control, ignore.case = TRUE)
-
-        if (!any(contains_start)) {
-          msg <- paste(
-            msg,
-            paste0(
-              "The control file ",
-              model_list[this_model],
-              " does not contain \";;;; Start EST\", required before the $EST and the $THETA records and after $OMEGA and $SIGMA"
-            ),
-            sep = "\n"
-          )
-        }
-      }
-    }
-  }
   return(msg)
 }
