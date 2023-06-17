@@ -516,7 +516,7 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
-#' @param delta_parms criteria for identifiability test
+#' @param delta_parms criteria for idechntifiability test
 #' @param crash_value value for failed calculation
 #' @param use_check_identifiable - logical, is check_identifiable to be used
 #' @examples
@@ -525,30 +525,31 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
 
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
   colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best","Max_Delta_parm","Max_Delta")
-  # BIC=k*ln(n) -2LL where k is is the number of estimated parameters and n is the number of data
-  nparms <- data.frame(ntheta = as.integer())
+  BICS$Best = NA
+    # BIC=k*ln(n) -2LL where k is is the number of estimated parameters and n is the number of data
+  nparms <- data.frame(ntheta = rep(NA, nmodels))
 
-  # only need parameters for best model, but need to read xml file to get the number of observtions and parameter, so may as well get
+  # only need parameters for best model, but need to read xml file to get the number of observations and parameters, so may as well get
   # THETA etc now for all
   nfailed_ident <- 0  # number of samples in this model that fail the identifabilit test
   # do by sample first only save parameters for the best model
-  selected_parameters <- list()  # parameters for selected model,
-
+  selected_parameters <- vector("list", samp_size)
+  tryCatch({
   for (this_samp in 1:samp_size) {
     num_successful <- 1  # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
-    parameters_this_sample <- list()
+    parameters_this_sample <-  vector("list", nmodels)
     this_model <- 1
     all_identifiables <- rep(TRUE, nmodels)
     for (this_model in 1:nmodels) {
+      theta <- NA
       xml_file <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".xml"))
 
       identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
-      #names(identifiable_ok ) = c("passes","max_delta","max_delta_parm")
       rval <- tryCatch({
         count <- 0
         boolFalse <- FALSE
         # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-        while(boolFalse == FALSE & count < 20) {
+        while(boolFalse == FALSE & count < 10) {
           data <- NULL
           count <- count + 1
           tryCatch({
@@ -558,84 +559,102 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
             Sys.sleep(0.1)
           }, finally = {}) # fails will throw error below in outer tryCatch
         }
-
-        problem_node <- xml2::xml_find_all(data, "//nm:problem_information")
-        contents <- xml2::xml_contents(problem_node)
-        text <- xml2::xml_text(contents)
-        text <- as.list(unlist(strsplit(text, "\n")))
-        nobsline <- grep("TOT. NO. OF OBS RECS:", text)
-        nobs <- as.integer(stringr::str_replace(text[nobsline], "TOT. NO. OF OBS RECS:", ""))
-        info_node <- xml2::xml_find_all(data, "//nm:problem_options")
-        info_contents <- xml2::xml_attrs(info_node)
-        ntheta <- as.numeric(info_contents[[1]]["nthetat"])
-        if (this_samp == 1) {
-          # have to do this here, don't know how many thetas until here
-          nparms <- rbind(nparms, data.frame(ntheta = ntheta))
-        }
-        parameters_this_model <- data.frame(matrix(-9999, ncol = ntheta))
-        colnames(parameters_this_model) <- paste0("THETA", seq(1:ntheta))
-        parameters_this_sample[[this_model]] <- parameters_this_model
-        # and OFV
-        estim.node <- xml2::xml_find_all(data, "//nm:estimation")
-        estim_contents <- xml2::xml_attrs(estim.node)
-        # nm:final_objective_function
-        OFV.node <- xml2::xml_find_all(data, "//nm:final_objective_function")
-        OFV_contents <- xml2::xml_contents(OFV.node)
-        OFV <- as.numeric(xml2::xml_text(OFV_contents))
-        if (length(OFV) > 0) {
-          BICS[this_samp, this_model] <- ntheta * log(nobs) + OFV
-        } else {
+        if (count >= 10){
+          message("Failed to read xml file for sample ", this_samp, ", model = ", this_model,", xml file = ", xml_file)
           BICS[this_samp, this_model] <- crash_value
-        }
-        theta_node <- xml2::xml_find_all(data, "//nm:theta")
-        theta_children <- xml2::xml_children(theta_node)
-        theta_contents <- xml2::xml_contents(theta_node)
-        theta <- as.numeric(xml2::xml_text(theta_contents))
-        # length of theta will be 1 if a crash
-        if (length(theta) > 1) {
-          parameters_this_model <- theta
-          num_successful <- num_successful + 1
-          parameters_this_sample[[this_model]] <- parameters_this_model
-        }else{
-          # leave as -9999 from above parameters_this_sample[[this_model]] <- -9999
-        }
+          identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+          parameters_this_sample[[this_model]] <- NA
 
-        # if using saddle_reset, test for identifiability
-        if (!use_check_identifiable) {
-          identifiable_ok$passes <- TRUE
-        } else {
-          # run_dir,this_model,this_sample,delta_parms
-          identifiable_ok <- check_identifiable(run_dir, this_model, this_samp, delta_parms, ntheta)
-          all_identifiables[this_model] <- identifiable_ok["passes"]
-          if (!identifiable_ok$passes) {
-            # first just get the number of parameters and observations for this model
+        }else{
+          problem_node <- xml2::xml_find_all(data, "//nm:problem_information")
+          contents <- xml2::xml_contents(problem_node)
+          text <- xml2::xml_text(contents)
+          text <- as.list(unlist(strsplit(text, "\n")))
+          nobsline <- grep("TOT. NO. OF OBS RECS:", text)
+          nobs <- as.integer(stringr::str_replace(text[nobsline], "TOT. NO. OF OBS RECS:", ""))
+          info_node <- xml2::xml_find_all(data, "//nm:problem_options")
+          info_contents <- xml2::xml_attrs(info_node)
+          ntheta <- as.numeric(info_contents[[1]]["nthetat"])
+          if (this_samp == 1) {
+            # have to do this here, don't know how many thetas until here
+            nparms$ntheta[this_model] <- ntheta
+          }
+          parameters_this_model <- data.frame(matrix(NA, ncol = ntheta))
+          colnames(parameters_this_model) <- paste0("THETA", seq(1:ntheta))
+          parameters_this_sample[[this_model]] <- parameters_this_model
+          # and OFV
+          estim.node <- xml2::xml_find_all(data, "//nm:estimation")
+          estim_contents <- xml2::xml_attrs(estim.node)
+          # nm:final_objective_function
+          OFV.node <- xml2::xml_find_all(data, "//nm:final_objective_function")
+          OFV_contents <- xml2::xml_contents(OFV.node)
+          OFV <- as.numeric(xml2::xml_text(OFV_contents))
+          if (length(OFV) > 0) {
+            BICS[this_samp, this_model] <- ntheta * log(nobs) + OFV
+          } else {
             BICS[this_samp, this_model] <- crash_value
           }
-        }
+          theta_node <- xml2::xml_find_all(data, "//nm:theta")
+          theta_children <- xml2::xml_children(theta_node)
+          theta_contents <- xml2::xml_contents(theta_node)
+          theta <- as.numeric(xml2::xml_text(theta_contents))
+          # length of theta will be 1 if a crash
+          if (length(theta) > 1) {
+            parameters_this_model <- theta
+            num_successful <- num_successful + 1
+            parameters_this_sample[[this_model]] <- parameters_this_model
+          }else{
+            parameters_this_sample[[this_model]] <- NA
+          }
+
+          # if using saddle_reset, test for identifiability
+          if (!use_check_identifiable) {
+            identifiable_ok["passes"] <- TRUE
+          } else {
+            # run_dir,this_model,this_sample,delta_parms
+            identifiable_ok <- check_identifiable(run_dir, this_model, this_samp, delta_parms, ntheta)
+            all_identifiables[this_model] <- identifiable_ok["passes"]
+            if (!identifiable_ok$passes) {
+              # first just get the number of parameters and observations for this model
+              BICS[this_samp, this_model] <- crash_value
+            }
+          }
+          }
       }, error = function(e){
+        message("error in get_parameters, read data, inner loop, error  = ", cond, ", sample ", this_samp, ", model = ", this_model)
+        identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
         all_identifiables[this_model] <- identifiable_ok["passes"]
         BICS[this_samp, this_model] <- crash_value
+        parameters_this_sample[[this_model]] <- NA
 
       })
 
     }
-    # and select best model, -9999 if all crashed
+    # and select best model, NA if all crashed
     # seems to have copied model 8 parms from model 7
     if (all(BICS[this_samp, 1:nmodels] == crash_value)) {
-      BICS$Best[this_samp] <- -9999
+      BICS$Best[this_samp] <- NA
       warning("No models successful for model ", this_samp, " identifiability = ", toString(all_identifiables))
-      selected_parameters[[this_samp]] <- -9999
+      selected_parameters[[this_samp]] <- NA
+      BICS$Max_Delta[this_samp] <- 999999
+      BICS$Max_Delta_parm[this_samp] <- NA
     } else {
       best <- which.min(BICS[this_samp, 1:nmodels])
       BICS$Best[this_samp] <- best
-      selected_parameters[[this_samp]] <- unlist(parameters_this_sample[best])
+      selected_parameters[[this_samp]] <- unlist(parameters_this_sample[[best]])
+      BICS$Max_Delta[this_samp] <- identifiable_ok['max_delta']
+      BICS$Max_Delta_parm[this_samp] <- identifiable_ok['max_delta_parm']
     }
-    BICS$Max_Delta[this_samp] <- identifiable_ok$max_delta
-    BICS$Max_Delta_parm[this_samp] <- identifiable_ok$max_delta_parm
-
-  }
+     }
+    }, error = function(cond){
+      # everything crashes??
+      message("Unknown error in get_parameters, read data, check_identifiabiity loop, error  = ", cond)
+      all_identifiables[this_model] <- identifiable_ok["passes"]
+      BICS[this_samp, this_model] <- crash_value
+     })
   # write out results,
-  write.csv(BICS, file.path(run_dir, "BICS.csv"), quote = FALSE)
+  flatBICs <- apply(BICS,2,as.character)
+  write.csv(flatBICs, file.path(run_dir, "BICS.csv"), quote = FALSE)
 
   # write out parameters, can't do write.csv, as rows have different number of parameters
   conn <- file(file.path(run_dir, "Parameters.csv"), open="w")
@@ -645,7 +664,7 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
       temp <- c(selected_parameters[[i]][[j]])
     })
 
-    writeLines(text=paste(i,paste(temp, collapse=","),sep=","), con=conn, sep="\n")
+    writeLines(text=paste(i, paste(temp, collapse=","), sep=","), con=conn, sep="\n")
   })
   close(conn)
   rval <- list(BICS = BICS, parameters = selected_parameters)
@@ -691,72 +710,73 @@ get_base_model <- function(run_dir, nmodels) {
 #' @examples
 #' write_sim_controls('c:/modelaveraging',parms,base_models,100)
 write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path = NULL) {
-
+  final_models <- list()
   if(!file.exists(simulation_data_path)){
     stop(paste("Cannot find ", simulation_data_path," exiting"))
   }else{
     nmodels <- length(base_models)
-    final_models <- vector(mode = "list", length = samp_size)
-    model.indices <- rep(0, nmodels)  # which parameter set to use when this model is selected, roll over if not enough samples,
-    # shouldn't happen, as we shouldn't use all parameter sets for any model
-
+    mbfinal_models <- vector(mode = "list", length = samp_size)
+    model.indices <- rep(0, nmodels)  # which model an parameter set to use when this model is selected, roll over if not enough samples,
+    current_runable_samp <- 0 # some models may not be runable (all crashed), if so, start over with model, and different seed in NONMEM
     for (this_samp in 1:samp_size) {
-      which.model <- parms$BICS$Best[this_samp]
-      if (which.model == -9999) {
-        message("skipping Sample #", this_samp, " no acceptable model found")
-      } else {
+      current_runable_samp <- current_runable_samp + 1
+      count <- 0
+      while(is.na(parms$BICS$Best[current_runable_samp]) & count < samp_size*4){ # only go through samples 4 times? don't keep running same samples over?
+        current_runable_samp <- current_runable_samp + 1
+        count <- count + 1
+        if (current_runable_samp > samp_size) current_runable_samp <- 1
         # use BS parameters, when you run out (as some BS samples fail), just start over, so need different random seed in $SIM model
-        # is first index, e.g., parameters[[2]]$THETA1[1] is THETA[1] for model 2, first sample
-        model.indices[which.model] <- model.indices[which.model] + 1
-        # if not enough model parameters (because some model crashed?), recycle. But, shouldn't need to as model that crashes should
-        # have crash_value BIC
-        if (model.indices[which.model] > length(parms$parameters[[1]])[1])
-          model.indices[which.model] <- 1
-        full_control <- base_models[which.model][[1]]
-        # need to get sequence in here, calculated in $PK
-        seed <- round(runif(1, 0, 10000), 0)
-        full_control <- c(full_control, paste("$SIM ONLYSIM (", seed, ")"), "$THETA")
-        ntheta <- length(parms$parameters[[which.model]])
+      }
+      if(count >= samp_size * 4){
+        stop("Not enough samples with successful outcome for simulation")
+      }
+      which.model <- parms$BICS$Best[current_runable_samp]
+      # is first index, e.g., parameters[[2]]$THETA1[1] is THETA[1] for model 2, first sample
+      # model.indices[which.model] <- model.indices[which.model] + 1
+      full_control <- base_models[which.model][[1]]
+      # need to get sequence in here, calculated in $PK
+      seed <- round(runif(1, 0, 10000), 0)
+      full_control <- c(full_control, paste("$SIM ONLYSIM (", seed, ")"), "$THETA")
+      ntheta <- length(parms$parameters[[which.model]])
 
-        if (use_simulation_data) {
-          # get $DATA
-          start_line <- grep("^\\$DATA", full_control)
-          next_line <- grep("^\\$", full_control[start_line + 1:length(full_control)])[1]
-          if (is.empty(next_line)) {
-            # $DATA is last
-            last_line <- length(full_control[[1]])
-          } else {
-            last_line <- start_line + next_line
-          }
-          # replace with simulation data set
-          full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
+      if (use_simulation_data) {
+        # get $DATA
+        start_line <- grep("^\\$DATA", full_control)
+        next_line <- grep("^\\$", full_control[start_line + 1:length(full_control)])[1]
+        if (is.empty(next_line)) {
+          # $DATA is last
+          last_line <- length(full_control[[1]])
+        } else {
+          last_line <- start_line + next_line
         }
-        for (this_parm in 1:ntheta) {
-          full_control <- c(full_control, paste0(parms$parameters[[which.model]][this_parm], "  ;; THETA(", this_parm, ")"))
-        }
-        full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-        sim_dir <- file.path(run_dir, paste0("MBBEsim", this_samp))
-        if (dir.exists(sim_dir)) {
-          unlink(sim_dir, recursive = TRUE, force = TRUE)
-        }
-        if (dir.exists(sim_dir)) {
-          unlink(sim_dir, recursive = TRUE, force = TRUE)
-        }
-        dir.create(sim_dir)
-        control_file <- file.path(sim_dir, paste0("MBBEsim", this_samp, ".mod"))
-        count <- 0
-        while(!file.exists(control_file) & count< 20){
-          con <- file(control_file, "w")
-          Sys.sleep(0.2)
-          writeLines(unlist(full_control), con)
-          count <- count + 1
-          close(con)
+        # replace with simulation data set
+        full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
+      }
+      for (this_parm in 1:ntheta) {
+        full_control <- c(full_control, paste0(parms$parameters[[which.model]][this_parm], "  ;; THETA(", this_parm, ")"))
+      }
+      full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+      sim_dir <- file.path(run_dir, paste0("MBBEsim", this_samp))
+      if (dir.exists(sim_dir)) {
+        unlink(sim_dir, recursive = TRUE, force = TRUE)
+      }
+      if (dir.exists(sim_dir)) {
+        unlink(sim_dir, recursive = TRUE, force = TRUE)
+      }
+      dir.create(sim_dir)
+      control_file <- file.path(sim_dir, paste0("MBBEsim", this_samp, ".mod"))
+      count <- 0
+      while(!file.exists(control_file) & count< 10){
+        con <- file(control_file, "w")
+        Sys.sleep(0.1)
+        writeLines(unlist(full_control), con)
+        count <- count + 1
+        close(con)
       }
       if(!file.exists((control_file))) {
         message("Cannot write to ", control)
       }
-        final_models <- append(final_models, list(full_control))
-      }
+      final_models <- append(final_models, list(full_control))
     }
     return(final_models)
   }
