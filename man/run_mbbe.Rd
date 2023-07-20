@@ -9,7 +9,7 @@ run_mbbe(
   ngroups,
   reference_groups,
   test_groups,
-  numParallel,
+  num_parallel,
   samp_size,
   run_dir,
   model_source,
@@ -23,6 +23,7 @@ run_mbbe(
   plan = c("multisession", "sequential", "multicore"),
   alpha_error = 0.05,
   NTID,
+  model_averaging_by,
   save_output = FALSE
 )
 }

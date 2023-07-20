@@ -34,5 +34,7 @@ and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 if check.identifability, do that with delta_parms as criteria
 }
 \examples{
-getNCA('c:/runmodels',1,4,c(1,2),c(3,4)),72,0.1)
+\dontrun{
+getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
+}
 }

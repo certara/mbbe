@@ -12,7 +12,8 @@ get_parameters(
   samp_size,
   delta_parms,
   crash_value,
-  use_check_identifiable
+  use_check_identifiable,
+  passes_identifiable
 )
 }
 \arguments{
@@ -22,9 +23,17 @@ get_parameters(
 
 \item{samp_size}{how many samples are there}
 
-\item{delta_parms}{criteria for identifability test}
+\item{delta_parms}{criteria for idechntifiability test}
 
 \item{crash_value}{value for failed calculation}
+
+\item{use_check_identifiable}{\itemize{
+\item logical, is check_identifiable to be used
+}}
+
+\item{passes_identifiable}{\itemize{
+\item array of length nmodels, count # of model that are identifable
+}}
 }
 \description{
 get_parameters
@@ -32,5 +41,7 @@ read the xml file for each bootstrap/model, calculate BIC
 return list of BICs (with the BEST column) and parameters for all models/samples
 }
 \examples{
-get_parameters('c:/modelaveraging',4,100,0.1)
+\dontrun{
+get_parameters("c:/modelaveraging", 4, 100, 0.1, TRUE)
+}
 }
