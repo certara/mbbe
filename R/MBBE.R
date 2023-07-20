@@ -1,4 +1,3 @@
-
 #' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif
 #' @importFrom utils read.csv read.table write.csv
 #' @import future
@@ -17,7 +16,7 @@ NULL
 #' @export
 #'
 #' @examples
-delete_files <-  function(folder) {
+delete_files <- function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
   # but can't delete all, need to keep $TABLE
   try({
@@ -47,8 +46,9 @@ delete_files <-  function(folder) {
     file.remove(file.path(folder, delfiles))
     if (dir.exists(file.path(folder, "temp_dir"))) {
       unlink(file.path(folder, "temp_dir"),
-             recursive = TRUE,
-             force = TRUE)
+        recursive = TRUE,
+        force = TRUE
+      )
     }
   })
 }
@@ -83,14 +83,14 @@ check_requirements <- function(run_dir,
                                use_check_identifiable,
                                use_simulation_data,
                                simulation_data_path = NULL) {
-
-  msg <-  remove_old_files(run_dir, samp_size)
+  msg <- remove_old_files(run_dir, samp_size)
 
   if (!file.exists(nmfe_path)) {
     msg <-
       paste(msg,
-            paste0("Cannot find nmfe?? at ", nmfe_path),
-            sep = "\n")
+        paste0("Cannot find nmfe?? at ", nmfe_path),
+        sep = "\n"
+      )
   }
 
   # check number in Reference and Test groups
@@ -114,46 +114,52 @@ check_requirements <- function(run_dir,
   if (anyDuplicated(c(reference_groups, test_groups)) > 0) {
     msg <-
       paste(msg,
-            "There are duplicated group numbers between Reference and Test group",
-            sep = "\n")
+        "There are duplicated group numbers between Reference and Test group",
+        sep = "\n"
+      )
   }
 
   if (anyDuplicated(reference_groups) > 0) {
     msg <-
       paste(msg,
-            "There are duplicated group numbers in the Reference group",
-            sep = "\n")
+        "There are duplicated group numbers in the Reference group",
+        sep = "\n"
+      )
   }
 
   if (anyDuplicated(test_groups) > 0) {
     ReturnedValue$rval <- FALSE
     ReturnedValue$msg <-
       paste(ReturnedValue$msg,
-            "There are duplicated group numbers in the test group",
-            sep = "\n")
+        "There are duplicated group numbers in the test group",
+        sep = "\n"
+      )
   }
   if (is.null(model_list)) {
     msg <-
       paste(msg,
-            "Model list is NULL, error in json file?",
-            sep = "\n")
-  }else{
+        "Model list is NULL, error in json file?",
+        sep = "\n"
+      )
+  } else {
     for (this_model in length(model_list)) {
       if (!file.exists(model_list[this_model])) {
         msg <-
           paste(msg,
-                paste0("Cannot find ", model_list[this_model]),
-                sep = "\n")
+            paste0("Cannot find ", model_list[this_model]),
+            sep = "\n"
+          )
         next
-      }else{
+      } else {
         control <-
           readLines(model_list[this_model], encoding = "UTF-8", warn = FALSE)
 
         data_line <- get_block("$DATA", control)
         if (nchar(data_line) == 0) {
           msg <- paste(msg,
-                       paste0("In the model file ", model_list[this_model], " DATA block not found."),
-                       sep = "\n")
+            paste0("In the model file ", model_list[this_model], " DATA block not found."),
+            sep = "\n"
+          )
           next
         }
 
@@ -162,13 +168,15 @@ check_requirements <- function(run_dir,
         any.quotes <- grep("^\"", data_line)
         if (length(any.quotes) > 0) {
           data_file <-
-            sapply(regmatches(
-              data_line,
-              gregexpr('(\").*?(\")', data_line, perl = TRUE)
-            ),
-            function(y)
-              gsub("^\"|\"$", "", y))[1]
-
+            sapply(
+              regmatches(
+                data_line,
+                gregexpr('(\").*?(\")', data_line, perl = TRUE)
+              ),
+              function(y) {
+                gsub("^\"|\"$", "", y)
+              }
+            )[1]
         } else {
           # find first white space
           data_file <- unlist(strsplit(data_line, " "))[1]
@@ -177,8 +185,9 @@ check_requirements <- function(run_dir,
         if (!file.exists(data_file)) {
           msg <-
             paste(msg,
-                  paste("Cannot find", data_file),
-                  sep = "\n")
+              paste("Cannot find", data_file),
+              sep = "\n"
+            )
           next
         }
 
@@ -225,39 +234,42 @@ check_requirements <- function(run_dir,
             sep = "\n"
           )
         }
-    if (use_check_identifiable) {
-      EST.line <- get_block("$EST", control)
-      if (!grepl("SADDLE_RESET\\s*=\\s*1", EST.line, fixed = FALSE)) {
-        msg <-
-          paste(
-            msg,
-            paste0(
-              "Identifiability check requested, but SADDLE_RESET not set to 1 in ",
-              model_list[this_model]
-            ),
-            sep = "\n"
-          )
-      }
-    }
-    if (use_simulation_data) {
-      if (!file.exists(simulation_data_path)) {
-        msg <- paste(msg,
-                     paste0("Cannot find simulation data set",
-                            simulation_data_path),
-                     sep = "\n")
-            }
+        if (use_check_identifiable) {
+          EST.line <- get_block("$EST", control)
+          if (!grepl("SADDLE_RESET\\s*=\\s*1", EST.line, fixed = FALSE)) {
+            msg <-
+              paste(
+                msg,
+                paste0(
+                  "Identifiability check requested, but SADDLE_RESET not set to 1 in ",
+                  model_list[this_model]
+                ),
+                sep = "\n"
+              )
+          }
+        }
+        if (use_simulation_data) {
+          if (!file.exists(simulation_data_path)) {
+            msg <- paste(msg,
+              paste0(
+                "Cannot find simulation data set",
+                simulation_data_path
+              ),
+              sep = "\n"
+            )
           }
         }
       }
-  ReturnedValue <- list()
-  if (nchar(msg) > 0) {
-    ReturnedValue$rval <- FALSE
-    ReturnedValue$msg <- paste(msg, "Exiting", "\n")
-  } else {
-    ReturnedValue$rval <- TRUE
-    ReturnedValue$msg <- "Passes requirements check"
+    }
+    ReturnedValue <- list()
+    if (nchar(msg) > 0) {
+      ReturnedValue$rval <- FALSE
+      ReturnedValue$msg <- paste(msg, "Exiting", "\n")
+    } else {
+      ReturnedValue$rval <- TRUE
+      ReturnedValue$msg <- "Passes requirements check"
+    }
   }
-}
   return(ReturnedValue)
 }
 
@@ -279,15 +291,14 @@ split_path <- function(path, mustWork = FALSE) {
 #' @param run_dir Folder where models are to be run
 #' @return nmodels how many models are there
 #' @examples
-#' copy_model_files('c:/modelaveraging','c:/modelaveraging/run',4)
+#' copy_model_files("c:/modelaveraging", "c:/modelaveraging/run", 4)
 copy_model_files <- function(model_source, run_dir) {
-
   if (!file.exists(run_dir)) {
     # split run_dir, check each parent
     normpath <- normalizePath(run_dir)
     parents <- split_path(run_dir)
     nparents <- length(parents)
-    cur_path <- parents[1]  # should be the drive
+    cur_path <- parents[1] # should be the drive
     for (this.parent in 2:nparents) {
       cur_path <- file.path(cur_path, parents[this.parent])
       if (!file.exists(cur_path)) {
@@ -296,36 +307,31 @@ copy_model_files <- function(model_source, run_dir) {
     }
   }
   nmodels <- length(model_source)
-  tryCatch({
-    for (this_model in 1:nmodels) {
-      bs_dir <- file.path(run_dir, paste0("model", this_model))  # bootstrap directory
-      if (dir.exists(bs_dir)) {
-        unlink(bs_dir, recursive = TRUE, force = TRUE)
+  tryCatch(
+    {
+      for (this_model in 1:nmodels) {
+        bs_dir <- file.path(run_dir, paste0("model", this_model)) # bootstrap directory
+        if (dir.exists(bs_dir)) {
+          unlink(bs_dir, recursive = TRUE, force = TRUE)
+        }
+        dir.create(bs_dir)
+        modfile <- model_source[this_model]
+        if (file.exists(modfile)) {
+          file.copy(modfile, file.path(bs_dir, paste0("bs", this_model, ".mod")))
+        } else {
+          message("Cannot file model file ", modfile, ", exiting")
+          return(-999)
+        }
       }
-      dir.create(bs_dir)
-      modfile <- model_source[this_model]
-      if(file.exists(modfile)){
-        file.copy(modfile, file.path(bs_dir, paste0("bs", this_model, ".mod")))
-      }else{
-        message("Cannot file model file ", modfile, ", exiting")
-        return(-999)
-      }
+      return(nmodels)
+    },
+    error = function(conc) {
+      message("Error in copy_model_files, model # ", this_model, ", exiting")
+      return(-999)
     }
-    return(nmodels)
-  }, error = function(conc){
-    message("Error in copy_model_files, model # ", this_model, ", exiting")
-    return (-999)
-      }
-)
-  }
+  )
+}
 
-# copy_model_files <- function(model_source,run_dir,nmodels){ if(!file.exists(run_dir)){ # split run_dir, check each parent normpath =
-# SplitPath(run_dir)$normpath parents = split_path(normpath) nparents = length(parents) cur_path = parents[1] for(this.parent in
-# 2:nparents){ cur_path = file.path(cur_path,parents[this.parent]) if(!file.exists(cur_path)){ dir.create(cur_path) } } } for(this_model
-# in 1:nmodels){ sim_dir <- file.path(run_dir,paste0('model',this_model)) if(dir.exists(sim_dir)){ unlink(sim_dir,recursive = TRUE, force
-# = TRUE) } dir.create(sim_dir) source.dir <- file.path(model_source,paste0('model',this_model)) modfile <-
-# file.path(model_source,paste0('model',this_model),list.files(source.dir))
-# file.copy(modfile,file.path(sim_dir,paste0('bs',this_model,'.mod'))) } }
 
 #' create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv
 #'
@@ -333,9 +339,8 @@ copy_model_files <- function(model_source, run_dir) {
 #' @param samp_size how many bootstrap samples, default is 100
 #' @param nmodels how many models are there
 #' @examples
-#' sample_data('c:/modelaveraging',100,4)
+#' sample_data("c:/modelaveraging", 100, 4)
 sample_data <- function(run_dir, nmodels, samp_size) {
-
   con <- file(file.path(run_dir, "model1", "bs1.mod"), "r")
   suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
   close(con)
@@ -352,7 +357,7 @@ sample_data <- function(run_dir, nmodels, samp_size) {
     # find first white space
     pos <- gregexpr(pattern = "\\s", data_line)
     data_file <- stringr::str_trim(substr(data_line, 1, pos[[1]][1]), side = "both")
-    rest.of.data_line = substr(data_line, pos[[1]][1], nchar(data_line))
+    rest.of.data_line <- substr(data_line, pos[[1]][1], nchar(data_line))
   }
   # get datafile possibly different data files in different models? not supported at this time
   org.data <- utils::read.csv(data_file, header = TRUE, stringsAsFactors = FALSE)
@@ -393,13 +398,14 @@ sample_data <- function(run_dir, nmodels, samp_size) {
       control[data_line] <- newdata_line
       # remove covariance
       cov_line <- grep("\\$COV", control)
-      if (length(cov_line) > 0)
-        control[cov_line] = ";; no covariance step"
+      if (length(cov_line) > 0) {
+        control[cov_line] <- ";; no covariance step"
+      }
       # and any tables
       control <- stringr::str_replace(control, "$TABLE", ";$TABLE")
       dir.create(file.path(run_dir, paste0("model", this_model), this_samp))
 
-      con <- file(file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model,"_", this_samp, ".mod")), "w")
+      con <- file(file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".mod")), "w")
       writeLines(control, con)
       close(con)
     }
@@ -418,26 +424,23 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 #' @return
 #' @export
 #'
-#' @examples run_one_model("c:/MBBE/rundir", c:/nm74g64/util/nmfe74.bat, 1, 1, TRUE)
-run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS){
-  if(BS){
+#' @examples run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
+run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
+  if (BS) {
     nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
-    control_file <-   paste0("bsSamp", this_model, "_", this_samp, ".mod")
+    control_file <- paste0("bsSamp", this_model, "_", this_samp, ".mod")
     output_file <- paste0("bsSamp", this_model, "_", this_samp, ".lst")
     exefile <- paste0("bsSamp", this_model, "_", this_samp, ".exe")
-  }else{
+  } else {
     nmrundir <- file.path(run_dir, paste0("MBBEsim", this_samp))
     control_file <- paste0("MBBEsim", this_samp, ".mod")
     output_file <- paste0("MBBEsim", this_samp, ".lst")
     exefile <- paste0("MBBEsim", this_samp, ".exe")
   }
-  #command <- paste0(nmfe_path, " ", control_file, " ", output_file, " -nmexec=", exefile, " -rundir=", nmrundir)
-  #command <- paste0(nmfe_path, " ", control_file, " ", output_file, " -rundir=", nmrundir)
-  #command <- paste0(nmfe_path, " ", control_file, " ", output_file, " -rundir=", nmrundir)
-  nmoutput <- processx::run(nmfe_path,args = c(control_file,output_file), wd = nmrundir)
-  #shell(command, wait = TRUE)
-  delete_files(nmrundir)
 
+  nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
+  # shell(command, wait = TRUE)
+  delete_files(nmrundir)
 }
 #' run the bootstrap or monte carlo models/samples
 #'
@@ -449,69 +452,58 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS){
 #' @param plan - future plan, one of sequential, multicore, multisession
 #' @param num_parallel how many to run in parallel, default = availableCores()
 #' @examples
-#' run.bootstrap('c:/nmfe744/util/nmfe74.bat', 'c:/modelaveraging',8)
+#' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
 run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num_parallel) {
-  # setup all models
-  if (plan == "multisession") {
-    old_plan <-
-      future::plan(future::multisession, workers = num_parallel)
-  } else if (plan == "multicore") {
-    old_plan <- future::plan(future::multicore, workers = num_parallel)
-  } else if (plan == "sequential") {
-    old_plan <- future::plan(future::sequential)
-  }
-  options(future.globals.onReference = "error")
-  on.exit(future::plan(old_plan), add = TRUE)
-  if(BS){
-  rval <- tryCatch({
-      total_runs <- samp_size * nmodels
-      message(format(Sys.time(), digits = 0)," Starting bootstrap sample models, total number = ", total_runs)
-      output <- furrr::future_map(1:total_runs, function(this_num) {
-      tryCatch({
-        this_samp <- (this_num - 1) %% samp_size + 1
-        this_model <- (this_num - this_samp) / samp_size + 1
-        run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
-      }, error = function(cond) {
-        future::plan(old_plan)
-        message("Failed to run boostrap in run_any_models, ", cond)
-        return(NULL)
-      })
-    })
 
-  }, error = function(cond) {
-    future::plan(old_plan)
-    message("Failed running bootstrap in run_any_models, ", cond)
-    return(FALSE)
-  })
-  }else{
-    rval <- tryCatch({
-      # why doesn't this work???
-      total_runs = samp_size
-       output <- furrr::future_map(1:total_runs, function(this_num) {
-         tryCatch({
-           run_one_model(run_dir, nmfe_path, NULL, this_num, FALSE)
-         }, error = function(cond) {
-           future::plan(old_plan)
-           message("Failed to run simulation in run_any_models, ", cond)
-           return(NULL)
-         })
-       })
-      # for(this_samp in 1: samp_size){
-      #    #run_one_sim(run_dir,
-      #    run_one_model(run_dir,
-      #                  nmfe_path,
-      #                  NULL,
-      #                  this_samp,
-      #                  BS)
-      #  }
-    }, error = function(cond) {
-      future::plan(old_plan)
-      message("Failed running simulation in run_any_models ", cond)
-      return(NULL)
-    }
+  if (BS) {
+    rval <- tryCatch(
+      {
+        total_runs <- samp_size * nmodels
+        message(format(Sys.time(), digits = 0), " Starting bootstrap sample models, total number = ", total_runs)
+        message("Progress bar is NONMEM bootstrap models started")
+        output <- furrr::future_map(1:total_runs, function(this_num) {
+          tryCatch(
+            {
+              this_samp <- (this_num - 1) %% samp_size + 1
+              this_model <- (this_num - this_samp) / samp_size + 1
+              run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
+            },
+            error = function(cond) {
+              message("Failed to run boostrap in run_any_models, ", cond)
+              return(NULL)
+            }
+          )
+        }, .progress = TRUE, .options = furrr::furrr_options(seed = NULL))
+      },
+      error = function(cond) {
+        message("Failed running bootstrap in run_any_models, ", cond)
+        return(FALSE)
+      }
+    )
+  } else {
+    rval <- tryCatch(
+      {
+        total_runs <- samp_size
+        message(format(Sys.time(), digits = 0), " Starting simulation models, total number = ", total_runs)
+        message("Progress bar is NONMEM simulation runs started")
+        output <- furrr::future_map(1:total_runs, function(this_num) {
+          tryCatch(
+            {
+              run_one_model(run_dir, nmfe_path, NULL, this_num, FALSE)
+            },
+            error = function(cond) {
+              message("Failed to run simulation in run_any_models, ", cond)
+              return(NULL)
+            }
+          )
+        }, .progress = TRUE, .options = furrr::furrr_options(seed = NULL))
+      },
+      error = function(cond) {
+        message("Failed running simulation in run_any_models ", cond)
+        return(NULL)
+      }
     )
   }
-  future::plan(old_plan)
   return(TRUE)
 }
 
@@ -527,181 +519,217 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
 #' @param use_check_identifiable - logical, is check_identifiable to be used
 #' @param passes_identifiable - array of length nmodels, count # of model that are identifable
 #' @examples
-#' get_parameters('c:/modelaveraging',4,100,0.1, TRUE)
+#' get_parameters("c:/modelaveraging", 4, 100, 0.1, TRUE)
 get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable, passes_identifiable) {
-
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
-  colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best","Max_Delta_parm","Max_Delta")
+  colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best", "Max_Delta_parm", "Max_Delta")
   BICS$Best <- NA
-    # BIC=k*ln(n) -2LL where k is is the number of estimated parameters and n is the number of data
+  # BIC=k*ln(n) -2LL where k is is the number of estimated parameters and n is the number of data
   nparms <- data.frame(ntheta = rep(NA, nmodels))
 
   # only need parameters for best model, but need to read xml file to get the number of observations and parameters, so may as well get
   # THETA etc now for all
-  nfailed_ident <- 0  # number of samples in this model that fail the identifiability test
+  nfailed_ident <- 0 # number of samples in this model that fail the identifiability test
   # do by sample first only save parameters for the best model
   selected_parameters <- vector("list", samp_size)
-  tryCatch({
-  for (this_samp in 1:samp_size) {
-    num_successful <- 1  # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
-    parameters_this_sample <-  vector("list", nmodels)
-    this_model <- 1
-    all_identifiables <- rep(TRUE, nmodels)
-    for (this_model in 1:nmodels) {
-      theta <- NA
-      xml_file <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".xml"))
-      identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
-      rval <- tryCatch({
-        count <- 0
-        boolFalse <- FALSE
-        # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-        while(boolFalse == FALSE & count < 10) {
-          data <- NULL
-          count <- count + 1
-          tryCatch({
-            data <- xml2::read_xml(xml_file, encoding = "ASCII")
-            boolFalse <- TRUE
-          }, error = function(e){
-            Sys.sleep(0.1)
-          }, finally = {}) # fails will throw error below in outer tryCatch
-        }
-        if (count >= 10){
-          message("Failed to read xml file for sample ", this_samp, ", model = ", this_model,", xml file = ", xml_file)
-          BICS[this_samp, this_model] <- crash_value
+  tryCatch(
+    {
+      for (this_samp in 1:samp_size) {
+        num_successful <- 1 # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
+        parameters_this_sample <- vector("list", nmodels)
+        this_model <- 1
+        all_identifiables <- rep(TRUE, nmodels)
+        for (this_model in 1:nmodels) {
+          theta <- NA
+          xml_file <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".xml"))
           identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
-          parameters_this_sample[[this_model]] <- NA
-          tryCatch({
-            lstFile <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".lst"))
-            cat(BICS[this_samp, this_model], file = lstFile, append = TRUE)
-          }, error=  function(err){con <- file(lstFile, "a")
-             message("Cannot write to output file for sample, ", this_samp, ", model, ",this_model)
-          })
-        }else{
-          problem_node <- xml2::xml_find_all(data, "//nm:problem_information")
-          contents <- xml2::xml_contents(problem_node)
-          text <- xml2::xml_text(contents)
-          text <- as.list(unlist(strsplit(text, "\n")))
-          nobsline <- grep("TOT. NO. OF OBS RECS:", text)
-          nobs <- as.integer(stringr::str_replace(text[nobsline], "TOT. NO. OF OBS RECS:", ""))
-          info_node <- xml2::xml_find_all(data, "//nm:problem_options")
-          info_contents <- xml2::xml_attrs(info_node)
-          ntheta <- as.numeric(info_contents[[1]]["nthetat"])
-          if (this_samp == 1) {
-            # have to do this here, don't know how many thetas until here
-            nparms$ntheta[this_model] <- ntheta
-          }
-          parameters_this_model <- data.frame(matrix(NA, ncol = ntheta))
-          colnames(parameters_this_model) <- paste0("THETA", seq(1:ntheta))
-          parameters_this_sample[[this_model]] <- parameters_this_model
-          # and OFV
-          estim.node <- xml2::xml_find_all(data, "//nm:estimation")
-          estim_contents <- xml2::xml_attrs(estim.node)
-          # nm:final_objective_function
-          OFV.node <- xml2::xml_find_all(data, "//nm:final_objective_function")
-          OFV_contents <- xml2::xml_contents(OFV.node)
-          OFV <- as.numeric(xml2::xml_text(OFV_contents))
-          if (length(OFV) > 0) {
-            BICS[this_samp, this_model] <- ntheta * log(nobs) + OFV
-          } else {
-            BICS[this_samp, this_model] <- crash_value
-          }
-          theta_node <- xml2::xml_find_all(data, "//nm:theta")
-          theta_children <- xml2::xml_children(theta_node)
-          theta_contents <- xml2::xml_contents(theta_node)
-          theta <- as.numeric(xml2::xml_text(theta_contents))
-          # length of theta will be 1 if a crash
-          if (length(theta) > 1) {
-            parameters_this_model <- theta
-            num_successful <- num_successful + 1
-            parameters_this_sample[[this_model]] <- parameters_this_model
-          }else{
-            parameters_this_sample[[this_model]] <- NA
-          }
+          rval <- tryCatch(
+            {
+              count <- 0
+              boolFalse <- FALSE
+              # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
+              while (boolFalse == FALSE & count < 10) {
+                data <- NULL
+                count <- count + 1
+                tryCatch({
+                  data <- xml2::read_xml(xml_file, encoding = "ASCII")
+                  boolFalse <- TRUE
+                }, error = function(e) {
+                  Sys.sleep(0.1)
+                }, finally = {}) # fails will throw error below in outer tryCatch
+              }
+              if (count >= 10) {
+                message("Failed to read xml file for sample ", this_samp, ", model = ", this_model, ", xml file = ", xml_file)
+                BICS[this_samp, this_model] <- crash_value
+                identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+                parameters_this_sample[[this_model]] <- NA
+                tryCatch(
+                  {
+                    lstFile <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".lst"))
+                    cat(BICS[this_samp, this_model], file = lstFile, append = TRUE)
+                  },
+                  error = function(err) {
+                    con <- file(lstFile, "a")
+                    message("Cannot write to output file for sample, ", this_samp, ", model, ", this_model)
+                  }
+                )
+              } else {
+                problem_node <- xml2::xml_find_all(data, "//nm:problem_information")
+                contents <- xml2::xml_contents(problem_node)
+                text <- xml2::xml_text(contents)
+                text <- as.list(unlist(strsplit(text, "\n")))
+                nobsline <- grep("TOT. NO. OF OBS RECS:", text)
+                nobs <- as.integer(stringr::str_replace(text[nobsline], "TOT. NO. OF OBS RECS:", ""))
+                info_node <- xml2::xml_find_all(data, "//nm:problem_options")
+                info_contents <- xml2::xml_attrs(info_node)
+                ntheta <- as.numeric(info_contents[[1]]["nthetat"])
+                if (this_samp == 1) {
+                  # have to do this here, don't know how many thetas until here
+                  nparms$ntheta[this_model] <- ntheta
+                }
+                parameters_this_model <- data.frame(matrix(NA, ncol = ntheta))
+                colnames(parameters_this_model) <- paste0("THETA", seq(1:ntheta))
+                parameters_this_sample[[this_model]] <- parameters_this_model
+                # and OFV
+                estim.node <- xml2::xml_find_all(data, "//nm:estimation")
+                estim_contents <- xml2::xml_attrs(estim.node)
+                # nm:final_objective_function
+                OFV.node <- xml2::xml_find_all(data, "//nm:final_objective_function")
+                OFV_contents <- xml2::xml_contents(OFV.node)
+                OFV <- as.numeric(xml2::xml_text(OFV_contents))
+                if (length(OFV) > 0) {
+                  BICS[this_samp, this_model] <- ntheta * log(nobs) + OFV
+                } else {
+                  BICS[this_samp, this_model] <- crash_value
+                }
+                theta_node <- xml2::xml_find_all(data, "//nm:theta")
+                theta_children <- xml2::xml_children(theta_node)
+                theta_contents <- xml2::xml_contents(theta_node)
+                theta <- as.numeric(xml2::xml_text(theta_contents))
+                # length of theta will be 1 if a crash
+                if (length(theta) > 1) {
+                  parameters_this_model <- theta
+                  num_successful <- num_successful + 1
+                  parameters_this_sample[[this_model]] <- parameters_this_model
+                } else {
+                  parameters_this_sample[[this_model]] <- NA
+                }
 
-          # if using saddle_reset, test for identifiability
-          if (!use_check_identifiable) {
-            identifiable_ok["passes"] <- TRUE
-            passes_identifiable[this_model] = passes_identifiable[this_model] + 1
-          } else {
-            # run_dir,this_model,this_sample,delta_parms
-            identifiable_ok <- check_identifiable(run_dir, this_model, this_samp, delta_parms, ntheta)
-            all_identifiables[this_model] <- identifiable_ok["passes"]
-            if (!identifiable_ok$passes) {
-              # first just get the number of parameters and observations for this model
+                # if using saddle_reset, test for identifiability
+                if (!use_check_identifiable) {
+                  identifiable_ok["passes"] <- TRUE
+                  passes_identifiable[this_model] <- passes_identifiable[this_model] + 1
+                } else {
+                  # run_dir,this_model,this_sample,delta_parms
+                  identifiable_ok <- check_identifiable(run_dir, this_model, this_samp, delta_parms, ntheta)
+                  all_identifiables[this_model] <- identifiable_ok["passes"]
+                  if (!identifiable_ok$passes) {
+                    # first just get the number of parameters and observations for this model
+                    BICS[this_samp, this_model] <- crash_value
+                  } else {
+                    passes_identifiable[this_model] <- passes_identifiable[this_model] + 1
+                  }
+                }
+              }
+            },
+            error = function(e) {
+              message("error in get_parameters, read data, inner loop, error  = ", cond, ", sample ", this_samp, ", model = ", this_model)
+              identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+              all_identifiables[this_model] <- identifiable_ok["passes"]
               BICS[this_samp, this_model] <- crash_value
-            }else{
-              passes_identifiable[this_model] = passes_identifiable[this_model] + 1
+              parameters_this_sample[[this_model]] <- NA
             }
-          }
-          }
-      }, error = function(e){
-        message("error in get_parameters, read data, inner loop, error  = ", cond, ", sample ", this_samp, ", model = ", this_model)
-        identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
-        all_identifiables[this_model] <- identifiable_ok["passes"]
-        BICS[this_samp, this_model] <- crash_value
-        parameters_this_sample[[this_model]] <- NA
-      })
-        tryCatch({
-         lstFile <- file.path(run_dir, paste0("model", this_model),
-                              this_samp, paste0("bsSamp", this_model, "_", this_samp, ".lst"))
-          cat(paste0("BIC = ", round(BICS[this_samp, this_model], 3),
-                     ", identifiable = ",identifiable_ok["passes"],
-                        ", max_delta = ",round(identifiable_ok$max_delta,5)),
-                     file = lstFile, append = TRUE)
-          cat(paste0(", max_delta_parm = ", identifiable_ok$max_delta_parm),
-                  file = lstFile, append = TRUE)
-        }, error=function(err){
-          message("Failed to append parameters to ", lstFile, " after failing in get_parameters")
-        })
-    }  # end of model loop
-  #  }  # end of sample loop
+          )
+          tryCatch(
+            {
+              lstFile <- file.path(
+                run_dir, paste0("model", this_model),
+                this_samp, paste0("bsSamp", this_model, "_", this_samp, ".lst")
+              )
+              cat(
+                paste0(
+                  "BIC = ", round(BICS[this_samp, this_model], 3),
+                  ", identifiable = ", identifiable_ok["passes"],
+                  ", max_delta = ", round(identifiable_ok$max_delta, 5)
+                ),
+                file = lstFile, append = TRUE
+              )
+              cat(paste0(", max_delta_parm = ", identifiable_ok$max_delta_parm),
+                file = lstFile, append = TRUE
+              )
+            },
+            error = function(err) {
+              message("Failed to append parameters to ", lstFile, " after failing in get_parameters")
+            }
+          )
+        } # end of model loop
+        #  }  # end of sample loop
 
-    # and select best model, NA if all crashed
-    if (all(BICS[this_samp, 1:nmodels] == crash_value)) {
-      BICS$Best[this_samp] <- NA
-      warning("No models successful for model ", this_samp, " identifiability = ", toString(all_identifiables))
-      selected_parameters[[this_samp]] <- NA
-      BICS$Max_Delta[this_samp] <- 999999
-      BICS$Max_Delta_parm[this_samp] <- NA
-    } else {
-      best <- which.min(BICS[this_samp, 1:nmodels])
-      BICS$Best[this_samp] <- best
-      selected_parameters[[this_samp]] <- unlist(parameters_this_sample[[best]])
-      BICS$Max_Delta[this_samp] <- identifiable_ok['max_delta']
-      BICS$Max_Delta_parm[this_samp] <- identifiable_ok['max_delta_parm']
-    }
-  }
-    }, error = function(cond){
+        # and select best model, NA if all crashed
+        if (all(BICS[this_samp, 1:nmodels] == crash_value)) {
+          BICS$Best[this_samp] <- NA
+          warning("No models successful for model ", this_samp, " identifiability = ", toString(all_identifiables))
+          selected_parameters[[this_samp]] <- NA
+          BICS$Max_Delta[this_samp] <- 999999
+          BICS$Max_Delta_parm[this_samp] <- NA
+        } else {
+          best <- which.min(BICS[this_samp, 1:nmodels])
+          BICS$Best[this_samp] <- best
+          selected_parameters[[this_samp]] <- unlist(parameters_this_sample[[best]])
+          # check in nparms = length of selected_parameters
+          message("\nSample ", this_samp, " best model is ", best, " with parameters:\n")
+
+          for (i in 1:length(selected_parameters[[this_samp]])){
+            message("parameter[", i, "] = ", round(selected_parameters[[this_samp]][i],6))
+          }
+          if(nparms$ntheta[best]!= length(selected_parameters[[this_samp]])){
+            stop("Length of parameters for sample ", this_samp, " doesn't equal the number in the xml file for model ", best, ", exiting")
+          }
+          BICS$Max_Delta[this_samp] <- identifiable_ok["max_delta"]
+          BICS$Max_Delta_parm[this_samp] <- identifiable_ok["max_delta_parm"]
+        }
+      }
+    },
+    error = function(cond) {
       # everything crashes??
-      message("Unknown error in get_parameters, read data, sample ", this_samp," error  = ", cond)
+      message("Unknown error in get_parameters, read data, sample ", this_samp, " error  = ", cond)
       all_identifiables[this_model] <- identifiable_ok["passes"]
       BICS[this_samp, this_model] <- crash_value
-     })
+    }
+  )
   # write out results,
-  tryCatch({
-    flatBICs <- apply(BICS,2,as.character)
-    write.csv(flatBICs, file.path(run_dir, "BICS.csv"), quote = FALSE)
-    message("BICS = ")
-    message(paste0(capture.output(BICS), collapse = "\n"))
-  }, error = function(err){
-    message("Failed to write out BICS to ", file.path(run_dir, "BICS.csv"), " in get_parameters")
-  })
+  tryCatch(
+    {
+      flatBICs <- apply(BICS, 2, as.character)
+      write.csv(flatBICs, file.path(run_dir, "BICS.csv"), quote = FALSE)
+      message("BICS = ")
+      message(paste0(capture.output(BICS), collapse = "\n"))
+    },
+    error = function(err) {
+      message("Failed to write out BICS to ", file.path(run_dir, "BICS.csv"), " in get_parameters")
+    }
+  )
   # write out parameters, can't do write.csv, as rows have different number of parameters
 
-  tryCatch({
-    conn <- file(file.path(run_dir, "Parameters.csv"), open="w")
+  tryCatch(
+    {
+      conn <- file(file.path(run_dir, "Parameters.csv"), open = "w")
 
-    newlist <- lapply(seq_len(length(selected_parameters)), function(i){
-      temp <- lapply(seq_len(length(selected_parameters[[i]])), function(j) {
-        temp <- c(selected_parameters[[i]][[j]])
+      writeLines(text = c("Sample","Best Model for Sample","Number of Parmeters","Selected Parameters"), con = conn, sep = "\n")
+      newlist <- lapply(seq_len(length(selected_parameters)), function(i) {
+        temp <- lapply(seq_len(length(selected_parameters[[i]])), function(j) {
+          temp <- c(selected_parameters[[i]][[j]])
+        })
+
+        writeLines(text = paste(i,BICS$Best[i], length(selected_parameters[[i]]),
+                                paste(temp, collapse = ","), sep = ","), con = conn, sep = "\n")
       })
-
-      writeLines(text=paste(i, paste(temp, collapse=","), sep=","), con=conn, sep="\n")
-    })
-    close(conn)
-  }, error = function(err){
-    message("Failed to write to ", file.path(run_dir, "Parameters.csv"), " in get_parameters")
-  })
+      close(conn)
+    },
+    error = function(err) {
+      message("Failed to write to ", file.path(run_dir, "Parameters.csv"), " in get_parameters")
+    }
+  )
   rval <- list(BICS = BICS, parameters = selected_parameters, passes_identifiable = passes_identifiable)
   return(rval)
 }
@@ -713,23 +741,24 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
 #' @examples
 #' get_base_model("c:/mbbe/rundir", 4)
 get_base_model <- function(run_dir, nmodels) {
-
   # need error trapping for no ;;;;;.*Start EST
-  base_models <- vector(mode = "list", length = 0)  # all but $THETA, $SIM, $TABLE
+  base_models <- vector(mode = "list", length = 0) # all but $THETA, $SIM, $TABLE
 
   for (this_model in 1:nmodels) {
-    tryCatch({
-      con <- file(file.path(run_dir, paste0("model", this_model), paste0("bs", this_model, ".mod")), "r")
-      suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
-      control <- control[1:grep(";;;;.*Start EST", control)]
-      close(con)
-      base_models <- append(base_models, list(control))
-    }, error = function(e){
-      stop("Cannot find ", file.path(paste0(run_dir, "model", this_model), paste0("bs", this_model, ".mod")), "exiting")
-    })
+    tryCatch(
+      {
+        con <- file(file.path(run_dir, paste0("model", this_model), paste0("bs", this_model, ".mod")), "r")
+        suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
+        control <- control[1:grep(";;;;.*Start EST", control)]
+        close(con)
+        base_models <- append(base_models, list(control))
+      },
+      error = function(e) {
+        stop("Cannot find ", file.path(paste0(run_dir, "model", this_model), paste0("bs", this_model, ".mod")), "exiting")
+      }
+    )
   }
   return(base_models)
-
 }
 
 #' Edits the best based model for each sample, replaces the original parameters with the bootstrap parameters
@@ -743,28 +772,30 @@ get_base_model <- function(run_dir, nmodels) {
 #' @param use_simulation_data logical - TRUE is a file other than the bootstrap data file is to be used for simulation
 #' @param simulation_data_path if use_simulation_data==TRUE, the path to the file tto be used for simulation
 #' @examples
-#' write_sim_controls('c:/modelaveraging',parms,base_models,100)
+#' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
 write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path = NULL) {
   final_models <- list()
-  if(!file.exists(simulation_data_path)){
-    stop(paste("Cannot find ", simulation_data_path," exiting"))
-  }else{
+  if (!file.exists(simulation_data_path)) {
+    stop(paste("Cannot find ", simulation_data_path, " exiting"))
+  } else {
     nmodels <- length(base_models)
-    mbfinal_models <- vector(mode = "list", length = samp_size)
-    model.indices <- rep(0, nmodels)  # which model an parameter set to use when this model is selected, roll over if not enough samples,
+   # mbfinal_models <- vector(mode = "list", length = samp_size)
+    #model.indices <- rep(0, nmodels) # which model and parameter set to use when this model is selected, roll over if not enough samples,
     current_runable_samp <- 0 # some models may not be runable (all crashed), if so, start over with model, and different seed in NONMEM
     for (this_samp in 1:samp_size) {
       current_runable_samp <- current_runable_samp + 1
       count <- 0
-      while(is.na(parms$BICS$Best[current_runable_samp]) & count < samp_size*40){ # only go through samples 4 times? don't keep running same samples over?
+      while (is.na(parms$BICS$Best[current_runable_samp]) & count < samp_size * 4) { # only go through samples 4 times? don't keep running same samples over?
         current_runable_samp <- current_runable_samp + 1
         count <- count + 1
-        if (current_runable_samp > samp_size) current_runable_samp <- 1
+        if (current_runable_samp > samp_size) {current_runable_samp <- 1}
         # use BS parameters, when you run out (as some BS samples fail), just start over, so need different random seed in $SIM model
       }
-      if(count >= (samp_size * 40)){
+      if (count >= (samp_size * 4)) {
         stop("Not enough samples with successful outcome for simulation")
       }
+      # current_runable_samp is sample #, from 1 to samp_size
+      # which.model is the best model in that sample, from 1 to nmodels
       which.model <- parms$BICS$Best[current_runable_samp]
       # is first index, e.g., parameters[[2]]$THETA1[1] is THETA[1] for model 2, first sample
       # model.indices[which.model] <- model.indices[which.model] + 1
@@ -787,11 +818,13 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
         # replace with simulation data set
         full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
       }
-      for (this_parm in 1:ntheta) {
-        full_control <- c(full_control, paste0(parms$parameters[[this_samp]][this_parm], "  ;; THETA(", this_parm, ")"))
+      for (this_parm in parms$parameters[[which.model]]) {
+        full_control <- c(full_control, paste0(this_parm, "  ;; THETA(", this_parm, ")"))
       }
       full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-      full_control <- c(full_control, paste0(";;Sample #",this_samp,", Source = model #",which.model,", numparms = ", ntheta))
+      full_control <- c(full_control, paste0(";;Sample #", this_samp, "; Selected sample = ",current_runable_samp, "\n"))
+      full_control <- c(full_control, paste0(";;Source = model #", which.model, ", numparms = ", ntheta, "\n"))
+
       sim_dir <- file.path(run_dir, paste0("MBBEsim", this_samp))
       if (dir.exists(sim_dir)) {
         unlink(sim_dir, recursive = TRUE, force = TRUE)
@@ -802,21 +835,20 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
       dir.create(sim_dir)
       control_file <- file.path(sim_dir, paste0("MBBEsim", this_samp, ".mod"))
       count <- 0
-      while(!file.exists(control_file) & count< 10){
+      while (!file.exists(control_file) & count < 10) {
         con <- file(control_file, "w")
         Sys.sleep(0.1)
         writeLines(unlist(full_control), con)
         count <- count + 1
         close(con)
       }
-      if(!file.exists((control_file))) {
+      if (!file.exists((control_file))) {
         message("Cannot write to ", control)
       }
       final_models <- append(final_models, list(full_control))
     }
     return(final_models)
   }
-
 }
 #'
 
@@ -849,33 +881,24 @@ calc_NCA <-
            samp_size,
            plan,
            num_parallel) {
-    # if (plan == "multisession") {
-    #   old_plan <-
-    #     future::plan(future::multisession, workers = num_parallel)
-    # } else if (plan == "multicore") {
-    #   old_plan <- future::plan(future::multicore, workers = num_parallel)
-    # } else if (plan == "sequential") {
-    #   old_plan <- future::plan(future::sequential)
-    # }
-    # options(future.globals.onReference = "error")
-    # on.exit(future::plan(old_plan), add = TRUE)
-    # Use future_map() from furrr package to parallelize the loop
-    #output <- furrr::future_map(1:samp_size, function(this_samp) {
-    tryCatch({
-      for(this_samp in 1:samp_size){
-      getNCA(run_dir,
-             this_samp,
-             ngroups,
-             reference_groups,
-             test_groups,
-             NCA_end_time)
+    tryCatch(
+      {
+        for (this_samp in 1:samp_size) {
+          getNCA(
+            run_dir,
+            this_samp,
+            ngroups,
+            reference_groups,
+            test_groups,
+            NCA_end_time
+          )
+        }
+      },
+      error = function(cond) {
+        message("Failed in calc_NCA, sample # ", this_samp, ", error ", cond)
+        return(NULL)
       }
-    }, error = function(cond) {
-      message("Failed in calc_NCA, sample # ", this_samp, ", error ", cond)
-      return(NULL)
-    })
-   # })
-  #  future::plan(old_plan)
+    )
     return()
   }
 
@@ -888,60 +911,63 @@ calc_NCA <-
 #' @param delta_parms absolute difference in parameters criteria for failing identifability
 #' @param nparms number of parameters in the .ext file (can be less thn the total)
 #' @examples
-#' check_identifiable('c:/runmodels',1,1,0.1)
+#' check_identifiable("c:/runmodels", 1, 1, 0.1)
 check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, nparms) {
-  lstfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model,"_", this_sample, ".lst"))
-  extfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model,"_", this_sample, ".ext"))
+  lstfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".lst"))
+  extfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".ext"))
   max_deltap <- -999
   max_delta_parmp <- -999
   if (!file.exists(lstfile) | !file.exists(extfile)) {
     message("Cannot find ", listfile, " or ", extfile, " for determining identifiability")
     return(c(passes = FALSE, max_delta = -999, max_delta_parm = -999))
   } else {
-    tryCatch({
-      con <- file(lstfile, "r")
-      suppressWarnings(output <- readLines(con, encoding = "UTF-8"))
-      close(con)
-      reset.line <- grep("^0SADDLE POINT RESET", output)
+    tryCatch(
+      {
+        con <- file(lstfile, "r")
+        suppressWarnings(output <- readLines(con, encoding = "UTF-8"))
+        close(con)
+        reset.line <- grep("^0SADDLE POINT RESET", output)
 
-      # get previous '0ITERATION NO.: '
-      first_output <- output[1:reset.line]
-      first_output <- first_output[grep("^0ITERATION NO.:", first_output)]
-      first_output <- first_output[length(first_output)]
-      reset_iteration <- as.integer(substr(first_output, 16, 24))
-      last_output <- output[reset.line:length(output)]
-      last_output <- last_output[grep("^0ITERATION NO.:", last_output)]
-      last_output <- last_output[1]
-      last.iteration <- as.integer(substr(last_output, 16, 24))
-      # read parameters from .ext
-      ext <- read.table (extfile, header = TRUE,  skip = 1)
-      Pre.parms <- ext %>%
-        dplyr::filter(ITERATION == reset_iteration)
-      Post.parms <- ext %>%
-        dplyr::filter(ITERATION == last.iteration)
-      #nparms <- length(Pre.parms)  # includes the first column - 'ITERATION'
-      Passes_identifiability <- TRUE
+        # get previous '0ITERATION NO.: '
+        first_output <- output[1:reset.line]
+        first_output <- first_output[grep("^0ITERATION NO.:", first_output)]
+        first_output <- first_output[length(first_output)]
+        reset_iteration <- as.integer(substr(first_output, 16, 24))
+        last_output <- output[reset.line:length(output)]
+        last_output <- last_output[grep("^0ITERATION NO.:", last_output)]
+        last_output <- last_output[1]
+        last.iteration <- as.integer(substr(last_output, 16, 24))
+        # read parameters from .ext
+        ext <- read.table(extfile, header = TRUE, skip = 1)
+        Pre.parms <- ext %>%
+          dplyr::filter(ITERATION == reset_iteration)
+        Post.parms <- ext %>%
+          dplyr::filter(ITERATION == last.iteration)
+        # nparms <- length(Pre.parms)  # includes the first column - 'ITERATION'
+        Passes_identifiability <- TRUE
 
-      for (this_parm in 2:nparms) {
-        if (Post.parms[this_parm] != 0) {
-          difference <- abs((Pre.parms[this_parm] - Post.parms[this_parm])/Post.parms[this_parm])
-          if (difference > delta_parms) {
-            Passes_identifiability <- FALSE
-          }
-          if (difference > max_deltap) {
-            max_deltap <- difference
-            max_delta_parmp <- this_parm - 1
+        for (this_parm in 2:nparms) {
+          if (Post.parms[this_parm] != 0) {
+            difference <- abs((Pre.parms[this_parm] - Post.parms[this_parm]) / Post.parms[this_parm])
+            if (difference > delta_parms) {
+              Passes_identifiability <- FALSE
+            }
+            if (difference > max_deltap) {
+              max_deltap <- difference
+              max_delta_parmp <- this_parm - 1
+            }
           }
         }
+        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
+        names(rval) <- c("passes", "max_delta", "max_delta_parm")
+        return(rval)
+      },
+      error = function(cond) {
+        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
+        names(rval) <- c("passes", "max_delta", "max_delta_parm")
+        return(rval)
       }
-      rval = c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
-      names(rval ) = c("passes","max_delta","max_delta_parm")
-      return(rval)
-    }, error = function(cond) {
-      rval = c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
-      names(rval ) = c("passes","max_delta","max_delta_parm")
-      return(rval)
-    })
+    )
   }
 }
 
@@ -955,105 +981,123 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' @param test_groups list of arrays, which groups are  test
 #' @param NCA_end_time end time for AUClast and AUCinf
 #' @examples
-#' getNCA('c:/runmodels',1,4,c(1,2),c(3,4)),72,0.1)
+#' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
 getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_groups, NCA_end_time) {
   output_file <- file.path(run_dir, paste0("MBBEsim", this_sample), paste0("NCAresults", this_sample, ".csv"))
-  tryCatch({
-    NMoutFile <- file.path(run_dir, paste0("MBBEsim", this_sample), "out.dat")
-    if(file.exists(NMoutFile)){
-      group_NCA_results <- data.frame(ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(),
-                                                         Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric())
-      All_NCA_results <- data.frame(ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(),
-                                    Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric())
-      data <- read.table(NMoutFile, skip = 1, header = TRUE)
-      data <- data %>%
-        dplyr::filter(EVID == 0) %>%
-        dplyr::filter(DV > 0)
-
-      if (file.exists(output_file)) file.remove(output_file)
-      for (this_group in 1:NumGroups) {
-        group_data <- data %>%
-          dplyr::filter(GROUP == this_group)
-        # keep period for each subject, for this group
-        period_seq <- group_data %>%
-          dplyr::group_by(ID) %>%
-          dplyr::distinct(ID, .keep_all = TRUE) %>%
-          dplyr::select(ID, OCC, SEQ) %>%
-          dplyr::arrange(ID)
-
-        # insert conc=0 at time = 0, but remove if duplicated??
-        zero_time <- group_data %>%
-          dplyr::distinct(ID, .keep_all = TRUE)
-        zero_time$TIME <- 0
-        zero_time$DV <- 0
-        group_data <- rbind(group_data, zero_time) %>%
-          dplyr::arrange(ID, TIME)
-        conc_obj <- PKNCA::PKNCAconc(group_data,
-                                     DV ~ TIME | ID)
-        data_obj <- PKNCA::PKNCAdata(data.conc = conc_obj,
-                                     intervals = data.frame(start = 0,
-                                                            end = NCA_end_time,
-                                                            aucinf.obs = TRUE,
-                                                            auclast = TRUE,
-                                                            cmax = TRUE))
-        suppressMessages(
-          results_obj <- PKNCA::pk.nca(data_obj, verbose = FALSE)$result
+  tryCatch(
+    {
+      NMoutFile <- file.path(run_dir, paste0("MBBEsim", this_sample), "out.dat")
+      if (file.exists(NMoutFile)) {
+        group_NCA_results <- data.frame(
+          ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(),
+          Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric()
         )
-        AUCinf <- results_obj %>%
-          dplyr::filter(PPTESTCD == "aucinf.obs") %>%
-          dplyr::select(ID, PPORRES)
-        AUClast <- results_obj %>%
-          dplyr::filter(PPTESTCD == "auclast") %>%
-          dplyr::select(ID, PPORRES)
-        CMAX <- results_obj %>%
-          dplyr::filter(PPTESTCD == "cmax") %>%
-          dplyr::select(ID, PPORRES)
-        if (this_group %in% reference_groups) {
-          treatment <- "Reference"
-        } else {
-          treatment <- "Test"
+        All_NCA_results <- data.frame(
+          ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(),
+          Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric()
+        )
+        data <- read.table(NMoutFile, skip = 1, header = TRUE)
+        data <- data %>%
+          dplyr::filter(EVID == 0) %>%
+          dplyr::filter(DV > 0)
+
+        if (file.exists(output_file)) file.remove(output_file)
+        for (this_group in 1:NumGroups) {
+          group_data <- data %>%
+            dplyr::filter(GROUP == this_group)
+          # keep period for each subject, for this group
+          period_seq <- group_data %>%
+            dplyr::group_by(ID) %>%
+            dplyr::distinct(ID, .keep_all = TRUE) %>%
+            dplyr::select(ID, OCC, SEQ) %>%
+            dplyr::arrange(ID)
+
+          # insert conc=0 at time = 0, but remove if duplicated??
+          zero_time <- group_data %>%
+            dplyr::distinct(ID, .keep_all = TRUE)
+          zero_time$TIME <- 0
+          zero_time$DV <- 0
+          group_data <- rbind(group_data, zero_time) %>%
+            dplyr::arrange(ID, TIME)
+          conc_obj <- PKNCA::PKNCAconc(
+            group_data,
+            DV ~ TIME | ID
+          )
+          data_obj <- PKNCA::PKNCAdata(
+            data.conc = conc_obj,
+            intervals = data.frame(
+              start = 0,
+              end = NCA_end_time,
+              aucinf.obs = TRUE,
+              auclast = TRUE,
+              cmax = TRUE
+            )
+          )
+          suppressMessages(
+            results_obj <- PKNCA::pk.nca(data_obj, verbose = FALSE)$result
+          )
+          AUCinf <- results_obj %>%
+            dplyr::filter(PPTESTCD == "aucinf.obs") %>%
+            dplyr::select(ID, PPORRES)
+          AUClast <- results_obj %>%
+            dplyr::filter(PPTESTCD == "auclast") %>%
+            dplyr::select(ID, PPORRES)
+          CMAX <- results_obj %>%
+            dplyr::filter(PPTESTCD == "cmax") %>%
+            dplyr::select(ID, PPORRES)
+          if (this_group %in% reference_groups) {
+            treatment <- "Reference"
+          } else {
+            treatment <- "Test"
+          }
+          group_NCA_results <- data.frame(
+            ID = AUCinf$ID,
+            treatment = treatment,
+            period = period_seq$OCC,
+            sequence = period_seq$SEQ,
+            Cmax = CMAX$PPORRES,
+            AUCinf = AUCinf$PPORRES,
+            AUClast = AUClast$PPORRES
+          )
+          All_NCA_results <- rbind(
+            All_NCA_results,
+            group_NCA_results
+          )
         }
-        group_NCA_results <- data.frame(ID = AUCinf$ID,
-                                        treatment = treatment,
-                                        period = period_seq$OCC,
-                                        sequence = period_seq$SEQ,
-                                        Cmax = CMAX$PPORRES,
-                                        AUCinf = AUCinf$PPORRES,
-                                        AUClast = AUClast$PPORRES)
-        All_NCA_results <- rbind(All_NCA_results,
-                                 group_NCA_results)
+        # wait for file to be written??, this doesn't seem to help
+
+
+        count <- 0
+        while (file.exists(output_file) & count < 50) {
+          file.remove(output_file)
+          count <- count + 1
+          Sys.sleep(0.1)
+        }
+        count <- 0
+        while (!file.exists(output_file) & count < 50) {
+          write.csv(All_NCA_results,
+            file = output_file,
+            quote = FALSE,
+            row.names = FALSE
+          )
+          count <- count + 1
+          Sys.sleep(0.1)
+        }
+        if (!file.exists(output_file)) {
+          message("Cannot write to ", output_file)
+          return(FALSE)
+        }
+        return(TRUE)
+      } else {
+        return(FALSE)
       }
-      # wait for file to be written??, this doesn't seem to help
-
-
-    count <- 0
-    while(file.exists(output_file) & count < 50){
-      file.remove(output_file)
-      count <- count + 1
-      Sys.sleep(0.1)
-    }
-    count <- 0
-    while(!file.exists(output_file) & count < 50){
-      write.csv(All_NCA_results,
-                file = output_file,
-                quote = FALSE,
-                row.names = FALSE)
-      count <- count + 1
-      Sys.sleep(0.1)
-    }
-    if(!file.exists(output_file)){
-      message("Cannot write to ", output_file)
+    },
+    error = function(cond) {
+      message("Error in NCA calculation, ", this_sample, "\n")
+      message(cond)
       return(FALSE)
     }
-    return(TRUE)
-    }else{
-      return(FALSE)
-    }
-  }, error = function(cond) {
-    message("Error in NCA calculation, ", this_sample, "\n")
-    message(cond)
-    return(FALSE)
-  })
+  )
 }
 
 #' Calculate power
@@ -1068,113 +1112,192 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' @export
 #'
 #' @examples calc_power("c:/mbbe/rundir", 200, 0.05, FALSE)
-calc_power = function(run_dir, samp_size, alpha, NTID){
-
-  BEsuccess <- data.frame(Cmax.success = as.logical(),
-                          AUCinf.success = as.logical(),
-                          AUClast.success = as.logical())
+calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
+  BEsuccess <- data.frame(
+    Cmax.success = as.logical(),
+    AUCinf.success = as.logical(),
+    AUClast.success = as.logical()
+  )
   message(format(Sys.time(), digits = 0), " Starting statistics for NCA parameters, simulations 1-", samp_size)
-  all_results <- data.frame(SampleNum = as.integer(),
-                            Cmax_Ratio = as.numeric(),
-                            Cmax_lower_CL = as.numeric(),
-                            Cmax_upper_CL = as.numeric(),
-                            Cmax_swR = as.numeric(),
-                            Cmax_pe = as.numeric(),
-                            Cmax_critbound = as.numeric(),
-                            Cmax_Assessment = as.numeric(),
-                            Cmax_BE = as.logical(),
-                            AUCinf_Ratio = as.numeric(),
-                            AUCinf_lower_CL = as.numeric(),
-                            AUCinf_upper_CL = as.numeric(),
-                            AUCinf_swR = as.numeric(),
-                            AUCinf_pe = as.numeric(),
-                            AUCinf_critbound = as.numeric(),
-                            AUCinf_Assessment = as.numeric(),
-                            AUCinf_BE = as.logical(),
-                            AUClast_Ratio = as.numeric(),
-                            AUClast_lower_CL = as.numeric(),
-                            AUClast_upper_CL = as.numeric(),
-                            AUClast_swR = as.numeric(),
-                            AUClast_pe = as.numeric(),
-                            AUClast_critbound = as.numeric(),
-                            AUClast_Assessment = as.numeric(),
-                            AUClast_BE = as.logical())
+  all_results <- data.frame(
+    SampleNum = as.integer(),
+    Cmax_Ratio = as.numeric(),
+    Cmax_lower_CL = as.numeric(),
+    Cmax_upper_CL = as.numeric(),
+    Cmax_swR = as.numeric(),
+    Cmax_pe = as.numeric(),
+    Cmax_critbound = as.numeric(),
+    Cmax_Assessment = as.numeric(),
+    Cmax_BE = as.logical(),
+    AUCinf_Ratio = as.numeric(),
+    AUCinf_lower_CL = as.numeric(),
+    AUCinf_upper_CL = as.numeric(),
+    AUCinf_swR = as.numeric(),
+    AUCinf_pe = as.numeric(),
+    AUCinf_critbound = as.numeric(),
+    AUCinf_Assessment = as.numeric(),
+    AUCinf_BE = as.logical(),
+    AUClast_Ratio = as.numeric(),
+    AUClast_lower_CL = as.numeric(),
+    AUClast_upper_CL = as.numeric(),
+    AUClast_swR = as.numeric(),
+    AUClast_pe = as.numeric(),
+    AUClast_critbound = as.numeric(),
+    AUClast_Assessment = as.numeric(),
+    AUClast_BE = as.logical()
+  )
 
-
-
+  # read in all NCAresults file
+  # theses will one one model per study
+  # once all are collected reassmble into on model per subject in each study
+  all_nca_data <- data.frame(
+    sample = as.integer(), ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(), Cmax = as.numeric(),
+    AUCinf = as.numeric(), AUClast = as.numeric()
+  )
+  nsubs <- NA
   for (this_samp in 1:samp_size) {
-    ncafile <-  file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
+    this_ncafile <- file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
     data <- NULL
     boolFalse <- FALSE
     count <- 0
-    while(boolFalse == FALSE & count < 20) {
-      data <-  NULL
+    while (boolFalse == FALSE & count < 20) {
+      data <- NULL
       count <- count + 1
       tryCatch({
-        if(file.exists(ncafile)){}
-        data <- utils::read.csv(ncafile, header = TRUE)
+        if (file.exists(this_ncafile)) {}
+        this_data <- utils::read.csv(this_ncafile, header = TRUE)
         boolFalse <- TRUE
-      }, error = function(e){
+        if (is.na(nsubs)) {
+          IDs <- this_data %>% dplyr::distinct(ID)
+          nsubs <- dim(IDs)[1]
+        }
+      }, error = function(e) {
         Sys.sleep(0.1)
       }, finally = {}) # fails will throw error below
     }
-    if(!is.null(data)){
-        Cmax_result <- data.frame(MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                                 swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
-                                                 Assessment = -999, BE = -999)
-        tryCatch({
-
-          Cmax_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(Cmax)), MetricColumn = "Cmax",
-                                   SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-                                   PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE , NTID)
-          Cmax_result$SampleNum <-  this_samp
-          # reorder, but sampleNum first
-          Cmax_result <- subset(Cmax_result, select=c(SampleNum, MetricColumn:BE))
-        }, error = function(e){
-          Cmax_result <- data.frame(SampleNum = this_samp, MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                    swR = -999,  pe = -999, critbound = -999, Assessment = -999, BE = -999)
-        } )
-          colnames(Cmax_result) <- c("SampleNum", "Cmax_MetricColumn","Cmax_Ratio","Cmax_lower_CL","Cmax_upper_CL","Cmax_swR","Cmax_pe",
-                                        "Cmax_critbound","Cmax_VarianceCriterion","Cmax_Assessment","Cmax_BE")
-
-
-          AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                                swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
-                                                Assessment = -999, BE = -999)
-        tryCatch({
-          AUClast_result <- get_BEQDF(data %>%  dplyr::filter(!is.na(AUClast)), MetricColumn = "AUClast",
-                                      SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-                                      PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE , NTID)
-        }, error = function(e){
-          AUClast_result <- data.frame(MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                       swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999)
-        } )
-        colnames(AUClast_result) <- c("AUClast_MetricColumn","AUClast_Ratio","AUClast_lower_CL","AUClast_upper_CL","AUClast_swR","AUClast_pe",
-                                      "AUClast_critbound","AUClast_VarianceCriterion","AUClast_Assessment","AUClast_BE")
-
-
-        AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                    swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
-                                    Assessment = -999, BE = -999)
-        tryCatch({
-          AUCinf_result <- get_BEQDF(data %>% dplyr::filter(!is.na(AUCinf)), MetricColumn = "AUCinf",
-                                     SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-                                     PeriodColumn = "period", RefValue = "Reference", alpha =  alpha, PartialReplicate = FALSE , NTID)
-        }, error = function(e){
-          AUCinf_result <- data.frame(MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
-                                        swR = -999,  pe = -999, critbound = -999, VarianceCriterion = -999,
-                                      Assessment = -999, BE = -999)
-        } )
-
-        colnames(AUCinf_result) <- c("AUCinf_MetricColumn","AUCinf_Ratio","AUCinf_lower_CL","AUCinf_upper_CL","AUCinf_swR","AUCinf_pe",
-                                     "AUCinf_critbound","AUCinf_VarianceCriterion","AUCinf_Assessment","AUCinf_BE")
-        all_results <- rbind(all_results,c(Cmax_result, AUCinf_result, AUClast_result))
-
+    if(exists("this_data")){
+      this_data$sample <- this_samp
     }else{
-     # no out.dat
+      stop("Cannot fine ",this_ncafile, " NCA output file")
+    }
 
-   }
+    this_data <- subset(this_data, select = c(sample, ID:AUClast))
+    all_nca_data <- rbind(all_nca_data, this_data)
+  }
+
+  if (model_averaging_by == "subject") {
+    # original, doesn't really need to be study numbers
+    sequences <- matrix(NA, nrow = nsubs, ncol = samp_size)
+    colnames(sequences) <- paste0("Study", 1:samp_size)
+    for (this_sub in 1:nsubs) {
+      sequences[this_sub, ] <- sample(1:samp_size, samp_size, replace = FALSE)
+    }
+    # reassemble all_nca_data
+    #
+    new_all_nca_data <- all_nca_data[0, ]
+    # and fill in with new sequence
+    for (this_samp in 1:samp_size) {
+      for (this_sub in 1:nsubs) {
+        new_sample <- all_nca_data %>% dplyr::filter(ID == this_sub, sample == sequences[this_sub, this_samp])
+        new_sample$sample <- this_samp
+        new_all_nca_data <- rbind(new_all_nca_data, new_sample)
+      }
+    }
+    all_nca_data <- new_all_nca_data
+    outfile <- file.path(run_dir, "resampledNCA.csv")
+    message("Resampled NCA data for subject level model averaging written to ", outfile)
+    write.csv(all_nca_data, outfile)
+  }
+
+  ## and do stats
+
+  message(format(Sys.time(), digits = 0), " Done reading NCA results, doing stats")
+  if (!is.null(all_nca_data)) {
+    Cmax_result <- data.frame(
+      MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
+      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+      Assessment = -999, BE = -999
+    )
+    tryCatch(
+      {
+        Cmax_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(Cmax)),
+          MetricColumn = "Cmax",
+          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+        )
+        Cmax_result$SampleNum <- this_samp
+        # reorder, but sampleNum first
+        Cmax_result <- subset(Cmax_result, select = c(SampleNum, MetricColumn:BE))
+      },
+      error = function(e) {
+        Cmax_result <- data.frame(
+          SampleNum = this_samp, MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
+          swR = -999, pe = -999, critbound = -999, Assessment = -999, BE = -999
+        )
+      }
+    )
+    colnames(Cmax_result) <- c(
+      "SampleNum", "Cmax_MetricColumn", "Cmax_Ratio", "Cmax_lower_CL", "Cmax_upper_CL", "Cmax_swR", "Cmax_pe",
+      "Cmax_critbound", "Cmax_VarianceCriterion", "Cmax_Assessment", "Cmax_BE"
+    )
+
+
+    AUClast_result <- data.frame(
+      MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
+      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+      Assessment = -999, BE = -999
+    )
+    tryCatch(
+      {
+        AUClast_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUClast)),
+          MetricColumn = "AUClast",
+          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+        )
+      },
+      error = function(e) {
+        AUClast_result <- data.frame(
+          MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
+          swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999
+        )
+      }
+    )
+    colnames(AUClast_result) <- c(
+      "AUClast_MetricColumn", "AUClast_Ratio", "AUClast_lower_CL", "AUClast_upper_CL", "AUClast_swR", "AUClast_pe",
+      "AUClast_critbound", "AUClast_VarianceCriterion", "AUClast_Assessment", "AUClast_BE"
+    )
+
+
+    AUCinf_result <- data.frame(
+      MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
+      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+      Assessment = -999, BE = -999
+    )
+    tryCatch(
+      {
+        AUCinf_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUCinf)),
+          MetricColumn = "AUCinf",
+          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+        )
+      },
+      error = function(e) {
+        AUCinf_result <- data.frame(
+          MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
+          swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+          Assessment = -999, BE = -999
+        )
+      }
+    )
+
+    colnames(AUCinf_result) <- c(
+      "AUCinf_MetricColumn", "AUCinf_Ratio", "AUCinf_lower_CL", "AUCinf_upper_CL", "AUCinf_swR", "AUCinf_pe",
+      "AUCinf_critbound", "AUCinf_VarianceCriterion", "AUCinf_Assessment", "AUCinf_BE"
+    )
+    all_results <- rbind(all_results, c(Cmax_result, AUCinf_result, AUClast_result))
+  } else {
+    # no out.dat
   }
   return(all_results)
 }
@@ -1192,68 +1315,74 @@ calc_power = function(run_dir, samp_size, alpha, NTID){
 #' @export
 #'
 #' @examples
-make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE){
-  rval = tryCatch({
-    BICS <- BICS %>%
-      dplyr::mutate(Samp_num = dplyr::row_number())
-    this_NCAs <- NULL
-    all_NCAs <- data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(),
-                            Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
-    this_model <- 1
-    for(this_model in 1:nmodels){
-      all_NCAs_this_model <- data.frame( ID = as.integer(),  treatment = as.character(),	period = as.integer(), 	sequence = as.integer(),
-                                        Cmax = as.numeric(),  AUCinf = as.numeric(),	AUClast= as.numeric(),model = as.integer())
-      # gather all Cmax etc from models labeled by model superimpose distributions
-      which_models <- BICS$Best
-      # compile list of NCA with best
-      this_samp <- which_models[1]
-      for(this_samp in which_models){
-        filename <- file.path(run_dir,paste0("MBBEsim",this_samp),paste0("NCAresults",this_samp, ".csv"))
-        if(file.exists(filename)){
-          this_NCAs <-  utils::read.csv(filename)
-          this_NCAs$model <- this_model
-          all_NCAs_this_model <- rbind(all_NCAs_this_model, this_NCAs)
+make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE) {
+  rval <- tryCatch(
+    {
+      BICS <- BICS %>%
+        dplyr::mutate(Samp_num = dplyr::row_number())
+      this_NCAs <- NULL
+      all_NCAs <- data.frame(
+        ID = as.integer(), treatment = as.character(), period = as.integer(), sequence = as.integer(),
+        Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric(), model = as.integer()
+      )
+      this_model <- 1
+      for (this_model in 1:nmodels) {
+        all_NCAs_this_model <- data.frame(
+          ID = as.integer(), treatment = as.character(), period = as.integer(), sequence = as.integer(),
+          Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric(), model = as.integer()
+        )
+        # gather all Cmax etc from models labeled by model superimpose distributions
+        which_models <- BICS$Best
+        # compile list of NCA with best
+        this_samp <- which_models[1]
+        for (this_samp in which_models) {
+          filename <- file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
+          if (file.exists(filename)) {
+            this_NCAs <- utils::read.csv(filename)
+            this_NCAs$model <- this_model
+            all_NCAs_this_model <- rbind(all_NCAs_this_model, this_NCAs)
+          }
+        }
+        if (dim(all_NCAs_this_model)[1] > 0) {
+          all_NCAs <- rbind(all_NCAs, all_NCAs_this_model)
+          Cmax_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = Cmax), ) +
+            ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+            ggplot2::ggtitle(paste("Cmax, model =", this_model))
+
+          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width = 9, height = 6)
+          AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUCinf), ) +
+            ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+            ggplot2::ggtitle(paste("AUCinf, model =", this_model))
+
+          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width = 9, height = 6)
+          AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUClast), ) +
+            ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+            ggplot2::ggtitle(paste("AUClast, model =", this_model))
+
+          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width = 9, height = 6)
         }
       }
-      if(dim(all_NCAs_this_model)[1] > 0){
-        all_NCAs <- rbind(all_NCAs, all_NCAs_this_model)
-        Cmax_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x = Cmax),) +
-          ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill = treatment), position = "identity", alpha=0.4, bins=30) +
-          ggplot2::ggtitle(paste("Cmax, model =",this_model))
+      Cmax_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = Cmax), ) +
+        ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+        ggplot2::ggtitle("Cmax, all Models")
 
-        ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width= 9, height= 6)
-        AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x=AUCinf),) +
-          ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment), position = "identity", alpha=0.4, bins=30) +
-          ggplot2::ggtitle(paste("AUCinf, model =",this_model))
+      ggplot2::ggsave(file.path(run_dir, "All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width = 9, height = 6)
+      AUCinf_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUCinf), ) +
+        ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+        ggplot2::ggtitle("AUCinf, all Models")
 
-        ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width= 9, height= 6)
-        AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model,ggplot2::aes(x=AUClast),) +
-          ggplot2::geom_histogram(ggplot2::aes(color=treatment,fill=treatment) ,position = "identity",alpha=0.4, bins=30) +
-          ggplot2::ggtitle(paste("AUClast, model =",this_model))
+      ggplot2::ggsave(file.path(run_dir, "All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width = 9, height = 6)
+      AUClast_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUClast), ) +
+        ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
+        ggplot2::ggtitle("AUClast, all Models")
 
-        ggplot2::ggsave(file.path(run_dir,paste0("Model_",this_model,"_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width= 9, height= 6)
-      }
-    }
-    Cmax_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x = Cmax),) +
-      ggplot2::geom_histogram(ggplot2::aes(color=treatment, fill = treatment), position = "identity", alpha=0.4, bins = 30) +
-      ggplot2::ggtitle("Cmax, all Models")
-
-    ggplot2::ggsave(file.path(run_dir,"All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width= 9, height= 6)
-    AUCinf_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x=AUCinf),) +
-      ggplot2::geom_histogram(ggplot2::aes(color=treatment, fill=treatment), position = "identity", alpha=0.4, bins = 30) +
-      ggplot2::ggtitle("AUCinf, all Models")
-
-    ggplot2::ggsave(file.path(run_dir,"All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width= 9, height= 6)
-    AUClast_plot <- ggplot2::ggplot(all_NCAs,ggplot2::aes(x=AUClast),) +
-      ggplot2::geom_histogram(ggplot2::aes(color=treatment, fill=treatment), position = "identity", alpha=0.4, bins = 30) +
-      ggplot2::ggtitle("AUClast, all Models")
-
-    ggplot2::ggsave(file.path(run_dir,"All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width= 9, height= 6)
-  }, error = function(cond){
+      ggplot2::ggsave(file.path(run_dir, "All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width = 9, height = 6)
+    },
+    error = function(cond) {
       message("Failed in make_NCA_plots, error message = ", cond)
-})
+    }
+  )
   return()
-
 }
 
 #' run_mbbe_json, reads json file, calls run_mbbe
@@ -1262,46 +1391,52 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #'
 #' @examples run_mbbe_json(Args.json)
 run_mbbe_json <- function(Args.json) {
-  if(!file.exists(Args.json)){
+  if (!file.exists(Args.json)) {
     message(Args.json, " file not found, exiting")
-  }else{
+  } else {
     Args <- RJSONIO::fromJSON(Args.json)
-    all_args <- list(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
-    Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
-    Args$plan, Args$alpha_error, Args$NTID, Args$save_output)
-    if(any(sapply(all_args, is.null))){
-      message("required values in json file are: \n",
-              "run_dir",
-              "model_source",
-              "num_parallel",
-              "crash_value",
-              "nmfe_path",
-              "delta_parms",
-              "use_check_identifiable",
-              "NCA_end_time",
-              "rndseed",
-              "use_simulation_data",
-              "ngroups",
-              "samp_size",
-              "reference_groups",
-              "test_groups",
-              "plan",
-              "alpha_error",
-              "NTID",
-              "save_output and ",
-              "simulation_data_path, if use_simulation_data is true\nsee documentation for details\n exiting")
-    } else{
-      if( Args$use_simulation_data & is.null(Args$simulation_data_path)){
-        message("If use_simulation_data is true, simulation_data_path must be provided in json file" )
-      }else{
-        return <- run_mbbe(Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
-                 Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path,
-                 Args$plan, Args$alpha_error, Args$NTID, Args$save_output)
-        file_out <- data.frame(return$Cmax_power,  return$AUClast_power, return$AUCinf_power)
-        colnames(file_out) <- c("Cmax power","AUClast power","AUCinf power")
-        write.csv(file_out, file.path(Args$run_dir,paste0("MBBEpower",stringr::str_replace_all(Sys.time(),":","-"),".csv")),row.names = FALSE,quote = FALSE)
+    all_args <- list(
+      Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
+      Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
+      Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$save_output
+    )
+    if (any(sapply(all_args, is.null))) {
+      message(
+        "required values in json file are: \n",
+        "run_dir",
+        "model_source",
+        "num_parallel",
+        "crash_value",
+        "nmfe_path",
+        "delta_parms",
+        "use_check_identifiable",
+        "NCA_end_time",
+        "rndseed",
+        "use_simulation_data",
+        "ngroups",
+        "samp_size",
+        "reference_groups",
+        "test_groups",
+        "plan",
+        "alpha_error",
+        "NTID",
+        "Args$model_averaging_by",
+        "save_output and ",
+        "simulation_data_path, if use_simulation_data is true\nsee documentation for details\n exiting"
+      )
+    } else {
+      if (Args$use_simulation_data & is.null(Args$simulation_data_path)) {
+        message("If use_simulation_data is true, simulation_data_path must be provided in json file")
+      } else {
+        return <- run_mbbe(
+          Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
+          Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path,
+          Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$save_output
+        )
+        file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
+        colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
+        write.csv(file_out, file.path(Args$run_dir, paste0("MBBEpower", stringr::str_replace_all(Sys.time(), ":", "-"), ".csv")), row.names = FALSE, quote = FALSE)
         message(paste0(capture.output(return), collapse = "\n"))
-
       }
     }
   }
@@ -1340,14 +1475,32 @@ run_mbbe <- function(crash_value, ngroups,
                      use_simulation_data, simulation_data_path,
                      plan = c("multisession", "sequential", "multicore"),
                      alpha_error = 0.05, NTID,
-                     save_output = FALSE ) {
+                     model_averaging_by, save_output = FALSE) {
   tictoc::tic()
-  if(unlink(run_dir, recursive = TRUE, force = TRUE)){
+  if (unlink(run_dir, recursive = TRUE, force = TRUE)) {
     stop("Unable to delete run directory ", run_dir)
   }
+
+  # setup all models
+  if (plan == "multisession") {
+    old_plan <-
+      future::plan(future::multisession, workers = num_parallel)
+  } else if (plan == "multicore") {
+    old_plan <- future::plan(future::multicore, workers = num_parallel)
+  } else if (plan == "sequential") {
+    old_plan <- future::plan(future::sequential)
+  }
+
   oldOptions <- options()
   on.exit(options(oldOptions))
+  options(future.globals.onReference = "error")
+  on.exit(future::plan(old_plan))
   message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
+  if (!model_averaging_by %in% c("study", "subject")) {
+    stop("Error, model_averaging is ",model_averaging_by, " model_averaging_by must be one of study or subject, exiting")
+  } else {
+    message("Model averaging will be by ", model_averaging_by)
+  }
   message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
   message("Narrow Therapeutic Index  = ", NTID)
   message("Alpha error rate for bioqulvalence testing = ", alpha_error)
@@ -1372,81 +1525,107 @@ run_mbbe <- function(crash_value, ngroups,
 
   set.seed(rndseed)
 
-  msg <- check_requirements(run_dir, samp_size, model_source, ngroups,
-                            reference_groups, test_groups, nmfe_path,
-                            use_check_identifiable, use_simulation_data,
-                            simulation_data_path)
+  msg <- check_requirements(
+    run_dir, samp_size, model_source, ngroups,
+    reference_groups, test_groups, nmfe_path,
+    use_check_identifiable, use_simulation_data,
+    simulation_data_path
+  )
   if (msg$rval) {
-    message("Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),
-            "\n where N is the model number")
+    message(
+      "Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),
+      "\n where N is the model number"
+    )
     nmodels <- copy_model_files(model_source, run_dir)
 
-    if(nmodels > 0){
-      passes_identifiable <-  c(rep(0,nmodels))
-      names(passes_identifiable) = paste0("Model",seq(1:nmodels))
-      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size," writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
+    if (nmodels > 0) {
+      passes_identifiable <- c(rep(0, nmodels))
+      names(passes_identifiable) <- paste0("Model", seq(1:nmodels))
+      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, " writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
-      message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size," in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
-      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE, plan, num_parallel )) {
+      message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
+      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE, plan, num_parallel)) {
         message("Failed bootstrap")
       } else {
         # need to wait until all are done, this returns when all are started.
 
-        message(format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
-        parms <- get_parameters(run_dir, nmodels,
-                                samp_size, delta_parms,
-                                crash_value, use_check_identifiable,
-                                passes_identifiable)
-        base_models <- get_base_model(run_dir, nmodels)  # get all nmodels base model
+        message("\n", format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
+        parms <- get_parameters(
+          run_dir, nmodels,
+          samp_size, delta_parms,
+          crash_value, use_check_identifiable,
+          passes_identifiable
+        )
+        base_models <- get_base_model(run_dir, nmodels) # get all nmodels base model
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
-        final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path)  # don't really do anything with final models, already written to disc
-        message(format(Sys.time(), digits = 0), " Running simulation models 1-",samp_size," in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
-        if(run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE, plan, num_parallel)){
-            message(format(Sys.time(), digits = 0)," Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "MBBEsimM", "NCAresultsM.csv"), ",  where M is the simulation number")
-            calc_NCA(run_dir,
-                     ngroups,
-                     reference_groups,
-                     test_groups,
-                     NCA_end_time,
-                     samp_size, plan,
-                     num_parallel)
+        final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path) # don't really do anything with final models, already written to disc
+        message(format(Sys.time(), digits = 0), " Running simulation models 1-", samp_size, " in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
+        if (run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE, plan, num_parallel)) {
+          message("\n", format(Sys.time(), digits = 0), " Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "MBBEsimM", "NCAresultsM.csv"), ",  where M is the simulation number")
+          if (model_averaging_by == "subject") {
+            message("\n Note the NCA parameters are by study, prior random selection by subject for model averaging")
+          }
 
-            message(format(Sys.time(), digits = 0)," Done calculating NCA parameters, making plots")
+          # note would like to do NCA parallel, so don't end
+          calc_NCA(
+            run_dir,
+            ngroups,
+            reference_groups,
+            test_groups,
+            NCA_end_time,
+            samp_size, plan,
+            num_parallel
+          )
+          message(format(Sys.time(), digits = 0), " Done calculating NCA parameters, making plots")
 
-            make_NCA_plots(parms$BICS,
-                           run_dir,
-                           samp_size,
-                           nmodels,
-                           reference_groups,
-                           test_groups)
-            # read NCA output and do stats
-            all_results <- calc_power(run_dir, samp_size, alpha = alpha_error, NTID = NTID)
-        }else{
-          all_results = NULL
+          make_NCA_plots(
+            parms$BICS,
+            run_dir,
+            samp_size,
+            nmodels,
+            reference_groups,
+            test_groups
+          )
+
+          message(format(Sys.time(), digits = 0), " Done making plots, calculation power")
+          # read NCA output and do stats
+          all_results <- calc_power(run_dir, samp_size,
+            alpha = alpha_error,
+            model_averaging_by, NTID = NTID
+          )
+        } else {
+          all_results <- NULL
         }
-        if(!is.null(all_results)){
-          output_file <- file.path(run_dir,"All_results.csv")
+        future::plan(old_plan)
+        if (!is.null(all_results)) {
+          output_file <- file.path(run_dir, "All_results.csv")
           count <- 0
-          while(file.exists(output_file) & count < 20){
+          while (file.exists(output_file) & count < 20) {
             count <- count + 1
             file.remove(output_file)
             Sys.sleep(0.25)
           }
           count <- 0
-          while(!file.exists(output_file) & count < 20){
-            write.csv(all_results, file = output_file, quote=FALSE)
+          while (!file.exists(output_file) & count < 20) {
+            write.csv(all_results, file = output_file, quote = FALSE)
             count <- count + 1
             Sys.sleep(0.25)
           }
-          if(!file.exists(output_file)){
+          if (!file.exists(output_file)) {
             message("Unable to write to ", output_file)
           }
-          Cmax_power <- all_results %>% dplyr::filter(Cmax_BE != -999) %>%  dplyr::summarise(Power = mean(Cmax_BE))
-          AUClast_power <- all_results %>% dplyr::filter(AUClast_BE != -999) %>% dplyr::summarise(Power = mean(AUClast_BE))
-          AUCinf_power <- all_results %>% dplyr::filter(AUCinf_BE != -999) %>% dplyr::summarise(Power = mean(AUCinf_BE))
+          Cmax_power <- all_results %>%
+            dplyr::filter(Cmax_BE != -999) %>%
+            dplyr::summarise(Power = mean(Cmax_BE))
+          AUClast_power <- all_results %>%
+            dplyr::filter(AUClast_BE != -999) %>%
+            dplyr::summarise(Power = mean(AUClast_BE))
+          AUCinf_power <- all_results %>%
+            dplyr::filter(AUCinf_BE != -999) %>%
+            dplyr::summarise(Power = mean(AUCinf_BE))
           power <- c(Cmax_power, AUCinf_power, AUClast_power)
-          write.csv(power,file.path(run_dir,"Power.csv"))
-        }else{
+          write.csv(power, file.path(run_dir, "Power.csv"))
+        } else {
           message("Failed in calc_power")
           message(msg$msg, " exiting")
           Cmax_power <- NULL
@@ -1455,24 +1634,23 @@ run_mbbe <- function(crash_value, ngroups,
         }
       }
     }
-    }else{
-      message(msg$msg, " exiting")
-      Cmax_power <- NULL
-      AUClast_power <- NULL
-      AUCinf_power <- NULL
-    }
-    tictoc::toc()
-    message("Done at ",Sys.time())
-    return(
-      list(
-        "Cmax_power" = Cmax_power,
-        "AUClast_power" = AUClast_power,
-        "AUCinf_power" = AUCinf_power,
-        "run_dir" = run_dir,
-        "Num_identifiable" = parms$passes_identifiable,
-        "BICS" = parms$BICS
-      )
+  } else {
+    message(msg$msg, " exiting")
+    Cmax_power <- NULL
+    AUClast_power <- NULL
+    AUCinf_power <- NULL
+  }
+  tictoc::toc()
+  message("Done at ", Sys.time())
+  return(
+    list(
+      "Cmax_power" = Cmax_power,
+      "AUClast_power" = AUClast_power,
+      "AUCinf_power" = AUCinf_power,
+      "run_dir" = run_dir,
+      "Num_identifiable" = parms$passes_identifiable,
+      "BICS" = parms$BICS
     )
+  )
+
 }
-
-

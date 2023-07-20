@@ -4,7 +4,7 @@
                 "U:/fda/mbbe/mbbe/inst/examples/NM_05D01_05a.mod"],
 "num_parallel":       16,
 "crash_value":   999999,
-"nmfe_path": "c:/nm744/util/nmfe74.bat",
+"nmfe_path": "c:/nm74g64/util/nmfe74.bat",
 "delta_parms":      0.1,
 "use_check_identifiable": true,
 "NCA_end_time":       72,
@@ -18,5 +18,6 @@
 "plan": "multisession",
 "alpha_error": 0.05,
 "NTID": false,
+"model_averaging_by": "study",
 "save_output": true
 }

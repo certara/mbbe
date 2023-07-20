@@ -1,4 +1,4 @@
-$PROBLEM    tacrolimis for ML
+$PROBLEM    tacrolimis for ML Model 2, 17 parameters
 $INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
   EVID GROUP   DROP   BLQ DV SEQ
 

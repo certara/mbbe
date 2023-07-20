@@ -39,11 +39,13 @@ get_BEQDF <-
            PartialReplicate = FALSE,
            NTID) {
     RequestedColumnNames <-
-      c(MetricColumn,
+      c(
+        MetricColumn,
         SubjectColumn,
         TreatmentColumn,
         SequenceColumn,
-        PeriodColumn)
+        PeriodColumn
+      )
 
     MissingColumns <-
       is.na(match(RequestedColumnNames, colnames(NCA.Set)))
@@ -63,10 +65,12 @@ get_BEQDF <-
     NCA.Set$sequence <- NCA.Set[[SequenceColumn]]
 
     critbound.s2wR <-
-      get_NCA.Set.RSABE(NCA.Set = NCA.Set,
-                        alpha = alpha,
-                        PartialReplicate = PartialReplicate,
-                        NTID = NTID)
+      get_NCA.Set.RSABE(
+        NCA.Set = NCA.Set,
+        alpha = alpha,
+        PartialReplicate = PartialReplicate,
+        NTID = NTID
+      )
 
     ABE <- get_NCA.Set.ABE(NCA.Set, alpha = alpha)
     OverallDF <-
@@ -77,21 +81,21 @@ get_BEQDF <-
       OverallDF$Assessment <- "NTID criteria used"
       OverallDF$BE <-
         OverallDF$lower.CL < 0.8 &
-        OverallDF$upper.CL > 1.25 &
-        OverallDF$critbound <= 0 &
-        OverallDF$VarianceCriterion
+          OverallDF$upper.CL > 1.25 &
+          OverallDF$critbound <= 0 &
+          OverallDF$VarianceCriterion
     } else {
       OverallDF$Assessment <-
         ifelse(OverallDF$swR < 0.294, "Unscaled ABE used", "RSABE used")
       if (OverallDF$swR < 0.294) {
         OverallDF$BE <-
           OverallDF$lower.CL >= 0.8 &
-          OverallDF$upper.CL <= 1.25
+            OverallDF$upper.CL <= 1.25
       } else {
         OverallDF$BE <-
           OverallDF$pe >= 0.8 &
-          OverallDF$pe <= 1.25 &
-          OverallDF$critbound <= 0
+            OverallDF$pe <= 1.25 &
+            OverallDF$critbound <= 0
       }
     }
 
@@ -114,7 +118,7 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
       subset = !is.na(logpk),
       random = ~ treatment |
         ID,
-      weights = nlme::varIdent(form = ~ treatment),
+      weights = nlme::varIdent(form = ~treatment),
       data = NCA.Set,
       method = "REML",
       na.action = na.exclude,
@@ -129,7 +133,8 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
 
   ConfIntRestults <-
     confint(emmeans::emmeans(modelABE, pairwise ~ treatment),
-            level = 1 - 2 * alpha)
+      level = 1 - 2 * alpha
+    )
   Ratio <- exp(-ConfIntRestults$contrasts$estimate) * 100
   # note the difference lower-upper
   lower.CL <- exp(-ConfIntRestults$contrasts$upper.CL)
@@ -168,7 +173,7 @@ get_NCA.Set.RSABE <-
 
     # make a column with treatment and repl, i.e T1,T2, R1,R2
     NCA.Set$code2 <- paste0(NCA.Set$treatment, NCA.Set$repl)
-    NCA.Set <- NCA.Set[order(NCA.Set$ID, NCA.Set$period),]
+    NCA.Set <- NCA.Set[order(NCA.Set$ID, NCA.Set$period), ]
 
     # now reshape to wide with cols subj, seq, pk.R1, pk.R2, pk.T1, pk.T2
 
@@ -196,104 +201,111 @@ get_NCA.Set.RSABE <-
 
     # now get rid of subjects not having all 4 periods which have TR = NA
     NCA.Set_ilat <-
-      NCA.Set_all[!is.na(NCA.Set_all$TR),]  # ilat analysis, ANOVA with seq as effect
+      NCA.Set_all[!is.na(NCA.Set_all$TR), ] # ilat analysis, ANOVA with seq as effect
     NCA.Set_ilat$sequence <- as.factor(NCA.Set_ilat$sequence)
     # with standard contr.treatment we get not the wanted intercept!  with that the intercept is intercept+seq1
     oc <- options("contrasts")
     on.exit(options(oc))
     options(contrasts = c("contr.sum", "contr.poly"))
 
-    tryCatch({
-      m1 <- lm(TR ~ sequence, data = NCA.Set_ilat)
+    tryCatch(
+      {
+        m1 <- lm(TR ~ sequence, data = NCA.Set_ilat)
 
-      # intercept is estimate of ?t-?R
-      est <- coef(m1)[1]
-      pe <- exp(est)
+        # intercept is estimate of ?t-?R
+        est <- coef(m1)[1]
+        pe <- exp(est)
 
-      # lower, upper 90% CI
-      CI <- confint(m1, 1, level = 1 - 2 * alpha)
-      dfTR <- m1$df.residual
+        # lower, upper 90% CI
+        CI <- confint(m1, 1, level = 1 - 2 * alpha)
+        dfTR <- m1$df.residual
 
-      # stderr, 'the unknown x' for unbiased estimate of (?T-?R)^2
-      stderr <-
-        summary(m1)$coefficients["(Intercept)", "Std. Error"]
+        # stderr, 'the unknown x' for unbiased estimate of (?T-?R)^2
+        stderr <-
+          summary(m1)$coefficients["(Intercept)", "Std. Error"]
 
-      # linearized scABE criterion component x
-      x <- est ^ 2 - stderr ^ 2
-      boundx <- max(abs(CI)) ^ 2
+        # linearized scABE criterion component x
+        x <- est^2 - stderr^2
+        boundx <- max(abs(CI))^2
 
-      # now the equivalent of SAS code for R-R, dlat analysis
-      NCA.Set_dlat <- NCA.Set_all
-      NCA.Set_dlat$RR <- NCA.Set_dlat$R1 - NCA.Set_dlat$R2
-      NCA.Set_dlat <- NCA.Set_dlat[!is.na(NCA.Set_dlat$RR),]
-      m2 <- lm(RR ~ sequence, data = NCA.Set_dlat)
-      dfRR <- m2$df.residual
-      s2wR <- summary(m2)$sigma ^ 2 / 2
-
-      if (NTID) {
-        # warfarin guidance
-        theta <- ((log(1.11111)) / 0.1) ^ 2
-      } else {
-        # progesterone guidance for HVD's
-        theta <- ((log(1.25)) / 0.25) ^ 2
-      }
-
-      # linearized scABE criterion component y
-      y <- -theta * s2wR
-      boundy <- y * dfRR / qchisq(0.95, dfRR)
-      swR <- sqrt(s2wR)
-      # linearized scABE criterion, 95% upper bound
-      crit <- x + y
-      critbound <-
-        (x + y) + sqrt(((boundx - x) ^ 2) + ((boundy - y) ^ 2))
-
-      if (NTID) {
-        # TT variability for NTID
         # now the equivalent of SAS code for R-R, dlat analysis
-        NCA.Set_dlatTT <- NCA.Set_all
-        NCA.Set_dlatTT$TT <- NCA.Set_dlatTT$T1 - NCA.Set_dlatTT$T2
-        NCA.Set_dlatTT <- NCA.Set_dlatTT[!is.na(NCA.Set_dlatTT$TT),]
+        NCA.Set_dlat <- NCA.Set_all
+        NCA.Set_dlat$RR <- NCA.Set_dlat$R1 - NCA.Set_dlat$R2
+        NCA.Set_dlat <- NCA.Set_dlat[!is.na(NCA.Set_dlat$RR), ]
+        m2 <- lm(RR ~ sequence, data = NCA.Set_dlat)
+        dfRR <- m2$df.residual
+        s2wR <- summary(m2)$sigma^2 / 2
 
-        m3   <- lm(TT ~ sequence, data = NCA.Set_dlatTT)
-        dfTT <- m3$df.residual
-        s2wT <- summary(m3)$sigma ^ 2 / 2
-        swT  <- sqrt(s2wT)
-        # ratio of swT/swR and 90% CI
-        alpha2  <- 0.1
-        sRatio  <- swT / swR
-        sRatioCI <-
-          c(swT / swR / sqrt(qf(
-            alpha2 / 2,
-            df1 = dfTT,
-            df2 = dfRR,
-            lower.tail = FALSE
-          )),
-          swT / swR / sqrt(qf(
-            1 - alpha2 / 2,
-            df1 = dfTT,
-            df2 = dfRR,
-            lower.tail = FALSE
-          )))
+        if (NTID) {
+          # warfarin guidance
+          theta <- ((log(1.11111)) / 0.1)^2
+        } else {
+          # progesterone guidance for HVD's
+          theta <- ((log(1.25)) / 0.25)^2
+        }
 
-        VarianceCriterion <- sRatioCI[2] <= 2.5
-      } else {
-        VarianceCriterion <- NA
+        # linearized scABE criterion component y
+        y <- -theta * s2wR
+        boundy <- y * dfRR / qchisq(0.95, dfRR)
+        swR <- sqrt(s2wR)
+        # linearized scABE criterion, 95% upper bound
+        crit <- x + y
+        critbound <-
+          (x + y) + sqrt(((boundx - x)^2) + ((boundy - y)^2))
+
+        if (NTID) {
+          # TT variability for NTID
+          # now the equivalent of SAS code for R-R, dlat analysis
+          NCA.Set_dlatTT <- NCA.Set_all
+          NCA.Set_dlatTT$TT <- NCA.Set_dlatTT$T1 - NCA.Set_dlatTT$T2
+          NCA.Set_dlatTT <- NCA.Set_dlatTT[!is.na(NCA.Set_dlatTT$TT), ]
+
+          m3 <- lm(TT ~ sequence, data = NCA.Set_dlatTT)
+          dfTT <- m3$df.residual
+          s2wT <- summary(m3)$sigma^2 / 2
+          swT <- sqrt(s2wT)
+          # ratio of swT/swR and 90% CI
+          alpha2 <- 0.1
+          sRatio <- swT / swR
+          sRatioCI <-
+            c(
+              swT / swR / sqrt(qf(
+                alpha2 / 2,
+                df1 = dfTT,
+                df2 = dfRR,
+                lower.tail = FALSE
+              )),
+              swT / swR / sqrt(qf(
+                1 - alpha2 / 2,
+                df1 = dfTT,
+                df2 = dfRR,
+                lower.tail = FALSE
+              ))
+            )
+
+          VarianceCriterion <- sRatioCI[2] <= 2.5
+        } else {
+          VarianceCriterion <- NA
+        }
+
+        critbound.s2wR <- data.frame(
+          swR = swR,
+          pe = pe,
+          critbound = critbound,
+          VarianceCriterion = VarianceCriterion
+        )
+      },
+      error = function(cond) {
+        message("Error during linearized scABE criterion calculation:")
+        message(cond)
+        critbound.s2wR <- data.frame(
+          swR = NA,
+          pe = NA,
+          critbound = NA,
+          VarianceCriterion = NA
+        )
       }
-
-      critbound.s2wR <- data.frame(swR = swR,
-                                   pe = pe,
-                                   critbound = critbound,
-                                   VarianceCriterion = VarianceCriterion)
-    }, error = function(cond) {
-      message("Error during linearized scABE criterion calculation:")
-      message(cond)
-      critbound.s2wR <- data.frame(
-        swR = NA,
-        pe = NA,
-        critbound = NA,
-        VarianceCriterion = NA
-      )
-    })
+    )
 
     critbound.s2wR
   }
@@ -308,11 +320,11 @@ get_NCA.Set.RSABE <-
 #'
 .get_NCA.Set.ReplicateNumber <- function(NCA.Set) {
   NCA.Set <-
-    data.frame(NCA.Set[order(NCA.Set$ID, NCA.Set$treatment, NCA.Set$period),])
+    data.frame(NCA.Set[order(NCA.Set$ID, NCA.Set$treatment, NCA.Set$period), ])
   NCA.Set$repl <- replicate(nrow(NCA.Set), 1)
   for (i in c(2:nrow(NCA.Set))) {
     if (NCA.Set$ID[i] != NCA.Set$ID[i - 1] |
-        NCA.Set$treatment[i] != NCA.Set$treatment[i - 1]) {
+      NCA.Set$treatment[i] != NCA.Set$treatment[i - 1]) {
       NCA.Set$repl[i] <- 1
     } else {
       NCA.Set$repl[i] <- NCA.Set$repl[i - 1] + 1

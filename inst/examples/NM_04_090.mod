@@ -1,7 +1,9 @@
-$PROBLEM    tacrolimis for ML Model 1, 16 parameters
+$PROBLEM    tacrolimis for ML MODEL 5 17 PARAMETERS
+
 $INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
   EVID GROUP   DROP BLQ DV SEQ
 $DATA      U:\fda\mbbe\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
+ 
 $OMEGA  
   1  FIX  	;  ETA(1) CL
   1  FIX  	;  ETA(2) V2 
@@ -47,18 +49,18 @@ $PK
   ;;CL  = EXP(THETA(1) + THETA(3) * ETA(1) + THETA(34) * ETA(2))
   ;;V2  = EXP(THETA(2) + THETA(34) * ETA(1) + THETA(4) * ETA(2))
 
-  CL 	= EXP(THETA(1)+THETA(3)*ETA(1)    + BOVCL) ;; ETACLV IS CORRELATION OF ETA(V) AND ETA(CL)
-  V2 	= EXP(THETA(2)+THETA(4)*ETA(2)    + BOVV) 
+  CL 	= EXP(THETA(1)+THETA(3)*ETA(1)    + THETA(17) * ETA(2)  + BOVCL) ;; ETACLV IS CORRELATION OF ETA(V) AND ETA(CL)
+  V2 	= EXP(THETA(2)+THETA(4)*ETA(2)    + THETA(17) * ETA(1)  + BOVV) 
   IF(TRT.EQ.1) THEN ;; REFERENCE
   KA 	= EXP(THETA(5) + BOVKA  )  
   F1	= 1
-  ALAG1	= EXP(THETA(12))
-  ; NO D1
+  ;; NO ALAG1 FOR REFERENCE
+  D1	= EXP(THETA(12))
   ELSE   ;; TEST
   KA 	= EXP(THETA(6) + BOVKA )  
   F1 	= EXP(THETA(7))
-  ALAG1	= EXP(THETA(13))
-  ; NO D1
+  ;; NO ALAG1 FOR TEST
+  D1	= EXP(THETA(13))
   END IF   
 
   S2   	= V2/1000000 	; CONC IN PG/M (NG/L), DOSE IN MG, VOL IN L 
@@ -75,19 +77,20 @@ $ERROR
   LLOQ = 50 
   SD = SQRT(PROP**2*IPRED**2 + ADD**2) ; Residual weight ADD AND P PROP IN SD AND CV UNITS, NOT VARIANCE
   IF (BLQ.EQ.0) THEN
-   F_FLAG=0 ; ELS
-   Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
+  F_FLAG=0 ; ELS
+  Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
   ENDIF
 
   IF (BLQ.EQ.1) THEN
-   F_FLAG=1 ; LIKELIHOOD
-   Y=PHI((LLOQ-IPRED)/SD)
-  ENDIF;
+  F_FLAG=1 ; LIKELIHOOD
+  Y=PHI((LLOQ-IPRED)/SD)
+  ENDIF
 
   ;;;; Start EST
-
-$ESTIMATION METHOD=0 INTER MAX=9999 SADDLE_RESET=1 NOABORT
  
+
+$ESTIMATION METHOD=COND LAPLAC INTER MAX=9999 SADDLE_RESET=1  NOABORT
+$COVARIANCE PRINT=E UNCOND PRECOND=2
 
 $THETA  
   (-1,3.8,10) 		; THETA(1) LN(CL1)
@@ -96,24 +99,24 @@ $THETA
   (-4,-0.38)		; THETA(4) LN(ETA(V))
   (-5,-0.4,5)	 	; THETA(5) LN(KA) REFERENCE
   (-5,0.6,5)	 	; THETA(6) LN(KA) TEST 
-  (0.15 FIX)	 	; THETA(7) LN(F) TEST  
-  (-0.8 FIX)		; THETA(8) LN(PROPERROR)
-  (1 FIX)		; THETA(9) LN(ADDERROR)
-  (-0.8 FIX) 		; THETA(10) LN(K32)
-  (-0.8 FIX) 		; THETA(11) LN(K23)
-  (-2 FIX)		; THETA(12) LN(ALAG) REFERENCE 
-  (-2 FIX) 		; THETA(13) LN(ALAG) test
-  ; NO D1
+  (-3,0.15,1)	 	; THETA(7) LN(F) TEST  
+  (-6,-0.8,2)		; THETA(8) LN(PROPERROR)
+  (-7,1,3)		; THETA(9) LN(ADDERROR)
+  (-5,-2.53064,5) 		; THETA(10) LN(K32)
+  (-5,-0.89632,5) 		; THETA(11) LN(K23)
+  ;; NO ALAG1
+  (-7,-2.58,5) 		; THETA(12) LN(D1) REFERENCE
+  (-7,-2.58,5)		 ; THETA(13) LN(D1) TEST
   ;;no eta on ka
-  (-0.2 FIX)	; THETA(14) BOVV 
-  (-0.2 FIX)	; THETA(15) BOVCL 
-  (-0.2 FIX)	; THETA(16) BOVKA 
+  (-4,-0.3,5)	; THETA(14) BOVV 
+  (-4,-0.3,5)	; THETA(15) BOVCL 
+  (-4,-0.3,5)	; THETA(16) BOVKA 
   ;; NO BOVALAG1  
-  ;; NO COVARIANCE BETWEEN V AND CL  
+  0.1		; THETA(17) COVARIANCE OF V AND CL  
 
 
 ;; Phenotype 
-;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 2), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 1), ('COVARVCL', 1)])
+;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 0), ('BOVALAG1', 0), ('DURATION1', 2), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 1), ('COVARVCL', 0)])
 ;; Genotype 
-;; [1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1]
+;; [1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0]
 ;; Num non-influential tokens = 0

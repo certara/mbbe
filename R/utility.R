@@ -1,11 +1,11 @@
-is.empty <- function(x, mode = NULL, ...)
-{
+is.empty <- function(x, mode = NULL, ...) {
   if (is.null(x)) {
     warning("x is NULL")
     return(FALSE)
   }
-  if (is.null(mode))
+  if (is.null(mode)) {
     mode <- class(x)
+  }
   identical(vector(mode, 1), c(x, vector(class(x), 1)))
 }
 #' get_block
@@ -18,36 +18,41 @@ is.empty <- function(x, mode = NULL, ...)
 #' returns empty character if nothing is found
 #'
 #' @examples
-#' get_block('$PROB', "$PROB test \n$INPUT ..."))
+#' get_block("$PROB", "$PROB test \n$INPUT ...")
 get_block <- function(stem, control) {
   OneLineSemicolon <- "(?:;(?:\\\\\\n|[^\\n])*(?=$|\\n))"
 
-  tryCatch({
-    CollapsedControl <- paste(control, collapse = "\n")
+  tryCatch(
+    {
+      CollapsedControl <- paste(control, collapse = "\n")
 
-    StatementsLineswoComm <-
-      gsub(OneLineSemicolon, "\n", CollapsedControl, perl = TRUE)
+      StatementsLineswoComm <-
+        gsub(OneLineSemicolon, "\n", CollapsedControl, perl = TRUE)
 
-    Blocks <- paste0("$", unlist(strsplit(StatementsLineswoComm, split = "\\$")))
-    Block <- Blocks[grepl(paste0("^\\", stem), Blocks)]
-    Block <- gsub("\r?\n", " ", Block)
-    Block
-  }, error = function(err) {
-    character(0)
-  })
+      Blocks <- paste0("$", unlist(strsplit(StatementsLineswoComm, split = "\\$")))
+      Block <- Blocks[grepl(paste0("^\\", stem), Blocks)]
+      Block <- gsub("\r?\n", " ", Block)
+      Block
+    },
+    error = function(err) {
+      character(0)
+    }
+  )
 }
 
-remove_old_files <- function(run_dir, samp_size){
-  msg  <- ""
+remove_old_files <- function(run_dir, samp_size) {
+  msg <- ""
   # check files that need to be written to, try to delete them
   files_to_remove <-
-    file.path(run_dir,
-              c(
-                "All_results.csv",
-                "BICS.csv",
-                "Parameters.csv",
-                "Power.csv"
-              ))
+    file.path(
+      run_dir,
+      c(
+        "All_results.csv",
+        "BICS.csv",
+        "Parameters.csv",
+        "Power.csv"
+      )
+    )
   files_to_remove <-
     c(
       files_to_remove,
@@ -62,7 +67,7 @@ remove_old_files <- function(run_dir, samp_size){
         paste0("MBBE", 1:samp_size),
         paste0("MBBE", 1:samp_size, ".mod")
       ),
-      file.path(run_dir, paste0("MBBEsim", 1:samp_size),  "OUT.DAT")
+      file.path(run_dir, paste0("MBBEsim", 1:samp_size), "OUT.DAT")
     )
 
   files_to_remove <-
@@ -77,8 +82,10 @@ remove_old_files <- function(run_dir, samp_size){
   }
 
   if (length(files_to_remove[file.exists(files_to_remove)]) > 0) {
-    msg <- paste("Unable to delete required output file(s) ",
-                 paste(files_to_remove, collapse = ", "))
+    msg <- paste(
+      "Unable to delete required output file(s) ",
+      paste(files_to_remove, collapse = ", ")
+    )
   }
 
 
