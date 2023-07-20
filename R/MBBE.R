@@ -482,8 +482,11 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
               this_samp <- (this_num - 1) %% samp_size + 1
               this_model <- (this_num - this_samp) / samp_size + 1
               run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
+
               pids <- find_procs_by_name("nonmem.exe")
-              tools::psnice(pids, 10)
+              if(.Platform$OS.type == windows) {
+                tools::psnice(pids, 15)
+              }
 
             },
             error = function(cond) {
