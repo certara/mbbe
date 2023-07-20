@@ -1,0 +1,30 @@
+
+utils::globalVariables(
+  c("ID",
+    "AUClast",
+    "Cmax",
+    "SampleNum",
+    "MetricColumn",
+    "BE",
+    "AUCinf",
+    "AUCinf_BE",
+    "AUClast_BE",
+    "Cmax_BE",
+    "DV",
+    "EVID",
+    "GROUP",
+    "OCC",
+    "PPORRES",
+    "PPTESTCD",
+    "SEQ",
+    "TIME",
+    "cond",
+    "control",
+    "logpk",
+    "pid",
+    "listfile",
+    "ITERATION",
+    "treatment"
+
+    )
+)
