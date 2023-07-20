@@ -12,7 +12,9 @@ calc_NCA(
   reference_groups,
   test_groups,
   NCA_end_time,
-  samp_size
+  samp_size,
+  plan,
+  num_parallel
 )
 }
 \arguments{
@@ -28,7 +30,7 @@ calc_NCA(
 
 \item{samp_size}{numeric; integer value specifying sample size}
 
-\item{numParallel}{numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}}
+\item{num_parallel}{numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}}
 }
 \description{
 calc_NCA
@@ -36,14 +38,14 @@ Parallelize call to getNCA for each sample in 1:samp_size
 and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 }
 \examples{
+\dontrun{
 run_dir <- "c:/Workspace/mbbe"
 ngroups <- 4
 reference_groups <- c(1,2)
 samp_size <- 6
 test_groups <- c(3,4)
 NCA_end_time <- 7
-numParallel <- 8
 
-calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size, numParallel)
-
+calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
+}
 }

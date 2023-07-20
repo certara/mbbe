@@ -17,5 +17,7 @@ sample_data(run_dir, nmodels, samp_size)
 create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv
 }
 \examples{
-sample_data('c:/modelaveraging',100,4)
+\dontrun{
+sample_data("c:/modelaveraging", 100, 4)
+}
 }

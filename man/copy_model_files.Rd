@@ -22,5 +22,7 @@ copy NONMEM model files from a source to a run directory
 Need to look at this for OS portability??
 }
 \examples{
-copy_model_files('c:/modelaveraging','c:/modelaveraging/run',4)
+\dontrun{
+copy_model_files("c:/modelaveraging", "c:/modelaveraging/run", 4)
+}
 }

@@ -18,7 +18,9 @@ is.empty <- function(x, mode = NULL, ...) {
 #' returns empty character if nothing is found
 #'
 #' @examples
+#' \dontrun{
 #' get_block("$PROB", "$PROB test \n$INPUT ...")
+#' }
 get_block <- function(stem, control) {
   OneLineSemicolon <- "(?:;(?:\\\\\\n|[^\\n])*(?=$|\\n))"
 
@@ -78,7 +80,7 @@ remove_old_files <- function(run_dir, samp_size) {
     files_to_remove <-
       files_to_remove[file.exists(files_to_remove)]
     count <- count + 1
-    sleep(0.1)
+    Sys.sleep(0.1)
   }
 
   if (length(files_to_remove[file.exists(files_to_remove)]) > 0) {

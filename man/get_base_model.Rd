@@ -8,6 +8,8 @@ return a list of the models}
 get_base_model(run_dir, nmodels)
 }
 \arguments{
+\item{run_dir}{directory where models are run}
+
 \item{nmodels}{how many models are there}
 }
 \description{
@@ -15,5 +17,7 @@ for each model get the control file used for the bootstrap
 return a list of the models
 }
 \examples{
-get_base_model(4)
+\dontrun{
+get_base_model("c:/mbbe/rundir", 4)
+}
 }

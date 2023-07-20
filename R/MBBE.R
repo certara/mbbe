@@ -1,9 +1,10 @@
-#' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif
-#' @importFrom utils read.csv read.table write.csv
-#' @import future
-#' @import tictoc
+#' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif qf
+#' @importFrom utils read.csv read.table write.csv capture.output head tail
+#' @importFrom magrittr %>%
+#' @rawNamespace import(future, except = run)
+#' @importFrom processx run
 #' @import stringr
-#' @import processx
+#' @import ps
 NULL
 
 `%>%` <- magrittr::`%>%`
@@ -13,9 +14,6 @@ NULL
 #' @param folder
 #'
 #' @return
-#' @export
-#'
-#' @examples
 delete_files <- function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
   # but can't delete all, need to keep $TABLE
@@ -71,8 +69,7 @@ delete_files <- function(folder) {
 #' @param nmfe_path nmfe??.bat
 #' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
-#' @param simulation_data_path, if use_simulation_data, this is the path to the data file
-#' @examples
+#' @param simulation_data_path if use_simulation_data, this is the path to the data file
 check_requirements <- function(run_dir,
                                samp_size,
                                model_list,
@@ -279,7 +276,6 @@ check_requirements <- function(run_dir,
 #' @param  path, string, path name to be split
 #' @param mustWork logical
 #' @returns list of path parents
-#' @examples
 split_path <- function(path, mustWork = FALSE) {
   output <- c(strsplit(dirname(normalizePath(path, mustWork = FALSE)), "/|\\\\")[[1]], basename(path))
   return(output)
@@ -291,7 +287,9 @@ split_path <- function(path, mustWork = FALSE) {
 #' @param run_dir Folder where models are to be run
 #' @return nmodels how many models are there
 #' @examples
+#' \dontrun{
 #' copy_model_files("c:/modelaveraging", "c:/modelaveraging/run", 4)
+#' }
 copy_model_files <- function(model_source, run_dir) {
   if (!file.exists(run_dir)) {
     # split run_dir, check each parent
@@ -339,7 +337,9 @@ copy_model_files <- function(model_source, run_dir) {
 #' @param samp_size how many bootstrap samples, default is 100
 #' @param nmodels how many models are there
 #' @examples
+#' \dontrun{
 #' sample_data("c:/modelaveraging", 100, 4)
+#' }
 sample_data <- function(run_dir, nmodels, samp_size) {
   con <- file(file.path(run_dir, "model1", "bs1.mod"), "r")
   suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
@@ -415,8 +415,8 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 
 find_procs_by_name <- function(name) {
   ps::ps() %>%
-    filter(name == !!name)  %>%
-    pull(pid)
+    dplyr::filter(name == !!name)  %>%
+    dplyr::pull(pid)
 }
 
 
@@ -431,9 +431,11 @@ find_procs_by_name <- function(name) {
 #' @param BS Logical, TRUE if boostrap, FALSE if Monte Carlo
 #'
 #' @return
-#' @export
 #'
-#' @examples run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
+#' @examples
+#' \dontrun{
+#'  run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
+#' }
 run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
   try({
     if (BS) {
@@ -454,6 +456,8 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
     #   # if(length(pids) > 0) tools::psnice(pids, 15)
      # }
       nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
+      # set_priority_command <- sprintf('wmic process where ProcessID=%s call setpriority "Below normal"', pid)
+      # result_priority <- system(set_priority_command, intern = TRUE)
       delete_files(nmrundir)
   })
 }
@@ -467,7 +471,9 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 #' @param plan - future plan, one of sequential, multicore, multisession
 #' @param num_parallel how many to run in parallel, default = availableCores()
 #' @examples
+#' \dontrun{
 #' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
+#' }
 run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num_parallel) {
 
   if (BS) {
@@ -484,7 +490,7 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
               run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
 
               pids <- find_procs_by_name("nonmem.exe")
-              if(.Platform$OS.type == windows) {
+              if(.Platform$OS.type == "windows") {
                 tools::psnice(pids, 15)
               }
 
@@ -540,7 +546,9 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
 #' @param use_check_identifiable - logical, is check_identifiable to be used
 #' @param passes_identifiable - array of length nmodels, count # of model that are identifable
 #' @examples
+#' \dontrun{
 #' get_parameters("c:/modelaveraging", 4, 100, 0.1, TRUE)
+#' }
 get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable, passes_identifiable) {
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
   colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best", "Max_Delta_parm", "Max_Delta")
@@ -760,7 +768,9 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
 #' @param run_dir directory where models are run
 #' @param nmodels how many models are there
 #' @examples
+#' \dontrun{
 #' get_base_model("c:/mbbe/rundir", 4)
+#' }
 get_base_model <- function(run_dir, nmodels) {
   # need error trapping for no ;;;;;.*Start EST
   base_models <- vector(mode = "list", length = 0) # all but $THETA, $SIM, $TABLE
@@ -793,7 +803,9 @@ get_base_model <- function(run_dir, nmodels) {
 #' @param use_simulation_data logical - TRUE is a file other than the bootstrap data file is to be used for simulation
 #' @param simulation_data_path if use_simulation_data==TRUE, the path to the file tto be used for simulation
 #' @examples
+#' \dontrun{
 #' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
+#' }
 write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path = NULL) {
   final_models <- list()
   if (!file.exists(simulation_data_path)) {
@@ -881,9 +893,11 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
 #' @param reference_groups numeric vector; specifying which groups are reference
 #' @param test_groups numeric vector; specifying which groups are test
 #' @param NCA_end_time numeric; end time for AUClast and AUCinf
-#' @param num_parallel numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}
 #' @param samp_size numeric; integer value specifying sample size
-#' #' @examples
+#' @param plan
+#' @param num_parallel numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}
+#' @examples
+#' \dontrun{
 #' run_dir <- "c:/Workspace/mbbe"
 #' ngroups <- 4
 #' reference_groups <- c(1,2)
@@ -892,7 +906,8 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
 #' NCA_end_time <- 7
 #'
 #' calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
-#'
+#' }
+#'@export
 calc_NCA <-
   function(run_dir,
            ngroups,
@@ -932,7 +947,10 @@ calc_NCA <-
 #' @param delta_parms absolute difference in parameters criteria for failing identifability
 #' @param nparms number of parameters in the .ext file (can be less thn the total)
 #' @examples
+#' \dontrun{
 #' check_identifiable("c:/runmodels", 1, 1, 0.1)
+#' }
+#'
 check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, nparms) {
   lstfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".lst"))
   extfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".ext"))
@@ -1002,7 +1020,9 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' @param test_groups list of arrays, which groups are  test
 #' @param NCA_end_time end time for AUClast and AUCinf
 #' @examples
+#' \dontrun{
 #' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
+#' }
 getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_groups, NCA_end_time) {
   output_file <- file.path(run_dir, paste0("MBBEsim", this_sample), paste0("NCAresults", this_sample, ".csv"))
   tryCatch(
@@ -1130,10 +1150,15 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' @param NTID logical, is the narrow therapeutic index drug
 #'
 #' @return
-#' @export
 #'
-#' @examples calc_power("c:/mbbe/rundir", 200, 0.05, FALSE)
+#' @examples
+#' \dontrun{
+#' nca_results <- system.file(package = "mbbe", "nca_results")
+#' calc_power(nca_results, 200, 0.05, FALSE)
+#' }
+
 calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
+
   BEsuccess <- data.frame(
     Cmax.success = as.logical(),
     AUCinf.success = as.logical(),
@@ -1335,7 +1360,6 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
 #' @return
 #' @export
 #'
-#' @examples
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE) {
   rval <- tryCatch(
     {
@@ -1410,7 +1434,10 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' @param Args.json, path to JSON file with arguments
 #' @export
 #'
-#' @examples run_mbbe_json(Args.json)
+#' @examples
+#' \dontrun{
+#' run_mbbe_json(Args.json)
+#' }
 run_mbbe_json <- function(Args.json) {
   if (!file.exists(Args.json)) {
     message(Args.json, " file not found, exiting")
@@ -1485,7 +1512,6 @@ run_mbbe_json <- function(Args.json) {
 #' @return
 #' @export
 #'
-#' @examples
 run_mbbe <- function(crash_value, ngroups,
                      reference_groups, test_groups,
                      num_parallel, samp_size,

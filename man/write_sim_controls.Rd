@@ -22,11 +22,17 @@ write_sim_controls(
 \item{base_models}{list of the text in each model used for the bootstrap}
 
 \item{samp_size}{how many samples are there}
+
+\item{use_simulation_data}{logical - TRUE is a file other than the bootstrap data file is to be used for simulation}
+
+\item{simulation_data_path}{if use_simulation_data==TRUE, the path to the file tto be used for simulation}
 }
 \description{
 Edits the best based model for each sample, replaces the original parameters with the bootstrap parameters
 and adds the $SIM and $TABLE
 }
 \examples{
-write_sim_controls('c:/modelaveraging',parms,base_models,100)
+\dontrun{
+write_sim_controls("c:/modelaveraging", parms, base_models, 100)
+}
 }

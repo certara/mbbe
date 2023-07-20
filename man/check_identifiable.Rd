@@ -16,6 +16,8 @@ check_identifiable(run_dir, this_model, this_sample, delta_parms, nparms)
 \item{this_sample}{integer}
 
 \item{delta_parms}{absolute difference in parameters criteria for failing identifability}
+
+\item{nparms}{number of parameters in the .ext file (can be less thn the total)}
 }
 \description{
 read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
@@ -23,5 +25,8 @@ compare with final parameters (Post.parms), see if any differ by delta_parms
 open .lst
 }
 \examples{
-check_identifiable('c:/runmodels',1,1,0.1)
+\dontrun{
+check_identifiable("c:/runmodels", 1, 1, 0.1)
+}
+
 }

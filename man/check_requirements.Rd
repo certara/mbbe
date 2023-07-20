@@ -40,7 +40,7 @@ check_requirements(
 
 \item{use_simulation_data}{logical, if the simulation will be done with a different data set than the bootstrap}
 
-\item{simulation_data_path, }{if use_simulation_data, this is the path to the data file}
+\item{simulation_data_path}{if use_simulation_data, this is the path to the data file}
 
 \item{source.dir}{source  model files}
 

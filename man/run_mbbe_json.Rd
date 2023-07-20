@@ -13,5 +13,7 @@ run_mbbe_json(Args.json)
 run_mbbe_json, reads json file, calls run_mbbe
 }
 \examples{
+\dontrun{
 run_mbbe_json(Args.json)
+}
 }
