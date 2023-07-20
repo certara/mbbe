@@ -436,25 +436,25 @@ find_procs_by_name <- function(name) {
 #' @examples run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
 run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
   try({
-
-  if (BS) {
-    nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
-    control_file <- paste0("bsSamp", this_model, "_", this_samp, ".mod")
-    output_file <- paste0("bsSamp", this_model, "_", this_samp, ".lst")
-    exefile <- paste0("bsSamp", this_model, "_", this_samp, ".exe")
-  } else {
-    nmrundir <- file.path(run_dir, paste0("MBBEsim", this_samp))
-    control_file <- paste0("MBBEsim", this_samp, ".mod")
-    output_file <- paste0("MBBEsim", this_samp, ".lst")
-    exefile <- paste0("MBBEsim", this_samp, ".exe")
-  }
-
-  nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
-  # set all running nonmem.exe to below normal, note this will not set the current run, as it is
-  # still running nfme
-  pids <- find_procs_by_name("nonmem.exe")
-  tools::psnice(pids, 15)
-  delete_files(nmrundir)
+    if (BS) {
+      nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
+      control_file <- paste0("bsSamp", this_model, "_", this_samp, ".mod")
+      output_file <- paste0("bsSamp", this_model, "_", this_samp, ".lst")
+      exefile <- paste0("bsSamp", this_model, "_", this_samp, ".exe")
+    } else {
+      nmrundir <- file.path(run_dir, paste0("MBBEsim", this_samp))
+      control_file <- paste0("MBBEsim", this_samp, ".mod")
+      output_file <- paste0("MBBEsim", this_samp, ".lst")
+      exefile <- paste0("MBBEsim", this_samp, ".exe")
+    }
+      # set all running nonmem.exe to below normal, note this will not set the current run, as it is
+      # still running nfme
+     # if(.Platform$OS.type == "windows"){
+    #    pids <- find_procs_by_name("nonmem.exe")
+    #   # if(length(pids) > 0) tools::psnice(pids, 15)
+     # }
+      nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
+      delete_files(nmrundir)
   })
 }
 #' run the bootstrap or monte carlo models/samples
@@ -482,6 +482,9 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
               this_samp <- (this_num - 1) %% samp_size + 1
               this_model <- (this_num - this_samp) / samp_size + 1
               run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
+              pids <- find_procs_by_name("nonmem.exe")
+              tools::psnice(pids, 10)
+
             },
             error = function(cond) {
               message("Failed to run boostrap in run_any_models, ", cond)
