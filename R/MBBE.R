@@ -412,6 +412,15 @@ sample_data <- function(run_dir, nmodels, samp_size) {
   }
 }
 
+
+find_procs_by_name <- function(name) {
+  ps::ps() %>%
+    filter(name == !!name)  %>%
+    pull(pid)
+}
+
+
+
 #' One a single NONMEM model
 #'
 #'
@@ -426,6 +435,8 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 #'
 #' @examples run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
 run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
+  try({
+
   if (BS) {
     nmrundir <- file.path(run_dir, paste0("model", this_model), this_samp)
     control_file <- paste0("bsSamp", this_model, "_", this_samp, ".mod")
@@ -439,8 +450,12 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
   }
 
   nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
-  # shell(command, wait = TRUE)
+  # set all running nonmem.exe to below normal, note this will not set the current run, as it is
+  # still running nfme
+  pids <- find_procs_by_name("nonmem.exe")
+  tools::psnice(pids, 15)
   delete_files(nmrundir)
+  })
 }
 #' run the bootstrap or monte carlo models/samples
 #'
