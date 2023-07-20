@@ -12,14 +12,16 @@ Imports:
   dplyr,
   stringr,
   xml2,
-  future,
-  furrr,
   PKNCA,
   magrittr,
   nlme,
   emmeans,
   future,
-  furrr
+  furrr,
+  processx,
+  tictoc,
+  ggplot2,
+  ps
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
