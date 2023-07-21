@@ -14,15 +14,15 @@ NULL
 #' @param folder A folder from which to delete non-essential NONMEM files
 #' @details Files to be deleted are:
 #' FDATA",
-#' FCON
-#' FSUBS
-#' FSUBS.o
-#' FSIZES
+#' FCON,
+#' FSUBS,
+#' FSUBS.o,
+#' FSIZES,
 #' FREPORT,
 #' FSTREAM,
 #' GFCOMPILE.BAT,
 #' INTER,
-#' nmprd4p.mod
+#' nmprd4p.mod,
 #' and file with the following extensions:
 #' exe, f90, grd, shk, cpu, shm, lnk, phi
 #'
@@ -1475,11 +1475,39 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 
 #' run_mbbe_json
 #'
-#' Runs MBBE from a json file of optoins
+#' Runs MBBE from a json file of options
 #' Calls run_mbbe
 #'
 #' @param Args.json, path to JSON file with arguments
 #' @export
+#' @details
+#' json file structure is e.g., \cr
+#' {\cr
+#' "run_dir": "c:/fda/mbbe",\cr
+#' "model_source": ["U:/fda/mbbe/mbbe/inst/examples/NM_05D01_11.mod",\cr
+#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_05D01_05.mod",\cr
+#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_04_085.mod",\cr
+#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_05D01_12.mod",\cr
+#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_04_090.mod"],\cr
+#' "num_parallel":       32,\cr
+#' "crash_value":   999999,\cr
+#' "nmfe_path": "c:/nm74g64/util/nmfe74.bat",\cr
+#' "delta_parms":      0.2,\cr
+#' "use_check_identifiable": true,\cr
+#' "NCA_end_time":       72,\cr
+#' "rndseed":        1,\cr
+#' "use_simulation_data": true,\cr
+#' "simulation_data_path": "U:/fda/mbbe/mbbe/inst/examples/data_sim.csv",\cr
+#' "ngroups":        4,\cr
+#' "samp_size":      100,\cr
+#' "reference_groups": [ 1, 2 ],\cr
+#' "test_groups": [3, 4 ],\cr
+#' "plan": "multisession",\cr
+#' "alpha_error": 0.05,\cr
+#' "NTID": false,\cr
+#' "save_output": true,\cr
+#' "model_averaging_by": "study"\cr
+#' }
 #'
 #' @examples
 #' \dontrun{
@@ -1539,7 +1567,8 @@ run_mbbe_json <- function(Args.json) {
 
 #' run_mbbe
 #'
-#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes
+#' the required options
 #' @param crash_value - value to be returned for BIC in models that crash, either in bootstrap or simulation
 #' @param nmodels - number of models for model averaging
 #' @param ngroups - number of groups in simulated data, e.g., ABBA design has 4 groups
