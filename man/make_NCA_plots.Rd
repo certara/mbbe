@@ -19,7 +19,17 @@ make_NCA_plots(
 \item data objects for Bayesian information Criteria
 }}
 
-\item{saveplots}{}
+\item{run_dir}{Folder that NONMEM models were run in}
+
+\item{samp_size}{Integer, number of samples}
+
+\item{nmodels}{Integer, number of models}
+
+\item{reference_groups, }{which GROUP (required item in NONMEM $TABLE) are reference formulation}
+
+\item{test_groups, }{which GROUP (required item in NONMEM $TABLE) are test formulation}
+
+\item{saveplots, }{logical whether to write the plot files to disc, default is FALSE}
 }
 \description{
 generated histograms of AUClast, AUCinf and Cmax for the BE samples

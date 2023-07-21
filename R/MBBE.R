@@ -14,15 +14,15 @@ NULL
 #' @param folder A folder from which to delete non-essential NONMEM files
 #' @details Files to be deleted are:
 #' FDATA",
-#' FCON,
-#' FSUBS,
-#' FSUBS.o,
-#' FSIZES,
+#' FCON
+#' FSUBS
+#' FSUBS.o
+#' FSIZES
 #' FREPORT,
 #' FSTREAM,
 #' GFCOMPILE.BAT,
 #' INTER,
-#' nmprd4p.mod,
+#' nmprd4p.mod
 #' and file with the following extensions:
 #' exe, f90, grd, shk, cpu, shm, lnk, phi
 #'
@@ -805,6 +805,8 @@ get_base_model <- function(run_dir, nmodels) {
   return(base_models)
 }
 
+#' write_sim_controls
+#'
 #' Edits the best based model for each sample, replaces the original parameters with the bootstrap parameters
 #' and adds the $SIM and $TABLE
 #'
@@ -1396,12 +1398,12 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
 #'
 #'generated histograms of AUClast, AUCinf and Cmax for the BE samples
 #' @param BICS - data objects for Bayesian information Criteria
-#' @param run_dir
-#' @param samp_size
-#' @param nmodels
-#' @param reference_groups
-#' @param test_groups
-#' @param saveplots
+#' @param run_dir Folder that NONMEM models were run in
+#' @param samp_size Integer, number of samples
+#' @param nmodels Integer, number of models
+#' @param reference_groups, which GROUP (required item in NONMEM $TABLE) are reference formulation
+#' @param test_groups, which GROUP (required item in NONMEM $TABLE) are test formulation
+#' @param saveplots, logical whether to write the plot files to disc, default is FALSE
 #'
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE) {
   rval <- tryCatch(
@@ -1436,36 +1438,42 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
           Cmax_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = Cmax), ) +
             ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
             ggplot2::ggtitle(paste("Cmax, model =", this_model))
-
-          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width = 9, height = 6)
-          AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUCinf), ) +
+          if(savePlots){
+            ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_Cmax_histogram_by_treatment.jpeg")), Cmax_plot, device = "jpeg", width = 9, height = 6)
+          }
+            AUCinf_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUCinf), ) +
             ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
             ggplot2::ggtitle(paste("AUCinf, model =", this_model))
-
-          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width = 9, height = 6)
-          AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUClast), ) +
+          if(savePlots){
+            ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUCinf_histogram_by_treatment.jpeg")), AUCinf_plot, device = "jpeg", width = 9, height = 6)
+          }
+            AUClast_plot <- ggplot2::ggplot(all_NCAs_this_model, ggplot2::aes(x = AUClast), ) +
             ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
             ggplot2::ggtitle(paste("AUClast, model =", this_model))
-
-          ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width = 9, height = 6)
+          if(savePlots){
+            ggplot2::ggsave(file.path(run_dir, paste0("Model_", this_model, "_AUClast_histogram_by_treatment.jpeg")), AUClast_plot, device = "jpeg", width = 9, height = 6)
+          }
         }
       }
       Cmax_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = Cmax), ) +
         ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
         ggplot2::ggtitle("Cmax, all Models")
-
-      ggplot2::ggsave(file.path(run_dir, "All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width = 9, height = 6)
-      AUCinf_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUCinf), ) +
+      if(savePlots){
+          ggplot2::ggsave(file.path(run_dir, "All_models_Cmax_histogram_by_treatment.jpeg"), Cmax_plot, device = "jpeg", width = 9, height = 6)
+      }
+         AUCinf_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUCinf), ) +
         ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
         ggplot2::ggtitle("AUCinf, all Models")
-
-      ggplot2::ggsave(file.path(run_dir, "All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width = 9, height = 6)
-      AUClast_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUClast), ) +
+      if(savePlots){
+        ggplot2::ggsave(file.path(run_dir, "All_models_AUCinf_histogram_by_treatment.jpeg"), AUCinf_plot, device = "jpeg", width = 9, height = 6)
+      }
+        AUClast_plot <- ggplot2::ggplot(all_NCAs, ggplot2::aes(x = AUClast), ) +
         ggplot2::geom_histogram(ggplot2::aes(color = treatment, fill = treatment), position = "identity", alpha = 0.4, bins = 30) +
         ggplot2::ggtitle("AUClast, all Models")
-
-      ggplot2::ggsave(file.path(run_dir, "All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width = 9, height = 6)
-    },
+        if(savePlots){
+           ggplot2::ggsave(file.path(run_dir, "All_models_AUClast_histogram_by_treatment.jpeg"), AUClast_plot, device = "jpeg", width = 9, height = 6)
+        }
+          },
     error = function(cond) {
       message("Failed in make_NCA_plots, error message = ", cond)
     }
@@ -1481,14 +1489,16 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' @param Args.json, path to JSON file with arguments
 #' @export
 #' @details
-#' json file structure is e.g., \cr
-#' {\cr
-#' "run_dir": "c:/fda/mbbe",\cr
-#' "model_source": ["U:/fda/mbbe/mbbe/inst/examples/NM_05D01_11.mod",\cr
-#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_05D01_05.mod",\cr
-#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_04_085.mod",\cr
-#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_05D01_12.mod",\cr
-#'                  "U:/fda/mbbe/mbbe/inst/examples/NM_04_090.mod"],\cr
+#' {
+#' Structure of json file argument is:\cr
+#' \{\cr
+#'  "run_dir": "c:/fda/mbbe",\cr
+#'  "model_source": \[` ` "U:/mbbe/mbbe/inst/examples/NM_05D01_11.mod",\cr
+#'  `              ` "U:/mbbe/mbbe/inst/examples/NM_05D01_05.mod",\cr
+#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_04_085.mod",\cr
+#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_05D01_12.mod",\cr
+#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_04_090.mod"\],\cr
+#' `  ` }\cr
 #' "num_parallel":       32,\cr
 #' "crash_value":   999999,\cr
 #' "nmfe_path": "c:/nm74g64/util/nmfe74.bat",\cr
@@ -1497,7 +1507,7 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' "NCA_end_time":       72,\cr
 #' "rndseed":        1,\cr
 #' "use_simulation_data": true,\cr
-#' "simulation_data_path": "U:/fda/mbbe/mbbe/inst/examples/data_sim.csv",\cr
+#' "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",\cr
 #' "ngroups":        4,\cr
 #' "samp_size":      100,\cr
 #' "reference_groups": [ 1, 2 ],\cr
@@ -1507,8 +1517,7 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' "NTID": false,\cr
 #' "save_output": true,\cr
 #' "model_averaging_by": "study"\cr
-#' }
-#'
+#' \}
 #' @examples
 #' \dontrun{
 #' run_mbbe_json(Args.json)
@@ -1567,8 +1576,7 @@ run_mbbe_json <- function(Args.json) {
 
 #' run_mbbe
 #'
-#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes
-#' the required options
+#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
 #' @param crash_value - value to be returned for BIC in models that crash, either in bootstrap or simulation
 #' @param nmodels - number of models for model averaging
 #' @param ngroups - number of groups in simulated data, e.g., ABBA design has 4 groups
@@ -1585,6 +1593,9 @@ run_mbbe_json <- function(Args.json) {
 #' @param rndseed - random seed
 #' @param use_simulation_data - logical, whether to used (True) a seperate data set for trial simulation or (False) the bootstrap data set
 #' @param simulation_data_path - path to simulation data set
+#' @details
+#' {
+#' Typically called from run_mbbe_json}
 #'
 #'
 #' @return
@@ -1691,7 +1702,7 @@ run_mbbe <- function(crash_value, ngroups,
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
         final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path) # don't really do anything with final models, already written to disc
         message(format(Sys.time(), digits = 0), " Running simulation models 1-", samp_size, " in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
-        if (run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE, plan, num_parallel)) {
+        if (run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE)) {
           message("\n", format(Sys.time(), digits = 0), " Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "MBBEsimM", "NCAresultsM.csv"), ",  where M is the simulation number")
           if (model_averaging_by == "subject") {
             message("\n Note the NCA parameters are by study, prior random selection by subject for model averaging")
@@ -1704,8 +1715,7 @@ run_mbbe <- function(crash_value, ngroups,
             reference_groups,
             test_groups,
             NCA_end_time,
-            samp_size, plan,
-            num_parallel
+            samp_size
           )
           message(format(Sys.time(), digits = 0), " Done calculating NCA parameters, making plots")
 

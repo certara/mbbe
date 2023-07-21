@@ -9,6 +9,7 @@ is.empty <- function(x, mode = NULL, ...) {
   identical(vector(mode, 1), c(x, vector(class(x), 1)))
 }
 #' get_block
+#'
 #' Get a block (e.g., $DATA) from a control file with multiple lines
 #' return block as a single character string
 #'

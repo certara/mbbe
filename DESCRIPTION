@@ -1,10 +1,10 @@
 Package: mbbe
-Title: What the Package Does (One Line, Title Case)
+Title: Model Based Bio-Equivalence
 Version: 0.0.0.9000
 Authors@R: 
-    person("Mark", "Sale", , "mark.sale@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Mark", "Sale", , "mark.sale@certara.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6239-2359"))
+Description: Uses several NONMEM models (as NONMEM control files), performs bootstrap model averaging, and Monte Carlo simulation for model based BE. Power is returned as the fraction of the Simulations with successful BE test, for Cmax, AUClast and AUCinf
 License: LGPL-3
 Encoding: UTF-8
 Imports:

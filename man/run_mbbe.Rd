@@ -103,3 +103,7 @@ BICS
 \description{
 Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
 }
+\details{
+{
+Typically called from run_mbbe_json}
+}

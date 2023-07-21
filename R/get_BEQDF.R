@@ -146,7 +146,7 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
   ))
 }
 
-#' Get NCA Set RSABE
+#' get_NCA.Set.RSABE
 #'
 #' This function calculates the RSABE (Reference Scaled Average Bioequivalence) criterion
 #' using the NCA set data.

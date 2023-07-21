@@ -13,12 +13,156 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-Introduction to MBBE
-```{r setup}
-library(mbbe)
-```
- 
 
-```{r preview_data}
-head(data)
+```{r setup, echo=FALSE}
+library(mbbe)
+library(ggplot2) 
+
+a <- data.frame(vals=rnorm(100))
+plot <- ggplot2::ggplot(data = a, aes(x = vals)) +
+ggplot2::geom_histogram()
+
+```
+
+### Why Model Based Bioequivalence?
+
+------------------------------------------------------------------------
+
+### Why Model Averaging?
+
+There is general awareness that parameter for any given model are estimate with uncertainty. In NONMEM as well as other software solutions, this uncertainty is quantified as the estimatino variance-covariance matrix. Not unlike the uncertainty associated with model parameter estimates, the model structure is likely determined with some uncertainty. There has been a good bit of interest in quantify this model structure uncertainty and including it in predictions. Generally, the model structure uncertainty is addressed in Monte Carlo simulation with model averaging. This has been applied in covariate selection [1] using reversible jump MCMC. However, reversible jump is not available at this time in any NONMEM method. Instead, the MBBE package uses bootstrap to estimate a probability for each model, again, similar to how bootstrap is used to quantify uncertainty in parameters, as described by Aoki et. al [2].
+
+NONMEM execution for each candidate model-bootstrap data set combination is performed. For each sample, the model with the best (lowest) Bayesian Information Criteria (BIC [3]) is selected. The Monte Carlo simulation is then done with the model structure and parameter estimates selected for each bootstrap data set, thus capturing uncertainty in both the model structure and parameters. The simulations can be performed using a data set different from the source data, as, not uncommonly, the reason for doing MBBE is that there are no format BE studies available. In this way, non-BE study data can be used for model definition and then a format BE study (e.g., 4 period, single dose cross over study) can be simulated. The NCA parameters for each (simulated) subject in each study are then calculated using and algorithm derived
+
+Two options exist for how to combine those different models/parameter estimate. First, the data from each of the simulations can be used as simulated, with a single model per simulated study (the "model_averaging_by": "study" option). This represents the possibility that any given model may be "correct" for all subjects. Alternatively, the study data can be recombined such that each study has a population of individuals based on the representation of overall models. (the "model_averaging_by": "subject" option). For this option, any given study will be comprised of the same subjects (demo graphics, sample time etc), but have different structure models. In this way the uncertainty of model structure is by subject, with each subject having a given probability of any model being "correct".
+
+### Identifiability:
+
+Nyberg et. al [4] described using a SADDLE_RESET as a check for local non-identifiability. MBBE included an option
+
+"use_check_identifiable": true,
+
+to instruct the algorithm to determined whether any model resulting from the bootstrap is identifiable, based on the absolute fractional difference between any pre and post saddle reset parameters of delta_parms. delta_parms can be set in the json argument file e.g:
+
+"delta_parms": 0.2,
+
+#### Power:
+
+The success of each study is then calculated based on the method described by [Schütz](https://cran.r-project.org/web/packages/replicateBE/replicateBE.pdf) and in the replicateBE package. The resulting power then is simply the fraction of simulated studies that successfully demonstrate bio-equivalence for each NCA endpoint.
+
+1.  Lunn, D.J. Automated covariate selection and Bayesian model averaging in population PK/PD models. *J Pharmacokinet Pharmacodyn* **35**, 85--100 (2008). <https://doi.org/10.1007/s10928-007-9077-x>
+2.  Aoki, Y., Röshammar, D., Hamrén, B. *et al.* Model selection and averaging of nonlinear mixed-effect models for robust phase III dose selection. *J Pharmacokinet Pharmacodyn* **44**, 581--597 (2017). <https://doi.org/10.1007/s10928-017-9550-0>
+3.  Neath, A.A. and Cavanaugh, J.E. (2012), The Bayesian information criterion: background, derivation, and applications. WIREs Comp Stat, 4: 199-203. <https://doi.org/10.1002/wics.199>
+4.  Nyberg HM, Hooker AC, Bauer RJ, Aoki Y. SADDLE_RESET: more robust parameter estimation with a check for local practical identifiability. <https://www.page-meeting.org/pdf_assets/1345-PAGE_2017_SADDLE_RESET_Final.pdf>
+
+------------------------------------------------------------------------
+
+### Basic Algorithm
+
+------------------------------------------------------------------------
+
+### Input json File
+
+{
+
+"run_dir": "c:/fda/mbbe",
+
+```{=html}
+"model_source": ["U:/fda/mbbe/mbbe/inst/examples/NM_05D01_11.mod",<br>
+```
+```{=html}
+&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_05D01_05.mod",<br>
+```
+```{=html}
+&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_04_085.mod",<br>
+```
+```{=html}
+&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_05D01_12.mod",<br>
+```
+```{=html}
+&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_04_090.mod"],<br>
+```
+"num_parallel": 32,
+
+"crash_value": 999999,
+
+"nmfe_path": "c:/nm74g64/util/nmfe74.bat",
+
+"delta_parms": 0.2,
+
+"use_check_identifiable": true,
+
+"NCA_end_time": 72,
+
+"rndseed": 1,
+
+"use_simulation_data": true,
+
+"simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
+
+"ngroups": 4,
+
+"samp_size": 100,
+
+"reference_groups": [ 1, 2 ],
+
+"test_groups": [3, 4 ],
+
+"plan": "multisession",
+
+"alpha_error": 0.05,
+
+"NTID": false,
+
+"save_output": true,
+
+"model_averaging_by": "study"
+
+}
+
+------------------------------------------------------------------------
+
+### Outputs
+
+------------------------------------------------------------------------
+
+new line
+
+equation inline
+
+$a = sin( b/5)$
+
+------------------------------------------------------------------------
+
+link to url chankges color by default
+
+[CNN](http://www.cnn.com)
+
+image - put double space before link to put it on a new line
+
+bulletes:
+
+-   first level
+
+-   2nd level
+
+numbered
+
+1.  first
+
+2.  second
+
+```{r, echo=FALSE}
+
+```
+
+| Col1 | Col2 | Col3 |
+|------|------|------|
+| 1    | 76   | 3    |
+| 1    | 3    | 3    |
+| 2    | 4    | 4    |
+
+```{r, echo=FALSE, fig.align="center", fig.cap="test figure"}
+print(a$val[1:10])
+print(plot)
 ```

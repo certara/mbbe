@@ -2,8 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{write_sim_controls}
 \alias{write_sim_controls}
-\title{Edits the best based model for each sample, replaces the original parameters with the bootstrap parameters
-and adds the $SIM and $TABLE}
+\title{write_sim_controls}
 \usage{
 write_sim_controls(
   run_dir,

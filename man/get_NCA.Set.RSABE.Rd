@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_BEQDF.R
 \name{get_NCA.Set.RSABE}
 \alias{get_NCA.Set.RSABE}
-\title{Get NCA Set RSABE}
+\title{get_NCA.Set.RSABE}
 \usage{
 get_NCA.Set.RSABE(
   NCA.Set = data.frame(),
