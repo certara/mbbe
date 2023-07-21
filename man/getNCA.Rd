@@ -2,9 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{getNCA}
 \alias{getNCA}
-\title{read $TABLE output from simulation (file name out.dat)
-and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-if check.identifability, do that with delta_parms as criteria}
+\title{getNCA}
 \usage{
 getNCA(
   run_dir,
@@ -29,9 +27,20 @@ getNCA(
 \item{NCA_end_time}{end time for AUClast and AUCinf}
 }
 \description{
-read $TABLE output from simulation (file name out.dat)
+Calculated NCA parameters (Cmax, AUCinf, AUClast) by group from NONMEM output file
+NONMEM output file MUST be in the folder MBBEsimN where N is the simulation number
+$TABLE must include the ONEHEADER option
+The simulation must include an observation at T=
+The $TABLE file output by the simulation must include:
+ID
+GROUP
+SEQ
+OCC
+Note that for MBBE, the simulation control file is written by the write_sim function and will include:
+"$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+reads $TABLE output from simulation (file name out.dat)
 and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-if check.identifability, do that with delta_parms as criteria
+if check.identifiability, do that with delta_parms as criteria
 }
 \examples{
 \dontrun{

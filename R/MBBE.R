@@ -9,11 +9,24 @@ NULL
 
 `%>%` <- magrittr::`%>%`
 
-#' Title
+#' delete_files
 #'
-#' @param folder
+#' @param folder A folder from which to delete non-essential NONMEM files
+#' @details Files to be deleted are:
+#' FDATA",
+#' FCON
+#' FSUBS
+#' FSUBS.o
+#' FSIZES
+#' FREPORT,
+#' FSTREAM,
+#' GFCOMPILE.BAT,
+#' INTER,
+#' nmprd4p.mod
+#' and file with the following extensions:
+#' exe, f90, grd, shk, cpu, shm, lnk, phi
 #'
-#' @return
+#'@export
 delete_files <- function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
   # but can't delete all, need to keep $TABLE
@@ -52,24 +65,29 @@ delete_files <- function(folder) {
 }
 
 #' check_requirements
-#' 2. Does that .mod file contain ;;;;.*Start EST
-#' 3. is the sum of reference_groups and test_groups == ngroups?
-#' 4. Any duplicates in Reference and Test groups?
-#' 5. check if data file is present
-#' 6. check if nmfe path is correct
-#' 7. check for saddle_reset if requested
-#' 8. check for repeat IDs in data set
-#' 9. if use_simulation_data, see if data available
 #'
-#' @param source.dir source  model files
-#' @param nmodels number of models
-#' @param ngroups number of groups in data set
+#' Check if all the requirements for model based BE assessment are present
+#'
+#' @param run.dir source  model files
+#' @param samp_size number of samples - must be integer
+#' @param model_list list of model control files to be used for model averaging
+#' @param ngroups number of groups for BE testing in data set
 #' @param reference_groups Which groups are reference
 #' @param test_groups Which groups are Test
 #' @param nmfe_path nmfe??.bat
 #' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
 #' @param simulation_data_path if use_simulation_data, this is the path to the data file
+#'
+#' @details Check to see if:
+#' 1. Does that .mod file contain ;;;;.*Start EST
+#' 2. Is the sum of reference_groups and test_groups == ngroups?
+#' 3. Any duplicates in Reference and Test groups?
+#' 4. check if data file is present
+#' 5. check if nmfe path is correct
+#' 6. check for saddle_reset if requested for check_identifiability
+#' 7. check for repeat IDs in data set
+#' 8. if use_simulation_data, see if data available
 check_requirements <- function(run_dir,
                                samp_size,
                                model_list,
@@ -271,19 +289,21 @@ check_requirements <- function(run_dir,
 }
 
 #' split_path
+#'
 #' split a path into parents
 #'
 #' @param  path, string, path name to be split
-#' @param mustWork logical
+#' @param mustWork logical, optional, default = FALSE
 #' @returns list of path parents
 split_path <- function(path, mustWork = FALSE) {
   output <- c(strsplit(dirname(normalizePath(path, mustWork = FALSE)), "/|\\\\")[[1]], basename(path))
   return(output)
 }
 #' copy_model_files
+#'
 #' copy NONMEM model files from a source to a run directory
-#' Need to look at this for OS portability??
-#' @param  model_source folder name were subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder
+#'
+#' @param  model_source folder name where subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder
 #' @param run_dir Folder where models are to be run
 #' @return nmodels how many models are there
 #' @examples
@@ -331,10 +351,12 @@ copy_model_files <- function(model_source, run_dir) {
 }
 
 
+#' sample_data
+#'
 #' create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv
 #'
 #' @param run_dir Folder where models are to be run
-#' @param samp_size how many bootstrap samples, default is 100
+#' @param samp_size how many bootstrap samples
 #' @param nmodels how many models are there
 #' @examples
 #' \dontrun{
@@ -413,24 +435,18 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 }
 
 
-find_procs_by_name <- function(name) {
-  ps::ps() %>%
-    dplyr::filter(name == !!name)  %>%
-    dplyr::pull(pid)
-}
 
-
-
-#' One a single NONMEM model
+#' run_one_model
 #'
+#' Run a single NONMEM model. This is called for either bootstrap (BS==True) or simulation,
+#' The only difference in the call is the name of the resulting control, output, xml etc files
+#' executable is always nonmem.exe (Windows)
 #'
-#' @param run_dir
-#' @param nmfe_path
-#' @param this_model which of the models used for model avering is this, integer if bootstrap, NULL if monte carlo
+#' @param run_dir location of source control files, naming is bsSampModelNum_SampleNum.mod
+#' @param nmfe_path path to nmfe??.bat
+#' @param this_model which of the models used for model averaging is this, integer if bootstrap, NULL if monte carlo
 #' @param this_samp  which sample (from bootstrap or Monte Carlo) is this, integer
 #' @param BS Logical, TRUE if boostrap, FALSE if Monte Carlo
-#'
-#' @return
 #'
 #' @examples
 #' \dontrun{
@@ -449,32 +465,27 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
       output_file <- paste0("MBBEsim", this_samp, ".lst")
       exefile <- paste0("MBBEsim", this_samp, ".exe")
     }
-      # set all running nonmem.exe to below normal, note this will not set the current run, as it is
-      # still running nfme
-     # if(.Platform$OS.type == "windows"){
-    #    pids <- find_procs_by_name("nonmem.exe")
-    #   # if(length(pids) > 0) tools::psnice(pids, 15)
-     # }
+
       nmoutput <- processx::run(nmfe_path, args = c(control_file, output_file), wd = nmrundir)
-      # set_priority_command <- sprintf('wmic process where ProcessID=%s call setpriority "Below normal"', pid)
-      # result_priority <- system(set_priority_command, intern = TRUE)
       delete_files(nmrundir)
   })
 }
+#' run_any_models
+#'
 #' run the bootstrap or monte carlo models/samples
+#' This function can use, if available, paralllel execution with multicore or multisession
+#' The plan is set in run_mbbe
 #'
 #' @param nmfe_path path to nmfe??.bat
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
 #' @param BS logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation
-#' @param plan - future plan, one of sequential, multicore, multisession
-#' @param num_parallel how many to run in parallel, default = availableCores()
 #' @examples
 #' \dontrun{
 #' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
 #' }
-run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num_parallel) {
+run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
 
   if (BS) {
     rval <- tryCatch(
@@ -488,11 +499,6 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
               this_samp <- (this_num - 1) %% samp_size + 1
               this_model <- (this_num - this_samp) / samp_size + 1
               run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
-
-              pids <- find_procs_by_name("nonmem.exe")
-              if(.Platform$OS.type == "windows") {
-                tools::psnice(pids, 15)
-              }
 
             },
             error = function(cond) {
@@ -535,21 +541,25 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num
 }
 
 #' get_parameters
+#'
 #' read the xml file for each bootstrap/model, calculate BIC
 #'  return list of BICs (with the BEST column) and parameters for all models/samples
 #'
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
-#' @param delta_parms criteria for idechntifiability test
+#' @param delta_parms criteria for identifiability test
 #' @param crash_value value for failed calculation
 #' @param use_check_identifiable - logical, is check_identifiable to be used
-#' @param passes_identifiable - array of length nmodels, count # of model that are identifable
+#' @param passes_identifiable - array of length nmodels, count # of model that are identifable, initially can be NULL
 #' @examples
 #' \dontrun{
-#' get_parameters("c:/modelaveraging", 4, 100, 0.1, TRUE)
+#' get_parameters("c:/modelaveraging", 4, 100, 0.1, 999999, TRUE)
 #' }
-get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value, use_check_identifiable, passes_identifiable) {
+get_parameters <- function(run_dir, nmodels,
+                           samp_size, delta_parms,
+                           crash_value, use_check_identifiable,
+                           passes_identifiable) {
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
   colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best", "Max_Delta_parm", "Max_Delta")
   BICS$Best <- NA
@@ -763,10 +773,13 @@ get_parameters <- function(run_dir, nmodels, samp_size, delta_parms, crash_value
   return(rval)
 }
 
+#' get_base_model
+#'
 #' for each model get the control file used for the bootstrap
 #' return a list of the models
 #' @param run_dir directory where models are run
 #' @param nmodels how many models are there
+#'
 #' @examples
 #' \dontrun{
 #' get_base_model("c:/mbbe/rundir", 4)
@@ -886,16 +899,14 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
 #'
 
 #' calc_NCA
-#' Parallelize call to getNCA for each sample in 1:samp_size
-#' and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+#'
+#' perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 #' @param run_dir character;  folder path of run directory
 #' @param ngroups numeric; integer value specifying how many groups, e.g., 4 for ABBA
 #' @param reference_groups numeric vector; specifying which groups are reference
 #' @param test_groups numeric vector; specifying which groups are test
 #' @param NCA_end_time numeric; end time for AUClast and AUCinf
 #' @param samp_size numeric; integer value specifying sample size
-#' @param plan
-#' @param num_parallel numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}
 #' @examples
 #' \dontrun{
 #' run_dir <- "c:/Workspace/mbbe"
@@ -904,9 +915,13 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
 #' samp_size <- 6
 #' test_groups <- c(3,4)
 #' NCA_end_time <- 7
-#'
 #' calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
 #' }
+#' @details
+#' calc_NCA calls getNCA for each sample in 1:samp_size
+#' Currently not parallelized
+#'
+#'
 #'@export
 calc_NCA <-
   function(run_dir,
@@ -914,9 +929,8 @@ calc_NCA <-
            reference_groups,
            test_groups,
            NCA_end_time,
-           samp_size,
-           plan,
-           num_parallel) {
+           samp_size) {
+    # still need to parallelize
     tryCatch(
       {
         for (this_samp in 1:samp_size) {
@@ -938,14 +952,26 @@ calc_NCA <-
     return()
   }
 
-#' read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
+#' check_identifability
+#'
+#' Identifability is defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951)
+#' Briefly, a saddle_reset is required for the NONMEM minimzation. The pre-reset parameters are compared to the
+#' post-reset parameters. If the fractional difference between any pre and post reset parameter exceeds delta_parms
+#' the model fails identifiability
+#' Algorithm: reads .lst file, find out where saddle reset occurs (doesn't seem to be recorded anywhere else)
+#' then get parameter before reset from .ext file (Pre.parms)
 #' compare with final parameters (Post.parms), see if any differ by delta_parms
-#' open .lst
+#'
 #' @param run_dir home directory
 #' @param this_model integer
 #' @param this_sample integer
 #' @param delta_parms absolute difference in parameters criteria for failing identifability
-#' @param nparms number of parameters in the .ext file (can be less thn the total)
+#' @param nparms number of parameters in the .ext file (can be less than the total)
+#' @return
+#' returns a list consisting of:
+#' passes - logical
+#' max_delta - maximum difference seen in pre and post reset parameters
+#' max_delta_parm which parameter in the .ext file have the largest difference
 #' @examples
 #' \dontrun{
 #' check_identifiable("c:/runmodels", 1, 1, 0.1)
@@ -1010,9 +1036,22 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
   }
 }
 
-#' read $TABLE output from simulation (file name out.dat)
+#' getNCA
+#'
+#' Calculated NCA parameters (Cmax, AUCinf, AUClast) by group from NONMEM output file
+#' NONMEM output file MUST be in the folder MBBEsimN where N is the simulation number
+#' $TABLE must include the ONEHEADER option
+#' The simulation must include an observation at T=
+#' The $TABLE file output by the simulation must include:
+#' ID
+#' GROUP
+#' SEQ
+#' OCC
+#' Note that for MBBE, the simulation control file is written by the write_sim function and will include:
+#'  "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+#' reads $TABLE output from simulation (file name out.dat)
 #' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-#' if check.identifability, do that with delta_parms as criteria
+#' if check.identifiability, do that with delta_parms as criteria
 #' @param run_dir home directory
 #' @param this_sample integer
 #' @param NumGroups integer how many groups, e.g., 4 for ABBA
@@ -1147,14 +1186,20 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' @param run_dir character, run directory
 #' @param samp_size integer, how many samples
 #' @param alpha numeric, range, >0 and < 1 alpha error rate
-#' @param NTID logical, is the narrow therapeutic index drug
-#'
-#' @return
-#'
+#' @param model_averaging_by character "subject" or "study"
+#' @param NTID logical, is this narrow therapeutic index drug
+#' @export
+#' @return a list of Cmax_result, AUCinf_result, AUClast_result power (0-1)
+#' @details
+#' The simulation is done by study (e.g., one model per study) this will result in model averaging
+#' by study. If model_averaging_by == "subject", the by-study data are recombined, randomly chosing one subject
+#' (without replacement) from all studies to reassemble each study data set
+#' The function loops over each sample, read the NCAresultsN where N is the sample number
+#' Then calculates whether that sample passes or fails BE testing
 #' @examples
 #' \dontrun{
 #' nca_results <- system.file(package = "mbbe", "nca_results")
-#' calc_power(nca_results, 200, 0.05, FALSE)
+#' calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
 #' }
 
 calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
@@ -1347,18 +1392,16 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
   }
   return(all_results)
 }
-#' Title
+#' make_NCA_plots
 #'
-#' @param BICS
+#'generated histograms of AUClast, AUCinf and Cmax for the BE samples
+#' @param BICS - data objects for Bayesian information Criteria
 #' @param run_dir
 #' @param samp_size
 #' @param nmodels
 #' @param reference_groups
 #' @param test_groups
 #' @param saveplots
-#'
-#' @return
-#' @export
 #'
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE) {
   rval <- tryCatch(
@@ -1430,7 +1473,11 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
   return()
 }
 
-#' run_mbbe_json, reads json file, calls run_mbbe
+#' run_mbbe_json
+#'
+#' Runs MBBE from a json file of optoins
+#' Calls run_mbbe
+#'
 #' @param Args.json, path to JSON file with arguments
 #' @export
 #'
@@ -1492,24 +1539,32 @@ run_mbbe_json <- function(Args.json) {
 
 #' run_mbbe
 #'
-#' @param crash_value
-#' @param nmodels
-#' @param ngroups
-#' @param reference_groups
-#' @param test_groups
-#' @param num_parallel
-#' @param samp_size
-#' @param run_dir
-#' @param model_source
-#' @param nmfe_path
-#' @param delta_parms
-#' @param use_check_identifiable
-#' @param NCA_end_time
-#' @param rndseed
-#' @param use_simulation_data
-#' @param simulation_data_path
+#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+#' @param crash_value - value to be returned for BIC in models that crash, either in bootstrap or simulation
+#' @param nmodels - number of models for model averaging
+#' @param ngroups - number of groups in simulated data, e.g., ABBA design has 4 groups
+#' @param reference_groups - which of the groups are reference formulation e.g., ABBA design might be c(2,3)
+#' @param test_groups - which of the groups are test formulation e.g., ABBA design might be c(1,4)
+#' @param num_parallel - number of NONMEM (bootstrap and simulation) to be run in parallel
+#' @param samp_size - size of bootstrap and simulation sample
+#' @param run_dir - where to run NONMEM
+#' @param model_source - NONMEM control files to be used/averaged over
+#' @param nmfe_path - path to nmfe??.bat
+#' @param delta_parms - difference in parameters used to define identifiability
+#' @param use_check_identifiable - logical, whether to use identifiability (defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951))
+#' @param NCA_end_time - NCA calculation will start at 0, end at NCA_end_time
+#' @param rndseed - random seed
+#' @param use_simulation_data - logical, whether to used (True) a seperate data set for trial simulation or (False) the bootstrap data set
+#' @param simulation_data_path - path to simulation data set
+#'
 #'
 #' @return
+#' Cmax_power,
+#' AUClast_power,
+#' AUCinf_power,
+#' run_dir,
+#' Num_identifiable,
+#' BICS
 #' @export
 #'
 run_mbbe <- function(crash_value, ngroups,
@@ -1591,7 +1646,7 @@ run_mbbe <- function(crash_value, ngroups,
       message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, " writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
       message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
-      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE, plan, num_parallel)) {
+      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE)) {
         message("Failed bootstrap")
       } else {
         # need to wait until all are done, this returns when all are started.

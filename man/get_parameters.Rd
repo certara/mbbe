@@ -2,9 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{get_parameters}
 \alias{get_parameters}
-\title{get_parameters
-read the xml file for each bootstrap/model, calculate BIC
-return list of BICs (with the BEST column) and parameters for all models/samples}
+\title{get_parameters}
 \usage{
 get_parameters(
   run_dir,
@@ -23,7 +21,7 @@ get_parameters(
 
 \item{samp_size}{how many samples are there}
 
-\item{delta_parms}{criteria for idechntifiability test}
+\item{delta_parms}{criteria for identifiability test}
 
 \item{crash_value}{value for failed calculation}
 
@@ -32,16 +30,15 @@ get_parameters(
 }}
 
 \item{passes_identifiable}{\itemize{
-\item array of length nmodels, count # of model that are identifable
+\item array of length nmodels, count # of model that are identifable, initially can be NULL
 }}
 }
 \description{
-get_parameters
 read the xml file for each bootstrap/model, calculate BIC
 return list of BICs (with the BEST column) and parameters for all models/samples
 }
 \examples{
 \dontrun{
-get_parameters("c:/modelaveraging", 4, 100, 0.1, TRUE)
+get_parameters("c:/modelaveraging", 4, 100, 0.1, 999999, TRUE)
 }
 }

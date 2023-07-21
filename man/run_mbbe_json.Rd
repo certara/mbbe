@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{run_mbbe_json}
 \alias{run_mbbe_json}
-\title{run_mbbe_json, reads json file, calls run_mbbe}
+\title{run_mbbe_json}
 \usage{
 run_mbbe_json(Args.json)
 }
@@ -10,7 +10,8 @@ run_mbbe_json(Args.json)
 \item{Args.json, }{path to JSON file with arguments}
 }
 \description{
-run_mbbe_json, reads json file, calls run_mbbe
+Runs MBBE from a json file of optoins
+Calls run_mbbe
 }
 \examples{
 \dontrun{

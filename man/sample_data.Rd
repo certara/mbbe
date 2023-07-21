@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{sample_data}
 \alias{sample_data}
-\title{create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv}
+\title{sample_data}
 \usage{
 sample_data(run_dir, nmodels, samp_size)
 }
@@ -11,7 +11,7 @@ sample_data(run_dir, nmodels, samp_size)
 
 \item{nmodels}{how many models are there}
 
-\item{samp_size}{how many bootstrap samples, default is 100}
+\item{samp_size}{how many bootstrap samples}
 }
 \description{
 create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv

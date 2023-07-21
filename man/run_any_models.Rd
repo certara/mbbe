@@ -2,9 +2,9 @@
 % Please edit documentation in R/MBBE.R
 \name{run_any_models}
 \alias{run_any_models}
-\title{run the bootstrap or monte carlo models/samples}
+\title{run_any_models}
 \usage{
-run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num_parallel)
+run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS)
 }
 \arguments{
 \item{nmfe_path}{path to nmfe??.bat}
@@ -16,15 +16,11 @@ run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS, plan, num_parallel)
 \item{samp_size}{how many samples are there}
 
 \item{BS}{logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation}
-
-\item{plan}{\itemize{
-\item future plan, one of sequential, multicore, multisession
-}}
-
-\item{num_parallel}{how many to run in parallel, default = availableCores()}
 }
 \description{
 run the bootstrap or monte carlo models/samples
+This function can use, if available, paralllel execution with multicore or multisession
+The plan is set in run_mbbe
 }
 \examples{
 \dontrun{

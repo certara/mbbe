@@ -2,13 +2,28 @@
 % Please edit documentation in R/MBBE.R
 \name{delete_files}
 \alias{delete_files}
-\title{Title}
+\title{delete_files}
 \usage{
 delete_files(folder)
 }
 \arguments{
-\item{folder}{}
+\item{folder}{A folder from which to delete non-essential NONMEM files}
 }
 \description{
-Title
+delete_files
+}
+\details{
+Files to be deleted are:
+FDATA",
+FCON
+FSUBS
+FSUBS.o
+FSIZES
+FREPORT,
+FSTREAM,
+GFCOMPILE.BAT,
+INTER,
+nmprd4p.mod
+and file with the following extensions:
+exe, f90, grd, shk, cpu, shm, lnk, phi
 }

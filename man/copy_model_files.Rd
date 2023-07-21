@@ -2,14 +2,12 @@
 % Please edit documentation in R/MBBE.R
 \name{copy_model_files}
 \alias{copy_model_files}
-\title{copy_model_files
-copy NONMEM model files from a source to a run directory
-Need to look at this for OS portability??}
+\title{copy_model_files}
 \usage{
 copy_model_files(model_source, run_dir)
 }
 \arguments{
-\item{model_source}{folder name were subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder}
+\item{model_source}{folder name where subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder}
 
 \item{run_dir}{Folder where models are to be run}
 }
@@ -17,9 +15,7 @@ copy_model_files(model_source, run_dir)
 nmodels how many models are there
 }
 \description{
-copy_model_files
 copy NONMEM model files from a source to a run directory
-Need to look at this for OS portability??
 }
 \examples{
 \dontrun{

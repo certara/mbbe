@@ -2,8 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{get_base_model}
 \alias{get_base_model}
-\title{for each model get the control file used for the bootstrap
-return a list of the models}
+\title{get_base_model}
 \usage{
 get_base_model(run_dir, nmodels)
 }

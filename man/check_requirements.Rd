@@ -2,15 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{check_requirements}
 \alias{check_requirements}
-\title{check_requirements
-2. Does that .mod file contain ;;;;.*Start EST
-3. is the sum of reference_groups and test_groups == ngroups?
-4. Any duplicates in Reference and Test groups?
-5. check if data file is present
-6. check if nmfe path is correct
-7. check for saddle_reset if requested
-8. check for repeat IDs in data set
-9. if use_simulation_data, see if data available}
+\title{check_requirements}
 \usage{
 check_requirements(
   run_dir,
@@ -26,7 +18,11 @@ check_requirements(
 )
 }
 \arguments{
-\item{ngroups}{number of groups in data set}
+\item{samp_size}{number of samples - must be integer}
+
+\item{model_list}{list of model control files to be used for model averaging}
+
+\item{ngroups}{number of groups for BE testing in data set}
 
 \item{reference_groups}{Which groups are reference}
 
@@ -42,18 +38,21 @@ check_requirements(
 
 \item{simulation_data_path}{if use_simulation_data, this is the path to the data file}
 
-\item{source.dir}{source  model files}
-
-\item{nmodels}{number of models}
+\item{run.dir}{source  model files}
 }
 \description{
-check_requirements
-2. Does that .mod file contain ;;;;.*Start EST
-3. is the sum of reference_groups and test_groups == ngroups?
-4. Any duplicates in Reference and Test groups?
-5. check if data file is present
-6. check if nmfe path is correct
-7. check for saddle_reset if requested
-8. check for repeat IDs in data set
-9. if use_simulation_data, see if data available
+Check if all the requirements for model based BE assessment are present
+}
+\details{
+Check to see if:
+\enumerate{
+\item Does that .mod file contain ;;;;.*Start EST
+\item Is the sum of reference_groups and test_groups == ngroups?
+\item Any duplicates in Reference and Test groups?
+\item check if data file is present
+\item check if nmfe path is correct
+\item check for saddle_reset if requested for check_identifiability
+\item check for repeat IDs in data set
+\item if use_simulation_data, see if data available
+}
 }

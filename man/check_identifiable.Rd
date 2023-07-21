@@ -2,9 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{check_identifiable}
 \alias{check_identifiable}
-\title{read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
-compare with final parameters (Post.parms), see if any differ by delta_parms
-open .lst}
+\title{check_identifability}
 \usage{
 check_identifiable(run_dir, this_model, this_sample, delta_parms, nparms)
 }
@@ -17,12 +15,22 @@ check_identifiable(run_dir, this_model, this_sample, delta_parms, nparms)
 
 \item{delta_parms}{absolute difference in parameters criteria for failing identifability}
 
-\item{nparms}{number of parameters in the .ext file (can be less thn the total)}
+\item{nparms}{number of parameters in the .ext file (can be less than the total)}
+}
+\value{
+returns a list consisting of:
+passes - logical
+max_delta - maximum difference seen in pre and post reset parameters
+max_delta_parm which parameter in the .ext file have the largest difference
 }
 \description{
-read .lst file, find out where saddle reset occurs then get parameter before reset from .ext file (Pre.parms)
+Identifability is defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951)
+Briefly, a saddle_reset is required for the NONMEM minimzation. The pre-reset parameters are compared to the
+post-reset parameters. If the fractional difference between any pre and post reset parameter exceeds delta_parms
+the model fails identifiability
+Algorithm: reads .lst file, find out where saddle reset occurs (doesn't seem to be recorded anywhere else)
+then get parameter before reset from .ext file (Pre.parms)
 compare with final parameters (Post.parms), see if any differ by delta_parms
-open .lst
 }
 \examples{
 \dontrun{
