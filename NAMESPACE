@@ -2,9 +2,12 @@
 
 export(calc_NCA)
 export(calc_power)
-export(delete_files)
+export(get_base_model)
+export(get_parameters)
 export(run_mbbe)
 export(run_mbbe_json)
+export(sample_data)
+export(write_sim_controls)
 import(future, except = run)
 import(ps)
 import(stringr)

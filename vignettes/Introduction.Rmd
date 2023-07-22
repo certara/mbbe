@@ -26,6 +26,17 @@ ggplot2::geom_histogram()
 
 ### Why Model Based Bioequivalence?
 
+6 tests
+
+```         
+sample_data(run_dir, nmodels, samp_size) - this gives a warning that the run directories already exist
+base_models <- mbbe::get_base_model("c:/save/mbbe/",2)  
+parms <- mbbe::get_parameters("c:/save/mbbe", 2, 4,0.2, 99999, TRUE) - needs .lst, .ext and .xml 
+models <- mbbe::write_sim_controls("c:/save/mbbe", parms, base_models, 4, TRUE, "c:/git/mbbe/inst/examples/data_sim.csv") 
+mbbe::calc_NCA("c:/save/mbbe", 4, c(1,2),c(3,4), 72,4) - needs only out.dat - note this is deleted!! - no return
+power <- mbbe::calc_power("c:/save/mbbe/", 4, 0.05,"study",FALSE) - needs NCAresults?.csv
+```
+
 ------------------------------------------------------------------------
 
 ### Why Model Averaging?

@@ -24,7 +24,7 @@ ggplot2::geom_histogram()
 
 ```
 
-###  First you need model(s)
+### First you need model(s)
 
 Five models are provided with the MBBE package. These models were selected using [pyDarwin](https://certara.github.io/pyDarwin/html/index.html)
 

@@ -26,7 +26,6 @@ NULL
 #' and file with the following extensions:
 #' exe, f90, grd, shk, cpu, shm, lnk, phi
 #'
-#'@export
 delete_files <- function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
   # but can't delete all, need to keep $TABLE
@@ -146,14 +145,14 @@ check_requirements <- function(run_dir,
     ReturnedValue$rval <- FALSE
     ReturnedValue$msg <-
       paste(ReturnedValue$msg,
-        "There are duplicated group numbers in the test group",
+        "There are duplicated group numbers in the Test group",
         sep = "\n"
       )
   }
   if (is.null(model_list)) {
     msg <-
       paste(msg,
-        "Model list is NULL, error in json file?",
+        "Model list is NULL, error in json file (if called from mbbe_run_json), or model_source (if from mbbe_run)",
         sep = "\n"
       )
   } else {
@@ -161,7 +160,7 @@ check_requirements <- function(run_dir,
       if (!file.exists(model_list[this_model])) {
         msg <-
           paste(msg,
-            paste0("Cannot find ", model_list[this_model]),
+            paste0("Cannot find NONMEM model file ", model_list[this_model]),
             sep = "\n"
           )
         next
@@ -200,7 +199,7 @@ check_requirements <- function(run_dir,
         if (!file.exists(data_file)) {
           msg <-
             paste(msg,
-              paste("Cannot find", data_file),
+              paste("Cannot find data file", data_file),
               sep = "\n"
             )
           next
@@ -358,6 +357,7 @@ copy_model_files <- function(model_source, run_dir) {
 #' @param run_dir Folder where models are to be run
 #' @param samp_size how many bootstrap samples
 #' @param nmodels how many models are there
+#' @export
 #' @examples
 #' \dontrun{
 #' sample_data("c:/modelaveraging", 100, 4)
@@ -551,15 +551,17 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
 #' @param delta_parms criteria for identifiability test
 #' @param crash_value value for failed calculation
 #' @param use_check_identifiable - logical, is check_identifiable to be used
-#' @param passes_identifiable - array of length nmodels, count # of model that are identifable, initially can be NULL
+#' @export
 #' @examples
 #' \dontrun{
 #' get_parameters("c:/modelaveraging", 4, 100, 0.1, 999999, TRUE)
 #' }
 get_parameters <- function(run_dir, nmodels,
                            samp_size, delta_parms,
-                           crash_value, use_check_identifiable,
-                           passes_identifiable) {
+                           crash_value, use_check_identifiable) {
+
+  passes_identifiable <- c(rep(0, nmodels))
+  names(passes_identifiable) <- paste0("Model", seq(1:nmodels))
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
   colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best", "Max_Delta_parm", "Max_Delta")
   BICS$Best <- NA
@@ -779,7 +781,7 @@ get_parameters <- function(run_dir, nmodels,
 #' return a list of the models
 #' @param run_dir directory where models are run
 #' @param nmodels how many models are there
-#'
+#' @export
 #' @examples
 #' \dontrun{
 #' get_base_model("c:/mbbe/rundir", 4)
@@ -817,6 +819,7 @@ get_base_model <- function(run_dir, nmodels) {
 #' @param samp_size how many samples are there
 #' @param use_simulation_data logical - TRUE is a file other than the bootstrap data file is to be used for simulation
 #' @param simulation_data_path if use_simulation_data==TRUE, the path to the file tto be used for simulation
+#' @export
 #' @examples
 #' \dontrun{
 #' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
@@ -1272,7 +1275,7 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     if(exists("this_data")){
       this_data$sample <- this_samp
     }else{
-      stop("Cannot fine ",this_ncafile, " NCA output file")
+      stop("Cannot find ",this_ncafile, " NCA output file")
     }
 
     this_data <- subset(this_data, select = c(sample, ID:AUClast))
@@ -1681,8 +1684,6 @@ run_mbbe <- function(crash_value, ngroups,
     nmodels <- copy_model_files(model_source, run_dir)
 
     if (nmodels > 0) {
-      passes_identifiable <- c(rep(0, nmodels))
-      names(passes_identifiable) <- paste0("Model", seq(1:nmodels))
       message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, " writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
       message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
@@ -1695,8 +1696,8 @@ run_mbbe <- function(crash_value, ngroups,
         parms <- get_parameters(
           run_dir, nmodels,
           samp_size, delta_parms,
-          crash_value, use_check_identifiable,
-          passes_identifiable
+          crash_value, use_check_identifiable#,
+          #passes_identifiable
         )
         base_models <- get_base_model(run_dir, nmodels) # get all nmodels base model
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")

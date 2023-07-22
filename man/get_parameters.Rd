@@ -10,8 +10,7 @@ get_parameters(
   samp_size,
   delta_parms,
   crash_value,
-  use_check_identifiable,
-  passes_identifiable
+  use_check_identifiable
 )
 }
 \arguments{
@@ -27,10 +26,6 @@ get_parameters(
 
 \item{use_check_identifiable}{\itemize{
 \item logical, is check_identifiable to be used
-}}
-
-\item{passes_identifiable}{\itemize{
-\item array of length nmodels, count # of model that are identifable, initially can be NULL
 }}
 }
 \description{
