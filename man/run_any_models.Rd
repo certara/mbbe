@@ -19,7 +19,7 @@ run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS)
 }
 \description{
 run the bootstrap or monte carlo models/samples
-This function can use, if available, paralllel execution with multicore or multisession
+This function can use, if available, parallel execution with multicore or multisession
 The plan is set in run_mbbe
 }
 \examples{

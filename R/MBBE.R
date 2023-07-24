@@ -77,7 +77,7 @@ delete_files <- function(folder) {
 #' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
 #' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
 #' @param simulation_data_path if use_simulation_data, this is the path to the data file
-#'
+#' @export
 #' @details Check to see if:
 #' 1. Does that .mod file contain ;;;;.*Start EST
 #' 2. Is the sum of reference_groups and test_groups == ngroups?
@@ -473,7 +473,7 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 #' run_any_models
 #'
 #' run the bootstrap or monte carlo models/samples
-#' This function can use, if available, paralllel execution with multicore or multisession
+#' This function can use, if available, parallel execution with multicore or multisession
 #' The plan is set in run_mbbe
 #'
 #' @param nmfe_path path to nmfe??.bat
@@ -481,6 +481,7 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
 #' @param BS logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation
+#' @export
 #' @examples
 #' \dontrun{
 #' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
@@ -1206,6 +1207,7 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' nca_results <- system.file(package = "mbbe", "nca_results")
 #' calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
 #' }
+#' @export
 
 calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
 
@@ -1251,14 +1253,16 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     AUCinf = as.numeric(), AUClast = as.numeric()
   )
   nsubs <- NA
+
+
+
   for (this_samp in 1:samp_size) {
     this_ncafile <- file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
-    data <- NULL
+
     boolFalse <- FALSE
     count <- 0
     while (boolFalse == FALSE & count < 20) {
-      data <- NULL
       count <- count + 1
       tryCatch({
         if (file.exists(this_ncafile)) {}
@@ -1274,12 +1278,13 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     }
     if(exists("this_data")){
       this_data$sample <- this_samp
-    }else{
-      stop("Cannot find ",this_ncafile, " NCA output file")
+      this_data <- subset(this_data, select = c(sample, ID:AUClast))
+      all_nca_data <- rbind(all_nca_data, this_data)
+      if(exists("this_data")) { rm(this_data)}
+    }else {
+      message("Cannot find ",this_ncafile, ", NCA output file")
     }
 
-    this_data <- subset(this_data, select = c(sample, ID:AUClast))
-    all_nca_data <- rbind(all_nca_data, this_data)
   }
 
   if (model_averaging_by == "subject") {
@@ -1306,93 +1311,96 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     write.csv(all_nca_data, outfile)
   }
 
-  ## and do stats
 
   message(format(Sys.time(), digits = 0), " Done reading NCA results, doing stats")
   if (!is.null(all_nca_data)) {
-    Cmax_result <- data.frame(
-      MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
-      Assessment = -999, BE = -999
-    )
-    tryCatch(
-      {
-        Cmax_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(Cmax)),
-          MetricColumn = "Cmax",
-          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
-        )
-        Cmax_result$SampleNum <- this_samp
-        # reorder, but sampleNum first
-        Cmax_result <- subset(Cmax_result, select = c(SampleNum, MetricColumn:BE))
-      },
-      error = function(e) {
-        Cmax_result <- data.frame(
-          SampleNum = this_samp, MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-          swR = -999, pe = -999, critbound = -999, Assessment = -999, BE = -999
-        )
+   sample_nums <- all_nca_data %>% dplyr::distinct(sample)
+    ## and do stats, loop over do stats for each
+    for(this_study in sample_nums$sample){
+      Cmax_result <- data.frame(
+        MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
+        swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+        Assessment = -999, BE = -999
+      )
+      tryCatch(
+        {
+          Cmax_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(Cmax)) %>% dplyr::filter(sample == this_study),
+            MetricColumn = "Cmax",
+            SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+            PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+          )
+          Cmax_result$SampleNum <- this_samp
+          # reorder, but sampleNum first
+          Cmax_result <- subset(Cmax_result, select = c(SampleNum, MetricColumn:BE))
+        },
+        error = function(e) {
+          Cmax_result <- data.frame(
+            SampleNum = this_samp, MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
+            swR = -999, pe = -999, critbound = -999, Assessment = -999, BE = -999
+          )
+        }
+      )
+      colnames(Cmax_result) <- c(
+        "SampleNum", "Cmax_MetricColumn", "Cmax_Ratio", "Cmax_lower_CL", "Cmax_upper_CL", "Cmax_swR", "Cmax_pe",
+        "Cmax_critbound", "Cmax_VarianceCriterion", "Cmax_Assessment", "Cmax_BE"
+      )
+
+
+      AUClast_result <- data.frame(
+        MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
+        swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+        Assessment = -999, BE = -999
+      )
+      tryCatch(
+        {
+          AUClast_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUClast)) %>% dplyr::filter(sample == this_study),
+            MetricColumn = "AUClast",
+            SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+            PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+          )
+        },
+        error = function(e) {
+          AUClast_result <- data.frame(
+            MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
+            swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999
+          )
+        }
+      )
+      colnames(AUClast_result) <- c(
+        "AUClast_MetricColumn", "AUClast_Ratio", "AUClast_lower_CL", "AUClast_upper_CL", "AUClast_swR", "AUClast_pe",
+        "AUClast_critbound", "AUClast_VarianceCriterion", "AUClast_Assessment", "AUClast_BE"
+      )
+
+
+      AUCinf_result <- data.frame(
+        MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
+        swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+        Assessment = -999, BE = -999
+      )
+      tryCatch(
+        {
+          AUCinf_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUCinf)) %>% dplyr::filter(sample == this_study),
+            MetricColumn = "AUCinf",
+            SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
+            PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
+          )
+        },
+        error = function(e) {
+          AUCinf_result <- data.frame(
+            MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
+            swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
+            Assessment = -999, BE = -999
+          )
+        }
+      )
+
+      colnames(AUCinf_result) <- c(
+        "AUCinf_MetricColumn", "AUCinf_Ratio", "AUCinf_lower_CL", "AUCinf_upper_CL", "AUCinf_swR", "AUCinf_pe",
+        "AUCinf_critbound", "AUCinf_VarianceCriterion", "AUCinf_Assessment", "AUCinf_BE"
+      )
+      all_results <- rbind(all_results, c(Cmax_result, AUCinf_result, AUClast_result))
       }
-    )
-    colnames(Cmax_result) <- c(
-      "SampleNum", "Cmax_MetricColumn", "Cmax_Ratio", "Cmax_lower_CL", "Cmax_upper_CL", "Cmax_swR", "Cmax_pe",
-      "Cmax_critbound", "Cmax_VarianceCriterion", "Cmax_Assessment", "Cmax_BE"
-    )
-
-
-    AUClast_result <- data.frame(
-      MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
-      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
-      Assessment = -999, BE = -999
-    )
-    tryCatch(
-      {
-        AUClast_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUClast)),
-          MetricColumn = "AUClast",
-          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
-        )
-      },
-      error = function(e) {
-        AUClast_result <- data.frame(
-          MetricColumn = "AUClast", Ratio = -999, lower.CL = -999, upper.CL = -999,
-          swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999
-        )
-      }
-    )
-    colnames(AUClast_result) <- c(
-      "AUClast_MetricColumn", "AUClast_Ratio", "AUClast_lower_CL", "AUClast_upper_CL", "AUClast_swR", "AUClast_pe",
-      "AUClast_critbound", "AUClast_VarianceCriterion", "AUClast_Assessment", "AUClast_BE"
-    )
-
-
-    AUCinf_result <- data.frame(
-      MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
-      swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
-      Assessment = -999, BE = -999
-    )
-    tryCatch(
-      {
-        AUCinf_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(AUCinf)),
-          MetricColumn = "AUCinf",
-          SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
-          PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
-        )
-      },
-      error = function(e) {
-        AUCinf_result <- data.frame(
-          MetricColumn = "AUCinf", Ratio = -999, lower.CL = -999, upper.CL = -999,
-          swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999,
-          Assessment = -999, BE = -999
-        )
-      }
-    )
-
-    colnames(AUCinf_result) <- c(
-      "AUCinf_MetricColumn", "AUCinf_Ratio", "AUCinf_lower_CL", "AUCinf_upper_CL", "AUCinf_swR", "AUCinf_pe",
-      "AUCinf_critbound", "AUCinf_VarianceCriterion", "AUCinf_Assessment", "AUCinf_BE"
-    )
-    all_results <- rbind(all_results, c(Cmax_result, AUCinf_result, AUClast_result))
-  } else {
+    } else {
     # no out.dat
   }
   return(all_results)

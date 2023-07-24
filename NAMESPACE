@@ -2,8 +2,10 @@
 
 export(calc_NCA)
 export(calc_power)
+export(check_requirements)
 export(get_base_model)
 export(get_parameters)
+export(run_any_models)
 export(run_mbbe)
 export(run_mbbe_json)
 export(sample_data)
