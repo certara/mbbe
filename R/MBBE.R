@@ -97,6 +97,18 @@ check_requirements <- function(run_dir,
                                use_check_identifiable,
                                use_simulation_data,
                                simulation_data_path = NULL) {
+  if(file.exists(run_dir)){
+     OK <- askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
+    if(!is.na(OK)){
+      if(OK){
+        message("Continuing")
+      }else{
+        stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
+      }
+    }else{
+      stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
+    }
+  }
   msg <- remove_old_files(run_dir, samp_size)
 
   if (!file.exists(nmfe_path)) {
@@ -855,7 +867,8 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
       # need to get sequence in here, calculated in $PK
       seed <- round(runif(1, 0, 10000), 0)
       full_control <- c(full_control, paste("$SIM ONLYSIM (", seed, ")"), "$THETA")
-      ntheta <- length(parms$parameters[[which.model]])
+   #   ntheta <- length(parms$parameters[[which.model]])
+      ntheta <- length(parms$parameters[[this_samp]])
 
       if (use_simulation_data) {
         # get $DATA
@@ -870,7 +883,8 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
         # replace with simulation data set
         full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
       }
-      for (this_parm in parms$parameters[[which.model]]) {
+      #for (this_parm in parms$parameters[[which.model]]) {
+      for (this_parm in parms$parameters[[this_samp]]) {
         full_control <- c(full_control, paste0(this_parm, "  ;; THETA(", this_parm, ")"))
       }
       full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
@@ -1217,30 +1231,37 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     AUClast.success = as.logical()
   )
   message(format(Sys.time(), digits = 0), " Starting statistics for NCA parameters, simulations 1-", samp_size)
+
   all_results <- data.frame(
     SampleNum = as.integer(),
+    Cmax_MetricColumn = as.numeric(),
     Cmax_Ratio = as.numeric(),
     Cmax_lower_CL = as.numeric(),
     Cmax_upper_CL = as.numeric(),
     Cmax_swR = as.numeric(),
     Cmax_pe = as.numeric(),
     Cmax_critbound = as.numeric(),
+    Cmax_VarianceCriterion = as.numeric(),
     Cmax_Assessment = as.numeric(),
     Cmax_BE = as.logical(),
+    AUCinf_MetricColumn = as.numeric(),
     AUCinf_Ratio = as.numeric(),
     AUCinf_lower_CL = as.numeric(),
     AUCinf_upper_CL = as.numeric(),
     AUCinf_swR = as.numeric(),
     AUCinf_pe = as.numeric(),
     AUCinf_critbound = as.numeric(),
+    AUCinf_VarianceCriterion = as.numeric(),
     AUCinf_Assessment = as.numeric(),
     AUCinf_BE = as.logical(),
+    AUClast_MetricColumn = as.numeric(),
     AUClast_Ratio = as.numeric(),
     AUClast_lower_CL = as.numeric(),
     AUClast_upper_CL = as.numeric(),
     AUClast_swR = as.numeric(),
     AUClast_pe = as.numeric(),
     AUClast_critbound = as.numeric(),
+    AUClast_VarianceCriterion = as.numeric(),
     AUClast_Assessment = as.numeric(),
     AUClast_BE = as.logical()
   )
@@ -1329,17 +1350,25 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
             SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
             PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
           )
-          Cmax_result$SampleNum <- this_samp
+          Cmax_result$SampleNum <- this_study
           # reorder, but sampleNum first
           Cmax_result <- subset(Cmax_result, select = c(SampleNum, MetricColumn:BE))
         },
         error = function(e) {
           Cmax_result <- data.frame(
             SampleNum = this_samp, MetricColumn = "Cmax", Ratio = -999, lower.CL = -999, upper.CL = -999,
-            swR = -999, pe = -999, critbound = -999, Assessment = -999, BE = -999
+            swR = -999, pe = -999, critbound = -999, VarianceCriterion = -999, Assessment = -999, BE = -999
           )
         }
       )
+      if(Cmax_result$Ratio == -999){ # if crash, need to add study #
+        Cmax_result$SampleNum <- this_study
+        Cmax_result$VarianceCriterion  <- NA
+        Cmax_result$BE  <- FALSE
+        # reorder
+        Cmax_result <- Cmax_result %>% dplyr::select(SampleNum, MetricColumn, Ratio, lower.CL, upper.CL, swR, pe,
+                               critbound, VarianceCriterion, Assessment, BE)
+      }
       colnames(Cmax_result) <- c(
         "SampleNum", "Cmax_MetricColumn", "Cmax_Ratio", "Cmax_lower_CL", "Cmax_upper_CL", "Cmax_swR", "Cmax_pe",
         "Cmax_critbound", "Cmax_VarianceCriterion", "Cmax_Assessment", "Cmax_BE"
@@ -1366,6 +1395,13 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
           )
         }
       )
+      if(AUClast_result$Ratio == -999){ # if crash, need to add study #
+        AUClast_result$BE  <- FALSE
+        AUClast_result$VarianceCriterion  <- NA
+        # fix sequence
+        AUClast_result <- AUClast_result %>% dplyr::select(MetricColumn, Ratio, lower.CL, upper.CL, swR, pe,
+                                      critbound, VarianceCriterion, Assessment, BE)
+      }
       colnames(AUClast_result) <- c(
         "AUClast_MetricColumn", "AUClast_Ratio", "AUClast_lower_CL", "AUClast_upper_CL", "AUClast_swR", "AUClast_pe",
         "AUClast_critbound", "AUClast_VarianceCriterion", "AUClast_Assessment", "AUClast_BE"
@@ -1393,7 +1429,13 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
           )
         }
       )
+      if(AUCinf_result$Ratio == -999){
+        AUCinf_result$BE  <- FALSE
+        AUCinf_result$VarianceCriterion  <- NA
+        AUCinf_result <- AUCinf_result %>% dplyr::select(MetricColumn, Ratio, lower.CL, upper.CL, swR, pe,
+                                                           critbound, VarianceCriterion, Assessment, BE)
 
+      }
       colnames(AUCinf_result) <- c(
         "AUCinf_MetricColumn", "AUCinf_Ratio", "AUCinf_lower_CL", "AUCinf_upper_CL", "AUCinf_swR", "AUCinf_pe",
         "AUCinf_critbound", "AUCinf_VarianceCriterion", "AUCinf_Assessment", "AUCinf_BE"
