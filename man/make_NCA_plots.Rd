@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{make_NCA_plots}
 \alias{make_NCA_plots}
-\title{Title}
+\title{make_NCA_plots}
 \usage{
 make_NCA_plots(
   BICS,
@@ -15,8 +15,22 @@ make_NCA_plots(
 )
 }
 \arguments{
-\item{saveplots}{}
+\item{BICS}{\itemize{
+\item data objects for Bayesian information Criteria
+}}
+
+\item{run_dir}{Folder that NONMEM models were run in}
+
+\item{samp_size}{Integer, number of samples}
+
+\item{nmodels}{Integer, number of models}
+
+\item{reference_groups, }{which GROUP (required item in NONMEM $TABLE) are reference formulation}
+
+\item{test_groups, }{which GROUP (required item in NONMEM $TABLE) are test formulation}
+
+\item{saveplots, }{logical whether to write the plot files to disc, default is FALSE}
 }
 \description{
-Title
+generated histograms of AUClast, AUCinf and Cmax for the BE samples
 }

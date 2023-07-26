@@ -2,19 +2,25 @@
 % Please edit documentation in R/MBBE.R
 \name{run_one_model}
 \alias{run_one_model}
-\title{One a single NONMEM model}
+\title{run_one_model}
 \usage{
 run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
 }
 \arguments{
-\item{this_model}{which of the models used for model avering is this, integer if bootstrap, NULL if monte carlo}
+\item{run_dir}{location of source control files, naming is bsSampModelNum_SampleNum.mod}
+
+\item{nmfe_path}{path to nmfe??.bat}
+
+\item{this_model}{which of the models used for model averaging is this, integer if bootstrap, NULL if monte carlo}
 
 \item{this_samp}{which sample (from bootstrap or Monte Carlo) is this, integer}
 
 \item{BS}{Logical, TRUE if boostrap, FALSE if Monte Carlo}
 }
 \description{
-One a single NONMEM model
+Run a single NONMEM model. This is called for either bootstrap (BS==True) or simulation,
+The only difference in the call is the name of the resulting control, output, xml etc files
+executable is always nonmem.exe (Windows)
 }
 \examples{
 \dontrun{

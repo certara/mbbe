@@ -28,8 +28,82 @@ run_mbbe(
 )
 }
 \arguments{
-\item{simulation_data_path}{}
+\item{crash_value}{\itemize{
+\item value to be returned for BIC in models that crash, either in bootstrap or simulation
+}}
+
+\item{ngroups}{\itemize{
+\item number of groups in simulated data, e.g., ABBA design has 4 groups
+}}
+
+\item{reference_groups}{\itemize{
+\item which of the groups are reference formulation e.g., ABBA design might be c(2,3)
+}}
+
+\item{test_groups}{\itemize{
+\item which of the groups are test formulation e.g., ABBA design might be c(1,4)
+}}
+
+\item{num_parallel}{\itemize{
+\item number of NONMEM (bootstrap and simulation) to be run in parallel
+}}
+
+\item{samp_size}{\itemize{
+\item size of bootstrap and simulation sample
+}}
+
+\item{run_dir}{\itemize{
+\item where to run NONMEM
+}}
+
+\item{model_source}{\itemize{
+\item NONMEM control files to be used/averaged over
+}}
+
+\item{nmfe_path}{\itemize{
+\item path to nmfe??.bat
+}}
+
+\item{delta_parms}{\itemize{
+\item difference in parameters used to define identifiability
+}}
+
+\item{use_check_identifiable}{\itemize{
+\item logical, whether to use identifiability (defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951))
+}}
+
+\item{NCA_end_time}{\itemize{
+\item NCA calculation will start at 0, end at NCA_end_time
+}}
+
+\item{rndseed}{\itemize{
+\item random seed
+}}
+
+\item{use_simulation_data}{\itemize{
+\item logical, whether to used (True) a seperate data set for trial simulation or (False) the bootstrap data set
+}}
+
+\item{simulation_data_path}{\itemize{
+\item path to simulation data set
+}}
+
+\item{nmodels}{\itemize{
+\item number of models for model averaging
+}}
+}
+\value{
+Cmax_power,
+AUClast_power,
+AUCinf_power,
+run_dir,
+Num_identifiable,
+BICS
 }
 \description{
-run_mbbe
+Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+}
+\details{
+{
+Typically called from run_mbbe_json}
 }

@@ -13,14 +13,26 @@ calc_power(run_dir, samp_size, alpha, model_averaging_by, NTID)
 
 \item{alpha}{numeric, range, >0 and < 1 alpha error rate}
 
-\item{NTID}{logical, is the narrow therapeutic index drug}
+\item{model_averaging_by}{character "subject" or "study"}
+
+\item{NTID}{logical, is this narrow therapeutic index drug}
+}
+\value{
+a list of Cmax_result, AUCinf_result, AUClast_result power (0-1)
 }
 \description{
 Calculated power by doing EMA standards statistics on each Monte Carlo simulation, then counting the number that pass BE
 }
+\details{
+The simulation is done by study (e.g., one model per study) this will result in model averaging
+by study. If model_averaging_by == "subject", the by-study data are recombined, randomly chosing one subject
+(without replacement) from all studies to reassemble each study data set
+The function loops over each sample, read the NCAresultsN where N is the sample number
+Then calculates whether that sample passes or fails BE testing
+}
 \examples{
 \dontrun{
 nca_results <- system.file(package = "mbbe", "nca_results")
-calc_power(nca_results, 200, 0.05, FALSE)
+calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
 }
 }

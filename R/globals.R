@@ -24,7 +24,7 @@ utils::globalVariables(
     "pid",
     "listfile",
     "ITERATION",
-    "treatment"
-
+    "treatment",
+    "passes_identifiable"
     )
 )

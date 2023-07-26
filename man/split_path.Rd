@@ -2,20 +2,18 @@
 % Please edit documentation in R/MBBE.R
 \name{split_path}
 \alias{split_path}
-\title{split_path
-split a path into parents}
+\title{split_path}
 \usage{
 split_path(path, mustWork = FALSE)
 }
 \arguments{
 \item{path, }{string, path name to be split}
 
-\item{mustWork}{logical}
+\item{mustWork}{logical, optional, default = FALSE}
 }
 \value{
 list of path parents
 }
 \description{
-split_path
 split a path into parents
 }

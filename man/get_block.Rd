@@ -2,9 +2,7 @@
 % Please edit documentation in R/utility.R
 \name{get_block}
 \alias{get_block}
-\title{get_block
-Get a block (e.g., $DATA) from a control file with multiple lines
-return block as a single character string}
+\title{get_block}
 \usage{
 get_block(stem, control)
 }
@@ -18,7 +16,6 @@ a block with specified header
 returns empty character if nothing is found
 }
 \description{
-get_block
 Get a block (e.g., $DATA) from a control file with multiple lines
 return block as a single character string
 }

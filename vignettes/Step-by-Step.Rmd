@@ -1,0 +1,47 @@
+---
+title: "Step-by-step"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Step-by-step}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE}
+library(mbbe)
+library(ggplot2) 
+
+a <- data.frame(vals=rnorm(100))
+plot <- ggplot2::ggplot(data = a, aes(x = vals)) +
+ggplot2::geom_histogram()
+
+```
+
+### First you need model(s)
+
+Five models are provided with the MBBE package. These models were selected using [pyDarwin](https://certara.github.io/pyDarwin/html/index.html). The data source for these model is
+
+?????
+
+Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. Seperate files are provide for the bootstrap and simulations to provide for a general solution. In general, the analysis data set, for bootstrap, need not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting inflatables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. An option is available ("use_simulation_data") to request using a seperate simulation data set ("use_simulation_data": true) or the same data set as was used for the bootstrap ("use_simulation_data": false). if use_simulation data is set to true, then the path to the simulation data set is required.
+
+"to specify whether the same or a
+
+"use_simulation_data": true,
+
+"simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
+
+Several notes on the data:
+
+1.  Data item for formulation (1,2 are reference, 3,4 are test) is include
+
+2.  Data item for period/OCC is provided (1-4)
+
+3.  Data item for sequence (SEQ) is provided (1-2). Presumable period/OCC and sequence were tested in the model selection and not found to be supported. However, they are required for the Monte Carlo simulation and statistical testing.

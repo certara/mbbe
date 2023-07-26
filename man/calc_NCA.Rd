@@ -2,9 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{calc_NCA}
 \alias{calc_NCA}
-\title{calc_NCA
-Parallelize call to getNCA for each sample in 1:samp_size
-and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)}
+\title{calc_NCA}
 \usage{
 calc_NCA(
   run_dir,
@@ -12,9 +10,7 @@ calc_NCA(
   reference_groups,
   test_groups,
   NCA_end_time,
-  samp_size,
-  plan,
-  num_parallel
+  samp_size
 )
 }
 \arguments{
@@ -29,13 +25,13 @@ calc_NCA(
 \item{NCA_end_time}{numeric; end time for AUClast and AUCinf}
 
 \item{samp_size}{numeric; integer value specifying sample size}
-
-\item{num_parallel}{numeric; number of cores to specify for parallelization. Defaults to \code{future::availableCores()}}
 }
 \description{
-calc_NCA
-Parallelize call to getNCA for each sample in 1:samp_size
-and perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+}
+\details{
+calc_NCA calls getNCA for each sample in 1:samp_size
+Currently not parallelized
 }
 \examples{
 \dontrun{
@@ -45,7 +41,6 @@ reference_groups <- c(1,2)
 samp_size <- 6
 test_groups <- c(3,4)
 NCA_end_time <- 7
-
 calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
 }
 }

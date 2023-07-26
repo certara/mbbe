@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{run_mbbe_json}
 \alias{run_mbbe_json}
-\title{run_mbbe_json, reads json file, calls run_mbbe}
+\title{run_mbbe_json}
 \usage{
 run_mbbe_json(Args.json)
 }
@@ -10,7 +10,39 @@ run_mbbe_json(Args.json)
 \item{Args.json, }{path to JSON file with arguments}
 }
 \description{
-run_mbbe_json, reads json file, calls run_mbbe
+Runs MBBE from a json file of options
+Calls run_mbbe
+}
+\details{
+{
+Structure of json file argument is:\cr
+\{\cr
+"run_dir": "c:/fda/mbbe",\cr
+"model_source": [\verb{ } "U:/mbbe/mbbe/inst/examples/NM_05D01_11.mod",\cr
+\verb{              } "U:/mbbe/mbbe/inst/examples/NM_05D01_05.mod",\cr
+\verb{              }  "U:/mbbe/mbbe/inst/examples/NM_04_085.mod",\cr
+\verb{              }  "U:/mbbe/mbbe/inst/examples/NM_05D01_12.mod",\cr
+\verb{              }  "U:/mbbe/mbbe/inst/examples/NM_04_090.mod"],\cr
+\verb{  } }\cr
+"num_parallel":       32,\cr
+"crash_value":   999999,\cr
+"nmfe_path": "c:/nm74g64/util/nmfe74.bat",\cr
+"delta_parms":      0.2,\cr
+"use_check_identifiable": true,\cr
+"NCA_end_time":       72,\cr
+"rndseed":        1,\cr
+"use_simulation_data": true,\cr
+"simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",\cr
+"ngroups":        4,\cr
+"samp_size":      100,\cr
+"reference_groups": \link{ 1, 2 },\cr
+"test_groups": \link{3, 4 },\cr
+"plan": "multisession",\cr
+"alpha_error": 0.05,\cr
+"NTID": false,\cr
+"save_output": true,\cr
+"model_averaging_by": "study"\cr
+\}
 }
 \examples{
 \dontrun{

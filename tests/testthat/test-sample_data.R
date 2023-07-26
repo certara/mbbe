@@ -13,7 +13,7 @@ test_that("sample_data works", {
 
   #Replace datafile path in model files
   data_file <- system.file(package = "mbbe", "examples", "data_seq.csv")
-  file.copy(from = data_file, to = run_dir)
+  file.copy(from = data_file, to = run_dir, overwrite = TRUE)
   data_file <- gsub("\\\\", "/", file.path(run_dir, "data_seq.csv"))
   model1_file <- file.path(run_dir, "model1", "bs1.mod")
   model1_lines <- suppressWarnings(readLines(model1_file))
@@ -26,7 +26,8 @@ test_that("sample_data works", {
   model2_lines[5] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
                          paste0("$DATA ", data_file, " IGNORE=@"),
                          model2_lines[5])
-
+  writeLines(model1_lines, model1_file)
+  writeLines(model2_lines, model2_file)
   mbbe:::sample_data(run_dir, nmodels = 2, samp_size = 4)
 
   #read in reference files
