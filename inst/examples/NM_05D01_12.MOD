@@ -3,7 +3,7 @@ $PROBLEM    tacrolimis for ML MODEL 4 16 PARAMETERS
 $INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
   EVID GROUP   DROP   BLQ DV SEQ
 
-$DATA      U:\fda\mbbe\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
+$DATA      U:\fda\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
 $OMEGA  
   1  FIX  	;  ETA(1) CL
   1  FIX  	;  ETA(2) V2 
