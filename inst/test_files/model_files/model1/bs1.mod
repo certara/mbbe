@@ -1,7 +1,7 @@
-$PROBLEM    tacrolimis for ML Model 1, 16 parameters
+$PROBLEM    tacrolimis for ML
 $INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
-  EVID GROUP   DROP BLQ DV SEQ
-$DATA      U:\fda\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
+  EVID GROUP   DROP   BLQ DV SEQ
+$DATA     C:\fda\mbbe\mbbe_bak\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
 $OMEGA  
   1  FIX  	;  ETA(1) CL
   1  FIX  	;  ETA(2) V2 
@@ -74,15 +74,9 @@ $ERROR
   PROP = EXP(THETA(8))
   LLOQ = 50 
   SD = SQRT(PROP**2*IPRED**2 + ADD**2) ; Residual weight ADD AND P PROP IN SD AND CV UNITS, NOT VARIANCE
-  IF (BLQ.EQ.0) THEN
-   F_FLAG=0 ; ELS
-   Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
-  ENDIF
-
-  IF (BLQ.EQ.1) THEN
-   F_FLAG=1 ; LIKELIHOOD
-   Y=PHI((LLOQ-IPRED)/SD)
-  ENDIF;
+ 
+  Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
+ 
 
   ;;;; Start EST
 
