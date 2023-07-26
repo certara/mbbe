@@ -1078,6 +1078,9 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' @param reference_groups list of arrays, which groups are reference
 #' @param test_groups list of arrays, which groups are  test
 #' @param NCA_end_time end time for AUClast and AUCinf
+#' @export
+#' @return Logical
+#'
 #' @examples
 #' \dontrun{
 #' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
