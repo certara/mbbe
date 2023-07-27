@@ -596,7 +596,7 @@ get_parameters <- function(run_dir, nmodels,
       for (this_samp in 1:samp_size) {
         num_successful <- 1 # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
         parameters_this_sample <- vector("list", nmodels)
-        this_model <- 1
+
         all_identifiables <- rep(TRUE, nmodels)
         for (this_model in 1:nmodels) {
           theta <- NA

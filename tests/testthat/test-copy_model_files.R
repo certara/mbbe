@@ -1,6 +1,6 @@
 test_that("copy_model_files works", {
 
-  run_dir <- tempdir()
+  run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)))
   if (!dir.exists(run_dir)) {
     dir.create(run_dir)
   }
