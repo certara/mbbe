@@ -26,6 +26,9 @@ getNCA(
 
 \item{NCA_end_time}{end time for AUClast and AUCinf}
 }
+\value{
+Logical
+}
 \description{
 Calculated NCA parameters (Cmax, AUCinf, AUClast) by group from NONMEM output file
 NONMEM output file MUST be in the folder MBBEsimN where N is the simulation number

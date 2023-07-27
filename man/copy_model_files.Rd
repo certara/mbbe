@@ -7,18 +7,19 @@
 copy_model_files(model_source, run_dir)
 }
 \arguments{
-\item{model_source}{folder name where subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder}
-
 \item{run_dir}{Folder where models are to be run}
+
+\item{list}{of NONMEM model files}
 }
 \value{
 nmodels how many models are there
 }
 \description{
-copy NONMEM model files from a source to a run directory
+copy NONMEM control files from a source to a run directory
+no change in control files
 }
 \examples{
 \dontrun{
-copy_model_files("c:/modelaveraging", "c:/modelaveraging/run", 4)
+copy_model_files("c:/mbbe/models/model1.mod","c:/mbbe/models/model2.mod"), "c:/mbbe/run")
 }
 }

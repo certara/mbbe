@@ -11,6 +11,9 @@ get_base_model(run_dir, nmodels)
 
 \item{nmodels}{how many models are there}
 }
+\value{
+list of the original models, prior to editing for BS data sets
+}
 \description{
 for each model get the control file used for the bootstrap
 return a list of the models

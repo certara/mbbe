@@ -3,6 +3,8 @@
 export(calc_NCA)
 export(calc_power)
 export(check_requirements)
+export(copy_model_files)
+export(getNCA)
 export(get_base_model)
 export(get_parameters)
 export(run_any_models)

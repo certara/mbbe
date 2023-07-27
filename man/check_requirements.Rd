@@ -45,6 +45,7 @@ Check if all the requirements for model based BE assessment are present
 }
 \details{
 Check to see if:
+Request permission to delete the run_dir
 \enumerate{
 \item Does that .mod file contain ;;;;.*Start EST
 \item Is the sum of reference_groups and test_groups == ngroups?

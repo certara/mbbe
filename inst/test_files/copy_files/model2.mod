@@ -1,8 +1,9 @@
-$PROBLEM    tacrolimis for ML
-$INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
-  EVID GROUP   DROP   BLQ DV SEQ
+$PROBLEM    tacrolimis for ML MODEL 5 17 PARAMETERS
 
-$DATA      U:\fda\mbbe\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND    
+$INPUT      C ID TOTIME DV_ORG DOSE TRT TREATMENT=DROP TIME MDV AMT OCC
+  EVID GROUP   DROP BLQ DV SEQ
+$DATA      U:\fda\mbbe\inst\examples\data_seq.csv IGNORE=@ IGNORE(BLQ.GT.0) REWIND 
+ 
 $OMEGA  
   1  FIX  	;  ETA(1) CL
   1  FIX  	;  ETA(2) V2 
@@ -37,25 +38,29 @@ $PK
   IF(GROUP.EQ.3) BOVCL = THETA(15)*ETA(18)
   IF(GROUP.EQ.4) BOVCL = THETA(15)*ETA(22)
 
-  BOVKA=0 
+  IF(GROUP.EQ.1) BOVKA = THETA(16)*ETA(11)
+  IF(GROUP.EQ.2) BOVKA = THETA(16)*ETA(15)
+  IF(GROUP.EQ.3) BOVKA = THETA(16)*ETA(19)
+  IF(GROUP.EQ.4) BOVKA = THETA(16)*ETA(23)
+
   BOVALAG1=0 
 
   ;; EMAIL FROM MICHAEL/SHUHUA 27FEB2023
   ;;CL  = EXP(THETA(1) + THETA(3) * ETA(1) + THETA(34) * ETA(2))
   ;;V2  = EXP(THETA(2) + THETA(34) * ETA(1) + THETA(4) * ETA(2))
 
-  CL 	= EXP(THETA(1)+THETA(3)*ETA(1)    + BOVCL) ;; ETACLV IS CORRELATION OF ETA(V) AND ETA(CL)
-  V2 	= EXP(THETA(2)+THETA(4)*ETA(2)    + BOVV) 
+  CL 	= EXP(THETA(1)+THETA(3)*ETA(1)    + THETA(17) * ETA(2)  + BOVCL) ;; ETACLV IS CORRELATION OF ETA(V) AND ETA(CL)
+  V2 	= EXP(THETA(2)+THETA(4)*ETA(2)    + THETA(17) * ETA(1)  + BOVV) 
   IF(TRT.EQ.1) THEN ;; REFERENCE
   KA 	= EXP(THETA(5) + BOVKA  )  
   F1	= 1
-  ALAG1	= EXP(THETA(12))
-  ; NO D1
+  ;; NO ALAG1 FOR REFERENCE
+  D1	= EXP(THETA(12))
   ELSE   ;; TEST
   KA 	= EXP(THETA(6) + BOVKA )  
   F1 	= EXP(THETA(7))
-  ALAG1	= EXP(THETA(13))
-  ; NO D1
+  ;; NO ALAG1 FOR TEST
+  D1	= EXP(THETA(13))
   END IF   
 
   S2   	= V2/1000000 	; CONC IN PG/M (NG/L), DOSE IN MG, VOL IN L 
@@ -71,13 +76,21 @@ $ERROR
   PROP = EXP(THETA(8))
   LLOQ = 50 
   SD = SQRT(PROP**2*IPRED**2 + ADD**2) ; Residual weight ADD AND P PROP IN SD AND CV UNITS, NOT VARIANCE
-   
-  Y = IPRED + SD*EPS(1)  
+  IF (BLQ.EQ.0) THEN
+  F_FLAG=0 ; ELS
+  Y = IPRED + SD*EPS(1)                          ; Individual model prediction,
+  ENDIF
 
+  IF (BLQ.EQ.1) THEN
+  F_FLAG=1 ; LIKELIHOOD
+  Y=PHI((LLOQ-IPRED)/SD)
+  ENDIF
 
   ;;;; Start EST
  
-$ESTIMATION METHOD=0 INTER MAX=9999 SADDLE_RESET=1  NOABORT
+
+$ESTIMATION METHOD=COND LAPLAC INTER MAX=9999 SADDLE_RESET=1  NOABORT
+$COVARIANCE PRINT=E UNCOND PRECOND=2
 
 $THETA  
   (-1,3.8,10) 		; THETA(1) LN(CL1)
@@ -91,19 +104,19 @@ $THETA
   (-7,1,3)		; THETA(9) LN(ADDERROR)
   (-5,-2.53064,5) 		; THETA(10) LN(K32)
   (-5,-0.89632,5) 		; THETA(11) LN(K23)
-  (-5,-2,5)		; THETA(12) LN(ALAG) REFERENCE 
-  (-5,-2,5) 		; THETA(13) LN(ALAG) test
-  ; NO D1
+  ;; NO ALAG1
+  (-7,-2.58,5) 		; THETA(12) LN(D1) REFERENCE
+  (-7,-2.58,5)		 ; THETA(13) LN(D1) TEST
   ;;no eta on ka
   (-4,-0.3,5)	; THETA(14) BOVV 
   (-4,-0.3,5)	; THETA(15) BOVCL 
-  ;; NO BOVKA 
+  (-4,-0.3,5)	; THETA(16) BOVKA 
   ;; NO BOVALAG1  
-  ;; NO COVARIANCE BETWEEN V AND CL  
+  0.1		; THETA(17) COVARIANCE OF V AND CL  
 
 
 ;; Phenotype 
-;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 2), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 0), ('COVARVCL', 1)])
+;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 0), ('BOVALAG1', 0), ('DURATION1', 2), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 1), ('COVARVCL', 0)])
 ;; Genotype 
-;; [1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1]
+;; [1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0]
 ;; Num non-influential tokens = 0

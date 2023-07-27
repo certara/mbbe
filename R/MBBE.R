@@ -79,6 +79,7 @@ delete_files <- function(folder) {
 #' @param simulation_data_path if use_simulation_data, this is the path to the data file
 #' @export
 #' @details Check to see if:
+#' Request permission to delete the run_dir
 #' 1. Does that .mod file contain ;;;;.*Start EST
 #' 2. Is the sum of reference_groups and test_groups == ngroups?
 #' 3. Any duplicates in Reference and Test groups?
@@ -310,17 +311,21 @@ split_path <- function(path, mustWork = FALSE) {
   output <- c(strsplit(dirname(normalizePath(path, mustWork = FALSE)), "/|\\\\")[[1]], basename(path))
   return(output)
 }
+
 #' copy_model_files
 #'
-#' copy NONMEM model files from a source to a run directory
-#'
-#' @param  model_source folder name where subfolders (model1..modelnmodels) with model files can be found. There must be exactly one .mod file (with any stem) in the folder
+#' copy NONMEM control files from a source to a run directory
+#' no change in control files
+#' @param  list of NONMEM model files
 #' @param run_dir Folder where models are to be run
-#' @return nmodels how many models are there
 #' @examples
 #' \dontrun{
-#' copy_model_files("c:/modelaveraging", "c:/modelaveraging/run", 4)
+#' copy_model_files("c:/mbbe/models/model1.mod","c:/mbbe/models/model2.mod"), "c:/mbbe/run")
 #' }
+#' @return nmodels how many models are there
+#'
+#'
+#'@export
 copy_model_files <- function(model_source, run_dir) {
   if (!file.exists(run_dir)) {
     # split run_dir, check each parent
@@ -799,6 +804,7 @@ get_parameters <- function(run_dir, nmodels,
 #' \dontrun{
 #' get_base_model("c:/mbbe/rundir", 4)
 #' }
+#' @return list of the original models, prior to editing for BS data sets
 get_base_model <- function(run_dir, nmodels) {
   # need error trapping for no ;;;;;.*Start EST
   base_models <- vector(mode = "list", length = 0) # all but $THETA, $SIM, $TABLE
@@ -843,8 +849,6 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
     stop(paste("Cannot find ", simulation_data_path, " exiting"))
   } else {
     nmodels <- length(base_models)
-   # mbfinal_models <- vector(mode = "list", length = samp_size)
-    #model.indices <- rep(0, nmodels) # which model and parameter set to use when this model is selected, roll over if not enough samples,
     current_runable_samp <- 0 # some models may not be runable (all crashed), if so, start over with model, and different seed in NONMEM
     for (this_samp in 1:samp_size) {
       current_runable_samp <- current_runable_samp + 1
@@ -860,6 +864,8 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
       }
       # current_runable_samp is sample #, from 1 to samp_size
       # which.model is the best model in that sample, from 1 to nmodels
+      # note this determines the base model, but parameters come from
+      # parms#parameters[[this_samp]]
       which.model <- parms$BICS$Best[current_runable_samp]
       # is first index, e.g., parameters[[2]]$THETA1[1] is THETA[1] for model 2, first sample
       # model.indices[which.model] <- model.indices[which.model] + 1
@@ -867,7 +873,6 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
       # need to get sequence in here, calculated in $PK
       seed <- round(runif(1, 0, 10000), 0)
       full_control <- c(full_control, paste("$SIM ONLYSIM (", seed, ")"), "$THETA")
-   #   ntheta <- length(parms$parameters[[which.model]])
       ntheta <- length(parms$parameters[[this_samp]])
 
       if (use_simulation_data) {
@@ -883,7 +888,6 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
         # replace with simulation data set
         full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
       }
-      #for (this_parm in parms$parameters[[which.model]]) {
       for (this_parm in parms$parameters[[this_samp]]) {
         full_control <- c(full_control, paste0(this_parm, "  ;; THETA(", this_parm, ")"))
       }
