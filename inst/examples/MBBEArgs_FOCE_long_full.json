@@ -10,7 +10,6 @@
 "use_check_identifiable": true,
 "NCA_end_time":       72,
 "rndseed":        1,
-"use_simulation_data": true,
 "simulation_data_path": "U:/fda/mbbe/inst/examples/data_sim.csv",
 "ngroups":        4,
 "samp_size":      10,
@@ -19,6 +18,5 @@
 "plan": "multisession",
 "alpha_error": 0.05,
 "NTID": false,
-"save_output": true,
 "model_averaging_by": "study"
 }

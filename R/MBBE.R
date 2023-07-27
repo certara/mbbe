@@ -75,8 +75,7 @@ delete_files <- function(folder) {
 #' @param test_groups Which groups are Test
 #' @param nmfe_path nmfe??.bat
 #' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
-#' @param use_simulation_data logical, if the simulation will be done with a different data set than the bootstrap
-#' @param simulation_data_path if use_simulation_data, this is the path to the data file
+#' @param simulation_data_path   path to the data file
 #' @export
 #' @details Check to see if:
 #' Request permission to delete the run_dir
@@ -87,7 +86,7 @@ delete_files <- function(folder) {
 #' 5. check if nmfe path is correct
 #' 6. check for saddle_reset if requested for check_identifiability
 #' 7. check for repeat IDs in data set
-#' 8. if use_simulation_data, see if data available
+#' 8. see if simulation data available
 check_requirements <- function(run_dir,
                                samp_size,
                                model_list,
@@ -96,8 +95,7 @@ check_requirements <- function(run_dir,
                                test_groups,
                                nmfe_path,
                                use_check_identifiable,
-                               use_simulation_data,
-                               simulation_data_path = NULL) {
+                               simulation_data_path) {
   if(file.exists(run_dir)){
      OK <- askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
     if(!is.na(OK)){
@@ -275,8 +273,7 @@ check_requirements <- function(run_dir,
               )
           }
         }
-        if (use_simulation_data) {
-          if (!file.exists(simulation_data_path)) {
+        if (!file.exists(simulation_data_path)) {
             msg <- paste(msg,
               paste0(
                 "Cannot find simulation data set",
@@ -285,7 +282,6 @@ check_requirements <- function(run_dir,
               sep = "\n"
             )
           }
-        }
       }
     }
     ReturnedValue <- list()
@@ -736,11 +732,7 @@ get_parameters <- function(run_dir, nmodels,
           BICS$Best[this_samp] <- best
           selected_parameters[[this_samp]] <- unlist(parameters_this_sample[[best]])
           # check in nparms = length of selected_parameters
-          message("\nSample ", this_samp, " best model is ", best, " with parameters:\n")
 
-          for (i in 1:length(selected_parameters[[this_samp]])){
-            message("parameter[", i, "] = ", round(selected_parameters[[this_samp]][i],6))
-          }
           if(nparms$ntheta[best]!= length(selected_parameters[[this_samp]])){
             stop("Length of parameters for sample ", this_samp, " doesn't equal the number in the xml file for model ", best, ", exiting")
           }
@@ -836,14 +828,13 @@ get_base_model <- function(run_dir, nmodels) {
 #' @param parms list that include BICs and parameters for each sample/model
 #' @param base_models list of the text in each model used for the bootstrap
 #' @param samp_size how many samples are there
-#' @param use_simulation_data logical - TRUE is a file other than the bootstrap data file is to be used for simulation
-#' @param simulation_data_path if use_simulation_data==TRUE, the path to the file tto be used for simulation
+#' @param simulation_data_path, path to the file to be used for simulation
 #' @export
 #' @examples
 #' \dontrun{
 #' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
 #' }
-write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path = NULL) {
+write_sim_controls <- function(run_dir, parms, base_models, samp_size, simulation_data_path) {
   final_models <- list()
   if (!file.exists(simulation_data_path)) {
     stop(paste("Cannot find ", simulation_data_path, " exiting"))
@@ -875,19 +866,18 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, use_simul
       full_control <- c(full_control, paste("$SIM ONLYSIM (", seed, ")"), "$THETA")
       ntheta <- length(parms$parameters[[this_samp]])
 
-      if (use_simulation_data) {
         # get $DATA
-        start_line <- grep("^\\$DATA", full_control)
-        next_line <- grep("^\\$", full_control[start_line + 1:length(full_control)])[1]
-        if (is.empty(next_line)) {
+      start_line <- grep("^\\$DATA", full_control)
+      next_line <- grep("^\\$", full_control[start_line + 1:length(full_control)])[1]
+      if (is.empty(next_line)) {
           # $DATA is last
-          last_line <- length(full_control[[1]])
-        } else {
-          last_line <- start_line + next_line
-        }
-        # replace with simulation data set
-        full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
+        last_line <- length(full_control[[1]])
+      } else {
+        last_line <- start_line + next_line
       }
+        # replace with simulation data set
+      full_control <- c(full_control[1:(start_line - 1)], paste("$DATA", simulation_data_path, "IGNORE=@"), full_control[(last_line):length(full_control)])
+
       for (this_parm in parms$parameters[[this_samp]]) {
         full_control <- c(full_control, paste0(this_parm, "  ;; THETA(", this_parm, ")"))
       }
@@ -1566,7 +1556,6 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' "use_check_identifiable": true,\cr
 #' "NCA_end_time":       72,\cr
 #' "rndseed":        1,\cr
-#' "use_simulation_data": true,\cr
 #' "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",\cr
 #' "ngroups":        4,\cr
 #' "samp_size":      100,\cr
@@ -1575,7 +1564,6 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' "plan": "multisession",\cr
 #' "alpha_error": 0.05,\cr
 #' "NTID": false,\cr
-#' "save_output": true,\cr
 #' "model_averaging_by": "study"\cr
 #' \}
 #' @examples
@@ -1589,8 +1577,8 @@ run_mbbe_json <- function(Args.json) {
     Args <- RJSONIO::fromJSON(Args.json)
     all_args <- list(
       Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
-      Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data,
-      Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$save_output
+      Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed,
+      Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by
     )
     if (any(sapply(all_args, is.null))) {
       message(
@@ -1604,7 +1592,6 @@ run_mbbe_json <- function(Args.json) {
         "use_check_identifiable",
         "NCA_end_time",
         "rndseed",
-        "use_simulation_data",
         "ngroups",
         "samp_size",
         "reference_groups",
@@ -1612,24 +1599,21 @@ run_mbbe_json <- function(Args.json) {
         "plan",
         "alpha_error",
         "NTID",
-        "Args$model_averaging_by",
-        "save_output and ",
-        "simulation_data_path, if use_simulation_data is true\nsee documentation for details\n exiting"
+        "Args$model_averaging_by and ",
+        "simulation_data_path, path to data used for simulation\nexiting"
       )
     } else {
-      if (Args$use_simulation_data & is.null(Args$simulation_data_path)) {
-        message("If use_simulation_data is true, simulation_data_path must be provided in json file")
-      } else {
-        return <- run_mbbe(
-          Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
-          Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$use_simulation_data, Args$simulation_data_path,
-          Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$save_output
-        )
-        file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
-        colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
-        write.csv(file_out, file.path(Args$run_dir, paste0("MBBEpower", stringr::str_replace_all(Sys.time(), ":", "-"), ".csv")), row.names = FALSE, quote = FALSE)
-        message(paste0(capture.output(return), collapse = "\n"))
-      }
+
+     return <- run_mbbe(
+        Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
+        Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$simulation_data_path,
+        Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by
+      )
+      file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
+      colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
+      write.csv(file_out, file.path(Args$run_dir, paste0("MBBEpower", stringr::str_replace_all(Sys.time(), ":", "-"), ".csv")), row.names = FALSE, quote = FALSE)
+      message(paste0(capture.output(return), collapse = "\n"))
+
     }
   }
 }
@@ -1651,7 +1635,6 @@ run_mbbe_json <- function(Args.json) {
 #' @param use_check_identifiable - logical, whether to use identifiability (defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951))
 #' @param NCA_end_time - NCA calculation will start at 0, end at NCA_end_time
 #' @param rndseed - random seed
-#' @param use_simulation_data - logical, whether to used (True) a seperate data set for trial simulation or (False) the bootstrap data set
 #' @param simulation_data_path - path to simulation data set
 #' @details
 #' {
@@ -1674,10 +1657,10 @@ run_mbbe <- function(crash_value, ngroups,
                      nmfe_path, delta_parms,
                      use_check_identifiable,
                      NCA_end_time, rndseed,
-                     use_simulation_data, simulation_data_path,
+                     simulation_data_path,
                      plan = c("multisession", "sequential", "multicore"),
                      alpha_error = 0.05, NTID,
-                     model_averaging_by, save_output = FALSE) {
+                     model_averaging_by ) {
   tictoc::tic()
   if (unlink(run_dir, recursive = TRUE, force = TRUE)) {
     stop("Unable to delete run directory ", run_dir)
@@ -1710,11 +1693,8 @@ run_mbbe <- function(crash_value, ngroups,
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
-  if (use_simulation_data) {
-    message("Simulation data set = ", simulation_data_path)
-  } else {
-    message("Original analysis data set will be used for simulation")
-  }
+  message("Simulation data set = ", simulation_data_path)
+
 
   path_parents <- split_path(run_dir)
   cur_path <- path_parents[1]
@@ -1730,7 +1710,7 @@ run_mbbe <- function(crash_value, ngroups,
   msg <- check_requirements(
     run_dir, samp_size, model_source, ngroups,
     reference_groups, test_groups, nmfe_path,
-    use_check_identifiable, use_simulation_data,
+    use_check_identifiable,
     simulation_data_path
   )
   if (msg$rval) {
@@ -1758,7 +1738,7 @@ run_mbbe <- function(crash_value, ngroups,
         )
         base_models <- get_base_model(run_dir, nmodels) # get all nmodels base model
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
-        final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, use_simulation_data, simulation_data_path) # don't really do anything with final models, already written to disc
+        final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, simulation_data_path) # don't really do anything with final models, already written to disc
         message(format(Sys.time(), digits = 0), " Running simulation models 1-", samp_size, " in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
         if (run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE)) {
           message("\n", format(Sys.time(), digits = 0), " Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "MBBEsimM", "NCAresultsM.csv"), ",  where M is the simulation number")
