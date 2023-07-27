@@ -1,7 +1,5 @@
 test_that("sample_data works", {
   set.seed(1)
-
-
   run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)))
   if (!dir.exists(run_dir)) {
    dir.create(run_dir)

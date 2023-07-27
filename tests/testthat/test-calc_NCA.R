@@ -1,5 +1,4 @@
 test_that("calc_NCA works", {
-
   run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)),"nca")
   if (!dir.exists(run_dir)) {
     dir.create(run_dir)

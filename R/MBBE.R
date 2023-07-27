@@ -95,17 +95,19 @@ check_requirements <- function(run_dir,
                                test_groups,
                                nmfe_path,
                                use_check_identifiable,
-                               simulation_data_path) {
-  if(file.exists(run_dir)){
-     OK <- askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
-    if(!is.na(OK)){
-      if(OK){
-        message("Continuing")
+                               simulation_data_path, ask = TRUE) {
+  if(ask){
+    if(file.exists(run_dir)){
+       OK <- askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
+      if(!is.na(OK)){
+        if(OK){
+          message("Continuing")
+        }else{
+          stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
+        }
       }else{
         stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
       }
-    }else{
-      stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
     }
   }
   msg <- remove_old_files(run_dir, samp_size)
