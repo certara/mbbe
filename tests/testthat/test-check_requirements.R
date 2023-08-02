@@ -28,7 +28,8 @@ test_that("check_requirements works", {
                                               c(3,4),
                                               source_nmfe,
                                               TRUE,
-                                              source_sim_data )
+                                              source_sim_data,
+                                              FALSE)
   )
   expect_true(test_ReturnedValue$rval)
 })

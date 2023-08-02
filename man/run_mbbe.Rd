@@ -18,13 +18,13 @@ run_mbbe(
   use_check_identifiable,
   NCA_end_time,
   rndseed,
-  use_simulation_data,
   simulation_data_path,
   plan = c("multisession", "sequential", "multicore"),
   alpha_error = 0.05,
   NTID,
   model_averaging_by,
-  save_output = FALSE
+  user_R_code,
+  R_code_path
 )
 }
 \arguments{
@@ -80,12 +80,16 @@ run_mbbe(
 \item random seed
 }}
 
-\item{use_simulation_data}{\itemize{
-\item logical, whether to used (True) a seperate data set for trial simulation or (False) the bootstrap data set
-}}
-
 \item{simulation_data_path}{\itemize{
 \item path to simulation data set
+}}
+
+\item{user_R_code}{\itemize{
+\item logical, wheteher user provide code us used for the penalty for selectin models
+}}
+
+\item{R_code_path}{\itemize{
+\item if user_R_code, required path to R code
 }}
 
 \item{nmodels}{\itemize{

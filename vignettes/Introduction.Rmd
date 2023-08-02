@@ -18,23 +18,19 @@ knitr::opts_chunk$set(
 library(mbbe)
 library(ggplot2) 
 
-a <- data.frame(vals=rnorm(100))
-plot <- ggplot2::ggplot(data = a, aes(x = vals)) +
-ggplot2::geom_histogram()
-
 ```
 
 ### Why Model Based Bioequivalence?
 
-Traditional BE study design and statistical methods are well established (1, 2) and are based on non compartmental analysis (NCA). There are however, a number of clinical scenarios were a traditional BE study is not feasble, these include:
+Traditional BE study design and statistical methods are well established (1, 2) and are based on non compartmental analysis (NCA). There are however, a number of clinical scenarios were a traditional BE study is not feasible. Examples include:
 
 -   Very long half life drug
 
 -   Clinical scenarios were rich sampling is not feasible, for example, pediatrics.
 
--   Clinical scenarioes were a multi period cross over study is not feasible, e.g. cytotoxic drugs that cannot be given to healty volunteers.
+-   Clinical scenarios were a multi-period cross over study is not feasible, e.g. cytotoxic drugs that cannot be given to healthy volunteers.
 
-There is value in developing method to meet the regulatory requirements for such drug. Model based Bio Equivalence is one method to acheive this.
+There is value in developing method to meet the regulatory requirements for such drug. Model based Bio Equivalence is one method to achieve this.
 
 1.  Bioavailability-and-Bioequivalence-Studies-Submitted-in-NDAs-or-INDs-----General-Considerations .pdf
 
@@ -56,10 +52,6 @@ There is value in developing method to meet the regulatory requirements for such
 
 10. Seng Yue C, Ozdin D, Selber-Hnatiw S, Ducharme MP. Opportunities and Challenges Related to the Implementation of Model-Based Bioequivalence Criteria. Clin Pharmacol Ther. 2019 Feb;105(2):350-362. doi: 10.1002/cpt.1270. Epub 2019 Jan 8. PMID: 30375647.
 
-6 tests
-
-sample_data(run_dir, nmodels, samp_size) - this gives a warning that the run directories already exist base_models \<- mbbe::get_base_model("c:/save/mbbe/",2) parms \<- mbbe::get_parameters("c:/save/mbbe", 2, 4,0.2, 99999, TRUE) - needs .lst, .ext and .xml models \<- mbbe::write_sim_controls("c:/save/mbbe", parms, base_models, 4, TRUE, "c:/git/mbbe/inst/examples/data_sim.csv") mbbe::calc_NCA("c:/save/mbbe", 4, c(1,2),c(3,4), 72,4) - needs only out.dat - note this is deleted!! - no return power \<- mbbe::calc_power("c:/save/mbbe/", 4, 0.05,"study",FALSE) - needs NCAresults?.csv
-
 ------------------------------------------------------------------------
 
 ### 
@@ -80,7 +72,7 @@ sample_data(run_dir, nmodels, samp_size) - this gives a warning that the run dir
 
 ### Why Model Averaging?
 
-There is general awareness that parameter for any given model are estimate with uncertainty. In NONMEM as well as other software solutions, this uncertainty is quantified as the estimatino variance-covariance matrix. Not unlike the uncertainty associated with model parameter estimates, the model structure is likely determined with some uncertainty. There has been a good bit of interest in quantify this model structure uncertainty and including it in predictions. Generally, the model structure uncertainty is addressed in Monte Carlo simulation with model averaging. This has been applied in covariate selection [1] using reversible jump MCMC. However, reversible jump is not available at this time in any NONMEM method. Instead, the MBBE package uses bootstrap to estimate a probability for each model, again, similar to how bootstrap is used to quantify uncertainty in parameters, as described by Aoki et. al [2].
+There is general awareness that parameter for any given model are estimate with uncertainty. In NONMEM as well as other software solutions, this uncertainty is quantified as the estimation variance-covariance matrix. Not unlike the uncertainty associated with model parameter estimates, the model structure is likely determined with some uncertainty. There has been a good bit of interest in quantify this model structure uncertainty and including it in predictions. Generally, the model structure uncertainty is addressed in Monte Carlo simulation with model averaging. This has been applied in covariate selection [1] using reversible jump MCMC. However, reversible jump is not available at this time in any NONMEM method. Instead, the MBBE package uses bootstrap to estimate a probability for each model, again, similar to how bootstrap is used to quantify uncertainty in parameters, as described by Aoki et. al [2].
 
 NONMEM execution for each candidate model-bootstrap data set combination is performed. For each sample, the model with the best (lowest) Bayesian Information Criteria (BIC [3]) is selected. The Monte Carlo simulation is then done with the model structure and parameter estimates selected for each bootstrap data set, thus capturing uncertainty in both the model structure and parameters. The simulations can be performed using a data set different from the source data, as, not uncommonly, the reason for doing MBBE is that there are no format BE studies available. In this way, non-BE study data can be used for model definition and then a format BE study (e.g., 4 period, single dose cross over study) can be simulated. The NCA parameters for each (simulated) subject in each study are then calculated using and algorithm derived
 
@@ -110,9 +102,7 @@ The success of each study is then calculated based on the method described by [S
 ### Input json File
 
 {
-
 "run_dir": "c:/fda/mbbe",
-
 ```{=html}
 "model_source": ["U:/fda/mbbe/mbbe/inst/examples/NM_05D01_11.mod",<br>
 ```
@@ -129,40 +119,24 @@ The success of each study is then calculated based on the method described by [S
 &nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_04_090.mod"],<br>
 ```
 "num_parallel": 32,
-
 "crash_value": 999999,
-
 "nmfe_path": "c:/nm74g64/util/nmfe74.bat",
-
 "delta_parms": 0.2,
-
 "use_check_identifiable": true,
-
 "NCA_end_time": 72,
-
-"rndseed": 1,
-
-"use_simulation_data": true,
-
+"rndseed": 1, 
 "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
-
 "ngroups": 4,
-
 "samp_size": 100,
-
 "reference_groups": [ 1, 2 ],
-
 "test_groups": [3, 4 ],
-
 "plan": "multisession",
-
 "alpha_error": 0.05,
-
 "NTID": false,
-
 "save_output": true,
-
-"model_averaging_by": "study"
+"model_averaging_by": "study",
+"user_R_code": true,
+"R_code_path": "u:/fda/mbbe/R/testRCall.r"
 
 }
 
@@ -171,17 +145,9 @@ The success of each study is then calculated based on the method described by [S
 ### Outputs
 
 ------------------------------------------------------------------------
-
-new line
-
-equation inline
-
-$a = sin( b/5)$
-
+ 
 ------------------------------------------------------------------------
-
-link to url chankges color by default
-
+ 
 [CNN](http://www.cnn.com)
 
 image - put double space before link to put it on a new line
@@ -209,6 +175,5 @@ numbered
 | 2    | 4    | 4    |
 
 ```{r, echo=FALSE, fig.align="center", fig.cap="test figure"}
-print(a$val[1:10])
-print(plot)
+ 
 ```

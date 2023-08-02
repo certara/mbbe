@@ -31,7 +31,6 @@ Structure of json file argument is:\cr
 "use_check_identifiable": true,\cr
 "NCA_end_time":       72,\cr
 "rndseed":        1,\cr
-"use_simulation_data": true,\cr
 "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",\cr
 "ngroups":        4,\cr
 "samp_size":      100,\cr
@@ -40,7 +39,6 @@ Structure of json file argument is:\cr
 "plan": "multisession",\cr
 "alpha_error": 0.05,\cr
 "NTID": false,\cr
-"save_output": true,\cr
 "model_averaging_by": "study"\cr
 \}
 }

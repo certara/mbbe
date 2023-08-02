@@ -110,9 +110,4 @@ $THETA
   ;; NO BOVALAG1  
   ;; NO COVARIANCE BETWEEN V AND CL  
 
-
-;; Phenotype 
-;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 3), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 0), ('COVARVCL', 1)])
-;; Genotype 
-;; [1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1]
-;; Num non-influential tokens = 0
+$TABLE ID TIME GROUP TRT DV IPRED EVID OCC SEQ NOPRINT FILE=DATA.TXT NOHEADER NOAPPEND

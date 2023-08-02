@@ -9,8 +9,7 @@ write_sim_controls(
   parms,
   base_models,
   samp_size,
-  use_simulation_data,
-  simulation_data_path = NULL
+  simulation_data_path
 )
 }
 \arguments{
@@ -22,9 +21,7 @@ write_sim_controls(
 
 \item{samp_size}{how many samples are there}
 
-\item{use_simulation_data}{logical - TRUE is a file other than the bootstrap data file is to be used for simulation}
-
-\item{simulation_data_path}{if use_simulation_data==TRUE, the path to the file tto be used for simulation}
+\item{simulation_data_path, }{path to the file to be used for simulation}
 }
 \description{
 Edits the best based model for each sample, replaces the original parameters with the bootstrap parameters

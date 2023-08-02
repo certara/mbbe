@@ -11,11 +11,13 @@
 "rndseed":        1,
 "simulation_data_path": "U:/fda/mbbe/inst/examples/data_sim.csv",
 "ngroups":        4,
-"samp_size":        10,
 "reference_groups": [ 1, 2 ],
 "test_groups": [3, 4 ],
+"samp_size":        10,
 "plan": "multisession",
 "alpha_error": 0.05,
 "NTID": false,
-"model_averaging_by": "study"
+"model_averaging_by": "study",
+"user_R_code": true,
+"R_code_path": "u:/fda/mbbe/R/testRCall.r"
 }

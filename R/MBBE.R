@@ -1,5 +1,5 @@
 #' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif qf
-#' @importFrom utils read.csv read.table write.csv capture.output head tail
+#' @importFrom utils read.csv read.table write.csv capture.output head tail askYesNo
 #' @importFrom magrittr %>%
 #' @rawNamespace import(future, except = run)
 #' @importFrom processx run
@@ -95,10 +95,12 @@ check_requirements <- function(run_dir,
                                test_groups,
                                nmfe_path,
                                use_check_identifiable,
-                               simulation_data_path) {
+                               simulation_data_path,
+                               user_R_code,
+                               R_code_path = NULL) {
 
     if(file.exists(run_dir)){
-       OK <- askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
+       OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
       if(!is.na(OK)){
         if(OK){
           message("Continuing")
@@ -111,6 +113,21 @@ check_requirements <- function(run_dir,
     }
 
   msg <- remove_old_files(run_dir, samp_size)
+
+ if(!is.logical(user_R_code)){
+   msg <-
+     paste(msg,
+           paste0("user_R_code ", user_R_code, " must be logical"),
+           sep = "\n")
+ }
+ if(user_R_code){
+   if(!file.exists(R_code_path)){
+    msg <-
+     paste(msg,
+           paste0("Cannot find ", user_R_code),
+           sep = "\n")
+   }
+ }
 
   if (!file.exists(nmfe_path)) {
     msg <-
@@ -574,12 +591,15 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
 #' }
 get_parameters <- function(run_dir, nmodels,
                            samp_size, delta_parms,
-                           crash_value, use_check_identifiable) {
+                           crash_value, use_check_identifiable,
+                           user_R_code, R_code_path = NULL) {
 
   passes_identifiable <- c(rep(0, nmodels))
   names(passes_identifiable) <- paste0("Model", seq(1:nmodels))
   BICS <- data.frame(matrix(crash_value, nrow = samp_size, ncol = nmodels + 3))
   colnames(BICS) <- c(paste0("Model", seq(1:nmodels)), "Best", "Max_Delta_parm", "Max_Delta")
+  Total_penalty <- data.frame(matrix(0, ncol = nmodels, nrow = samp_size))
+  colnames(Total_penalty) <- c(paste0("Model", seq(1:nmodels)))
   BICS$Best <- NA
   # BIC=k*ln(n) -2LL where k is is the number of estimated parameters and n is the number of data
   nparms <- data.frame(ntheta = rep(NA, nmodels))
@@ -589,8 +609,14 @@ get_parameters <- function(run_dir, nmodels,
   nfailed_ident <- 0 # number of samples in this model that fail the identifiability test
   # do by sample first only save parameters for the best model
   selected_parameters <- vector("list", samp_size)
+  identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+  all_identifiables <- rep(TRUE, nmodels)
+  this_model <- this_samp <-  1
   tryCatch(
     {
+      if(user_R_code){
+        source(R_code_path)
+      }
       for (this_samp in 1:samp_size) {
         num_successful <- 1 # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
         parameters_this_sample <- vector("list", nmodels)
@@ -719,8 +745,15 @@ get_parameters <- function(run_dir, nmodels,
               message("Failed to append parameters to ", lstFile, " after failing in get_parameters")
             }
           )
-        } # end of model loop
-        #  }  # end of sample loop
+          if(user_R_code){
+            penalty<- MBBE_RCode(run_dir,
+                                this_model,
+                                this_samp)
+            Total_penalty[this_samp, this_model] <- penalty + BICS[this_samp, this_model]
+          }else{
+            Total_penalty[this_samp, this_model] <- BICS[this_samp, this_model]
+          }
+         }
 
         # and select best model, NA if all crashed
         if (all(BICS[this_samp, 1:nmodels] == crash_value)) {
@@ -730,7 +763,7 @@ get_parameters <- function(run_dir, nmodels,
           BICS$Max_Delta[this_samp] <- 999999
           BICS$Max_Delta_parm[this_samp] <- NA
         } else {
-          best <- which.min(BICS[this_samp, 1:nmodels])
+          best <- which.min(Total_penalty[this_samp,])
           BICS$Best[this_samp] <- best
           selected_parameters[[this_samp]] <- unlist(parameters_this_sample[[best]])
           # check in nparms = length of selected_parameters
@@ -742,11 +775,10 @@ get_parameters <- function(run_dir, nmodels,
           BICS$Max_Delta_parm[this_samp] <- identifiable_ok["max_delta_parm"]
         }
       }
-    },
+      },
     error = function(cond) {
       # everything crashes??
-      message("Unknown error in get_parameters, read data, sample ", this_samp, " error  = ", cond)
-      all_identifiables[this_model] <- identifiable_ok["passes"]
+      message("Unknown error in get_parameters, read data,", " error  = ", cond)
       BICS[this_samp, this_model] <- crash_value
     }
   )
@@ -757,6 +789,9 @@ get_parameters <- function(run_dir, nmodels,
       write.csv(flatBICs, file.path(run_dir, "BICS.csv"), quote = FALSE)
       message("BICS = ")
       message(paste0(capture.output(BICS), collapse = "\n"))
+      write.csv(Total_penalty, file.path(run_dir, "Total_penalties.csv"), quote = FALSE)
+      message("Total Penalties for bootstrap models = ")
+      message(paste0(capture.output(Total_penalty), collapse = "\n"))
     },
     error = function(err) {
       message("Failed to write out BICS to ", file.path(run_dir, "BICS.csv"), " in get_parameters")
@@ -767,7 +802,6 @@ get_parameters <- function(run_dir, nmodels,
   tryCatch(
     {
       conn <- file(file.path(run_dir, "Parameters.csv"), open = "w")
-
       writeLines(text = c("Sample","Best Model for Sample","Number of Parmeters","Selected Parameters"), con = conn, sep = "\n")
       newlist <- lapply(seq_len(length(selected_parameters)), function(i) {
         temp <- lapply(seq_len(length(selected_parameters[[i]])), function(j) {
@@ -783,7 +817,9 @@ get_parameters <- function(run_dir, nmodels,
       message("Failed to write to ", file.path(run_dir, "Parameters.csv"), " in get_parameters")
     }
   )
-  rval <- list(BICS = BICS, parameters = selected_parameters, passes_identifiable = passes_identifiable)
+  rval <- list(BICS = BICS, parameters = selected_parameters,
+               passes_identifiable = passes_identifiable,
+               Total_penalties = Total_penalty)
   return(rval)
 }
 
@@ -1455,9 +1491,9 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
 #' @param nmodels Integer, number of models
 #' @param reference_groups, which GROUP (required item in NONMEM $TABLE) are reference formulation
 #' @param test_groups, which GROUP (required item in NONMEM $TABLE) are test formulation
-#' @param saveplots, logical whether to write the plot files to disc, default is FALSE
+#' @param savePlots, logical whether to write the plot files to disc, default is FALSE
 #'
-make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, saveplots = FALSE) {
+make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, savePlots = FALSE) {
   rval <- tryCatch(
     {
       BICS <- BICS %>%
@@ -1576,6 +1612,8 @@ run_mbbe_json <- function(Args.json) {
   if (!file.exists(Args.json)) {
     message(Args.json, " file not found, exiting")
   } else {
+    user_R_code  <- FALSE # default value
+    R_code_path <- NULL
     Args <- RJSONIO::fromJSON(Args.json)
     all_args <- list(
       Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
@@ -1585,31 +1623,33 @@ run_mbbe_json <- function(Args.json) {
     if (any(sapply(all_args, is.null))) {
       message(
         "required values in json file are: \n",
-        "run_dir",
-        "model_source",
-        "num_parallel",
-        "crash_value",
-        "nmfe_path",
-        "delta_parms",
-        "use_check_identifiable",
-        "NCA_end_time",
-        "rndseed",
-        "ngroups",
-        "samp_size",
-        "reference_groups",
-        "test_groups",
-        "plan",
-        "alpha_error",
-        "NTID",
-        "Args$model_averaging_by and ",
-        "simulation_data_path, path to data used for simulation\nexiting"
+        "run_dir \n",
+        "model_source \n",
+        "num_parallel \n",
+        "crash_value \n",
+        "nmfe_path \n",
+        "delta_parms \n",
+        "use_check_identifiable \n",
+        "NCA_end_time \n",
+        "rndseed \n",
+        "ngroups \n",
+        "samp_size \n",
+        "reference_groups \n",
+        "test_groups \n",
+        "plan \n",
+        "alpha_error \n",
+        "NTID \n",
+        "model_averaging_by \n",
+        "simulation_data_path, path to data used for simulation\n",
+        "user_R_code (optional, TRUE|FALSE, default = FALSE) and \n",
+        "R_code_path (path to R code, if used, default = NULL) \nexiting"
       )
     } else {
 
      return <- run_mbbe(
         Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
         Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$simulation_data_path,
-        Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by
+        Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$user_R_code, Args$R_code_path
       )
       file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
       colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
@@ -1638,6 +1678,8 @@ run_mbbe_json <- function(Args.json) {
 #' @param NCA_end_time - NCA calculation will start at 0, end at NCA_end_time
 #' @param rndseed - random seed
 #' @param simulation_data_path - path to simulation data set
+#' @param user_R_code - logical, wheteher user provide code us used for the penalty for selectin models
+#' @param R_code_path - if user_R_code, required path to R code
 #' @details
 #' {
 #' Typically called from run_mbbe_json}
@@ -1662,7 +1704,8 @@ run_mbbe <- function(crash_value, ngroups,
                      simulation_data_path,
                      plan = c("multisession", "sequential", "multicore"),
                      alpha_error = 0.05, NTID,
-                     model_averaging_by ) {
+                     model_averaging_by,
+                     user_R_code, R_code_path) {
   tictoc::tic()
   if (unlink(run_dir, recursive = TRUE, force = TRUE)) {
     stop("Unable to delete run directory ", run_dir)
@@ -1682,7 +1725,7 @@ run_mbbe <- function(crash_value, ngroups,
   on.exit(options(oldOptions))
   options(future.globals.onReference = "error")
   on.exit(future::plan(old_plan))
-  message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = ", toString(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
+  message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = \n", writeLines(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
   if (!model_averaging_by %in% c("study", "subject")) {
     stop("Error, model_averaging is ",model_averaging_by, " model_averaging_by must be one of study or subject, exiting")
   } else {
@@ -1697,6 +1740,10 @@ run_mbbe <- function(crash_value, ngroups,
   }
   message("Simulation data set = ", simulation_data_path)
 
+  message("user_R_code = ", user_R_code)
+  if(user_R_code){
+    message("R_code_path = ", R_code_path)
+  }
 
   path_parents <- split_path(run_dir)
   cur_path <- path_parents[1]
@@ -1713,7 +1760,9 @@ run_mbbe <- function(crash_value, ngroups,
     run_dir, samp_size, model_source, ngroups,
     reference_groups, test_groups, nmfe_path,
     use_check_identifiable,
-    simulation_data_path
+    simulation_data_path,
+    user_R_code,
+    R_code_path
   )
   if (msg$rval) {
     message(
@@ -1732,12 +1781,18 @@ run_mbbe <- function(crash_value, ngroups,
         # need to wait until all are done, this returns when all are started.
 
         message("\n", format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
+        if(user_R_code){
+          message("and running user provided R code from ", R_code_path)
+        }
         parms <- get_parameters(
           run_dir, nmodels,
           samp_size, delta_parms,
-          crash_value, use_check_identifiable#,
-          #passes_identifiable
+          crash_value, use_check_identifiable,
+          user_R_code, R_code_path
         )
+
+        }
+
         base_models <- get_base_model(run_dir, nmodels) # get all nmodels base model
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
         final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, simulation_data_path) # don't really do anything with final models, already written to disc
@@ -1768,11 +1823,11 @@ run_mbbe <- function(crash_value, ngroups,
             test_groups
           )
 
-          message(format(Sys.time(), digits = 0), " Done making plots, calculation power")
+          message(format(Sys.time(), digits = 0), " Done making plots, calculating power")
           # read NCA output and do stats
           all_results <- calc_power(run_dir, samp_size,
-            alpha = alpha_error,
-            model_averaging_by, NTID = NTID
+                                    alpha = alpha_error,
+                                    model_averaging_by, NTID = NTID
           )
         } else {
           all_results <- NULL
@@ -1814,13 +1869,18 @@ run_mbbe <- function(crash_value, ngroups,
           AUCinf_power <- NULL
         }
       }
-    }
   } else {
     message(msg$msg, " exiting")
     Cmax_power <- NULL
     AUClast_power <- NULL
     AUCinf_power <- NULL
   }
+  NCA_stats <- all_results %>% dplyr::select(Cmax_BE, Cmax_Ratio ,
+                                             Cmax_lower_CL, Cmax_upper_CL,
+                                             AUClast_BE, AUClast_Ratio,
+                                             AUClast_lower_CL,AUClast_upper_CL,
+                                             AUCinf_BE, AUCinf_Ratio,
+                                             AUCinf_lower_CL, AUCinf_upper_CL)
   tictoc::toc()
   message("Done at ", Sys.time())
   return(
@@ -1830,8 +1890,9 @@ run_mbbe <- function(crash_value, ngroups,
       "AUCinf_power" = AUCinf_power,
       "run_dir" = run_dir,
       "Num_identifiable" = parms$passes_identifiable,
-      "BICS" = parms$BICS
+      "NCA_stats" = NCA_stats
     )
   )
-
 }
+
+

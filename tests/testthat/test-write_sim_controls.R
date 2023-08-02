@@ -26,7 +26,7 @@ test_that("get_parameters works", {
 
 
   referenceBICs <- read.csv(file.path(souce_dir, "BICS.csv"))
-  parms <- get_parameters(run_dir, 2, 1, 0.2, 999999, TRUE)
+  parms <- get_parameters(run_dir, 2, 1, 0.2, 999999, TRUE, FALSE)
   # copy base models
   file.copy(file.path(system.file(package = "mbbe", "test_files", "get_parms", "model1"),"bs1.mod"),
             file.path(run_dir,"model1"))
@@ -36,8 +36,8 @@ test_that("get_parameters works", {
   file.copy(file.path(system.file(package = "mbbe", "test_files", "get_parms"),"data_sim.csv"),
             run_dir)
   base_models <- get_base_model(run_dir, 2) # get all nmodels base model
+
   final_models <- write_sim_controls(run_dir, parms, base_models, 1, file.path(run_dir,"data_sim.csv"))
   testBICs <- read.csv(file.path(run_dir,"BICS.csv"))
   expect_equal(testBICs, referenceBICs)
-
 })

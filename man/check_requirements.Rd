@@ -13,8 +13,9 @@ check_requirements(
   test_groups,
   nmfe_path,
   use_check_identifiable,
-  use_simulation_data,
-  simulation_data_path = NULL
+  simulation_data_path,
+  user_R_code,
+  R_code_path = NULL
 )
 }
 \arguments{
@@ -34,9 +35,7 @@ check_requirements(
 \item logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
 }}
 
-\item{use_simulation_data}{logical, if the simulation will be done with a different data set than the bootstrap}
-
-\item{simulation_data_path}{if use_simulation_data, this is the path to the data file}
+\item{simulation_data_path}{path to the data file}
 
 \item{run.dir}{source  model files}
 }
@@ -54,6 +53,6 @@ Request permission to delete the run_dir
 \item check if nmfe path is correct
 \item check for saddle_reset if requested for check_identifiability
 \item check for repeat IDs in data set
-\item if use_simulation_data, see if data available
+\item see if simulation data available
 }
 }

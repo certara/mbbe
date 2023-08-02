@@ -11,7 +11,7 @@ make_NCA_plots(
   nmodels,
   reference_groups,
   test_groups,
-  saveplots = FALSE
+  savePlots = FALSE
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ make_NCA_plots(
 
 \item{test_groups, }{which GROUP (required item in NONMEM $TABLE) are test formulation}
 
-\item{saveplots, }{logical whether to write the plot files to disc, default is FALSE}
+\item{savePlots, }{logical whether to write the plot files to disc, default is FALSE}
 }
 \description{
 generated histograms of AUClast, AUCinf and Cmax for the BE samples

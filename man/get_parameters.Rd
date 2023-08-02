@@ -10,7 +10,9 @@ get_parameters(
   samp_size,
   delta_parms,
   crash_value,
-  use_check_identifiable
+  use_check_identifiable,
+  user_R_code,
+  R_code_path = NULL
 )
 }
 \arguments{

@@ -115,8 +115,4 @@ $THETA
   0.1		; THETA(17) COVARIANCE OF V AND CL  
 
 
-;; Phenotype 
-;; OrderedDict([('ADVAN', 2), ('KAETA', 0), ('ALAG1', 0), ('BOVALAG1', 0), ('DURATION1', 2), ('BOVV', 1), ('BOVCL', 1), ('BOVKA', 1), ('COVARVCL', 0)])
-;; Genotype 
-;; [1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0]
-;; Num non-influential tokens = 0
+$TABLE ID TIME GROUP TRT DV IPRED EVID OCC SEQ NOPRINT FILE=DATA.TXT NOHEADER NOAPPEND
