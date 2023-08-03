@@ -11,6 +11,8 @@ NULL
 
 #' delete_files
 #'
+#'removes unneeded NONMEM files, including "exe", "f90", "grd", "cpu", "shm", "lnk"
+#'
 #' @param folder A folder from which to delete non-essential NONMEM files
 #' @details Files to be deleted are:
 #' FDATA",
@@ -27,7 +29,7 @@ NULL
 #' exe, f90, grd, shk, cpu, shm, lnk, phi
 #'
 delete_files <- function(folder) {
-  # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG
+  # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG, .shk, .shm
   # but can't delete all, need to keep $TABLE
   try({
     delfiles <-
@@ -44,7 +46,7 @@ delete_files <- function(folder) {
         "nmprd4p.mod"
       )
 
-    ExtensionsToDelete <- c("exe", "f90", "grd", "shk", "cpu", "shm", "lnk", "phi")
+    ExtensionsToDelete <- c("exe", "f90", "grd", "cpu", "shm", "lnk")
     ExtensionsToDelete <- paste0("(*.", ExtensionsToDelete, ")")
     ExtensionsToDeleteCollapsed <- paste(ExtensionsToDelete, collapse = "|")
     delfiles <-
@@ -67,7 +69,7 @@ delete_files <- function(folder) {
 #'
 #' Check if all the requirements for model based BE assessment are present
 #'
-#' @param run.dir source  model files
+#' @param run_dir source  model files
 #' @param samp_size number of samples - must be integer
 #' @param model_list list of model control files to be used for model averaging
 #' @param ngroups number of groups for BE testing in data set
@@ -76,6 +78,8 @@ delete_files <- function(folder) {
 #' @param nmfe_path nmfe??.bat
 #' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
 #' @param simulation_data_path   path to the data file
+#' @param user_R_code - logical, whether to call user define R code after the NONMEM run for bootstrap,
+#' @param R_code_path - path to user defined R code to be run after NONMEM bootstrap. Returns a penalty to be added to the BIC
 #' @export
 #' @details Check to see if:
 #' Request permission to delete the run_dir
@@ -331,7 +335,8 @@ split_path <- function(path, mustWork = FALSE) {
 #'
 #' copy NONMEM control files from a source to a run directory
 #' no change in control files
-#' @param  list of NONMEM model files
+#'
+#' @param model_source list of NONMEM model files
 #' @param run_dir Folder where models are to be run
 #' @examples
 #' \dontrun{
@@ -387,8 +392,8 @@ copy_model_files <- function(model_source, run_dir) {
 #' create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv
 #'
 #' @param run_dir Folder where models are to be run
-#' @param samp_size how many bootstrap samples
 #' @param nmodels how many models are there
+#' @param samp_size how many bootstrap samples
 #' @export
 #' @examples
 #' \dontrun{
@@ -478,7 +483,7 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 #' @param nmfe_path path to nmfe??.bat
 #' @param this_model which of the models used for model averaging is this, integer if bootstrap, NULL if monte carlo
 #' @param this_samp  which sample (from bootstrap or Monte Carlo) is this, integer
-#' @param BS Logical, TRUE if boostrap, FALSE if Monte Carlo
+#' @param BS Logical, TRUE if bootstrap, FALSE if Monte Carlo
 #'
 #' @examples
 #' \dontrun{
@@ -584,6 +589,8 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
 #' @param delta_parms criteria for identifiability test
 #' @param crash_value value for failed calculation
 #' @param use_check_identifiable - logical, is check_identifiable to be used
+#' @param user_R_code - logical, whether user defined R code is to be run after the bootstrap for model averaging
+#' @param R_code_path if user_R_code is TRUE, the path to the R code to be run, default is NULL
 #' @export
 #' @examples
 #' \dontrun{
@@ -827,6 +834,7 @@ get_parameters <- function(run_dir, nmodels,
 #'
 #' for each model get the control file used for the bootstrap
 #' return a list of the models
+#'
 #' @param run_dir directory where models are run
 #' @param nmodels how many models are there
 #' @export
@@ -872,7 +880,9 @@ get_base_model <- function(run_dir, nmodels) {
 #' \dontrun{
 #' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
 #' }
-write_sim_controls <- function(run_dir, parms, base_models, samp_size, simulation_data_path) {
+write_sim_controls <- function(run_dir, parms,
+                               base_models, samp_size,
+                               simulation_data_path) {
   final_models <- list()
   if (!file.exists(simulation_data_path)) {
     stop(paste("Cannot find ", simulation_data_path, " exiting"))
@@ -952,7 +962,8 @@ write_sim_controls <- function(run_dir, parms, base_models, samp_size, simulatio
 
 #' calc_NCA
 #'
-#' perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+#' perform NCA (Cmax, AUCin,AUClst, from 0 to NCA_end_time)
+#'
 #' @param run_dir character;  folder path of run directory
 #' @param ngroups numeric; integer value specifying how many groups, e.g., 4 for ABBA
 #' @param reference_groups numeric vector; specifying which groups are reference
@@ -1029,7 +1040,11 @@ calc_NCA <-
 #' check_identifiable("c:/runmodels", 1, 1, 0.1)
 #' }
 #'
-check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, nparms) {
+check_identifiable <- function(run_dir,
+                               this_model,
+                               this_sample,
+                               delta_parms,
+                               nparms) {
   lstfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".lst"))
   extfile <- file.path(run_dir, paste0("model", this_model), this_sample, paste0("bsSamp", this_model, "_", this_sample, ".ext"))
   max_deltap <- -999
@@ -1104,12 +1119,13 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' reads $TABLE output from simulation (file name out.dat)
 #' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 #' if check.identifiability, do that with delta_parms as criteria
+#'
 #' @param run_dir home directory
 #' @param this_sample integer
 #' @param NumGroups integer how many groups, e.g., 4 for ABBA
 #' @param reference_groups list of arrays, which groups are reference
-#' @param test_groups list of arrays, which groups are  test
-#' @param NCA_end_time end time for AUClast and AUCinf
+#' @param test_groups list of arrays, which groups are test
+#' @param NCA_end_time numeric, end time for AUClast and AUCinf, calculation starts at TIME=0 (TIME=0 data point is required in simulated study)
 #' @export
 #' @return Logical
 #'
@@ -1117,7 +1133,12 @@ check_identifiable <- function(run_dir, this_model, this_sample, delta_parms, np
 #' \dontrun{
 #' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
 #' }
-getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_groups, NCA_end_time) {
+getNCA <- function(run_dir,
+                   this_sample,
+                   NumGroups,
+                   reference_groups,
+                   test_groups,
+                   NCA_end_time) {
   output_file <- file.path(run_dir, paste0("MBBEsim", this_sample), paste0("NCAresults", this_sample, ".csv"))
   tryCatch(
     {
@@ -1238,6 +1259,7 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' Calculate power
 #'
 #' Calculated power by doing EMA standards statistics on each Monte Carlo simulation, then counting the number that pass BE
+#'
 #' @param run_dir character, run directory
 #' @param samp_size integer, how many samples
 #' @param alpha numeric, range, >0 and < 1 alpha error rate
@@ -1258,7 +1280,11 @@ getNCA <- function(run_dir, this_sample, NumGroups, reference_groups, test_group
 #' }
 #' @export
 
-calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
+calc_power <- function(run_dir,
+                       samp_size,
+                       alpha,
+                       model_averaging_by,
+                       NTID) {
 
   BEsuccess <- data.frame(
     Cmax.success = as.logical(),
@@ -1309,7 +1335,6 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
     AUCinf = as.numeric(), AUClast = as.numeric()
   )
   nsubs <- NA
-
 
 
   for (this_samp in 1:samp_size) {
@@ -1485,6 +1510,7 @@ calc_power <- function(run_dir, samp_size, alpha, model_averaging_by, NTID) {
 #' make_NCA_plots
 #'
 #'generated histograms of AUClast, AUCinf and Cmax for the BE samples
+#'
 #' @param BICS - data objects for Bayesian information Criteria
 #' @param run_dir Folder that NONMEM models were run in
 #' @param samp_size Integer, number of samples
@@ -1576,34 +1602,6 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #'
 #' @param Args.json, path to JSON file with arguments
 #' @export
-#' @details
-#' {
-#' Structure of json file argument is:\cr
-#' \{\cr
-#'  "run_dir": "c:/fda/mbbe",\cr
-#'  "model_source": \[` ` "U:/mbbe/mbbe/inst/examples/NM_05D01_11.mod",\cr
-#'  `              ` "U:/mbbe/mbbe/inst/examples/NM_05D01_05.mod",\cr
-#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_04_085.mod",\cr
-#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_05D01_12.mod",\cr
-#'  `              `  "U:/mbbe/mbbe/inst/examples/NM_04_090.mod"\],\cr
-#' `  ` }\cr
-#' "num_parallel":       32,\cr
-#' "crash_value":   999999,\cr
-#' "nmfe_path": "c:/nm74g64/util/nmfe74.bat",\cr
-#' "delta_parms":      0.2,\cr
-#' "use_check_identifiable": true,\cr
-#' "NCA_end_time":       72,\cr
-#' "rndseed":        1,\cr
-#' "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",\cr
-#' "ngroups":        4,\cr
-#' "samp_size":      100,\cr
-#' "reference_groups": [ 1, 2 ],\cr
-#' "test_groups": [3, 4 ],\cr
-#' "plan": "multisession",\cr
-#' "alpha_error": 0.05,\cr
-#' "NTID": false,\cr
-#' "model_averaging_by": "study"\cr
-#' \}
 #' @examples
 #' \dontrun{
 #' run_mbbe_json(Args.json)
@@ -1663,8 +1661,8 @@ run_mbbe_json <- function(Args.json) {
 #' run_mbbe
 #'
 #' Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+#'
 #' @param crash_value - value to be returned for BIC in models that crash, either in bootstrap or simulation
-#' @param nmodels - number of models for model averaging
 #' @param ngroups - number of groups in simulated data, e.g., ABBA design has 4 groups
 #' @param reference_groups - which of the groups are reference formulation e.g., ABBA design might be c(2,3)
 #' @param test_groups - which of the groups are test formulation e.g., ABBA design might be c(1,4)
@@ -1678,7 +1676,11 @@ run_mbbe_json <- function(Args.json) {
 #' @param NCA_end_time - NCA calculation will start at 0, end at NCA_end_time
 #' @param rndseed - random seed
 #' @param simulation_data_path - path to simulation data set
-#' @param user_R_code - logical, wheteher user provide code us used for the penalty for selectin models
+#' @param plan - the parallel exection plan, one of "multisession", "sequential", "multicore"
+#' @param alpha_error alpha error for statistical testing
+#' @param  NTID logical , whether the drug is a narrow therapeutic index drug
+#' @param model_averaging_by one "study", "subject"
+#' @param user_R_code - logical, whether user provide code us used for the penalty for selectin models
 #' @param R_code_path - if user_R_code, required path to R code
 #' @details
 #' {

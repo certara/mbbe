@@ -29,6 +29,12 @@ get_parameters(
 \item{use_check_identifiable}{\itemize{
 \item logical, is check_identifiable to be used
 }}
+
+\item{user_R_code}{\itemize{
+\item logical, whether user defined R code is to be run after the bootstrap for model averaging
+}}
+
+\item{R_code_path}{if user_R_code is TRUE, the path to the R code to be run, default is NULL}
 }
 \description{
 read the xml file for each bootstrap/model, calculate BIC

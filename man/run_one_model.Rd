@@ -15,7 +15,7 @@ run_one_model(run_dir, nmfe_path, this_model, this_samp, BS)
 
 \item{this_samp}{which sample (from bootstrap or Monte Carlo) is this, integer}
 
-\item{BS}{Logical, TRUE if boostrap, FALSE if Monte Carlo}
+\item{BS}{Logical, TRUE if bootstrap, FALSE if Monte Carlo}
 }
 \description{
 Run a single NONMEM model. This is called for either bootstrap (BS==True) or simulation,

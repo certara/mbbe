@@ -22,9 +22,9 @@ getNCA(
 
 \item{reference_groups}{list of arrays, which groups are reference}
 
-\item{test_groups}{list of arrays, which groups are  test}
+\item{test_groups}{list of arrays, which groups are test}
 
-\item{NCA_end_time}{end time for AUClast and AUCinf}
+\item{NCA_end_time}{numeric, end time for AUClast and AUCinf, calculation starts at TIME=0 (TIME=0 data point is required in simulated study)}
 }
 \value{
 Logical

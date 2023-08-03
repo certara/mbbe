@@ -7,9 +7,9 @@
 copy_model_files(model_source, run_dir)
 }
 \arguments{
-\item{run_dir}{Folder where models are to be run}
+\item{model_source}{list of NONMEM model files}
 
-\item{list}{of NONMEM model files}
+\item{run_dir}{Folder where models are to be run}
 }
 \value{
 nmodels how many models are there

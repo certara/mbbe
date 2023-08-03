@@ -10,7 +10,7 @@ delete_files(folder)
 \item{folder}{A folder from which to delete non-essential NONMEM files}
 }
 \description{
-delete_files
+removes unneeded NONMEM files, including "exe", "f90", "grd", "cpu", "shm", "lnk"
 }
 \details{
 Files to be deleted are:

@@ -19,6 +19,8 @@ check_requirements(
 )
 }
 \arguments{
+\item{run_dir}{source  model files}
+
 \item{samp_size}{number of samples - must be integer}
 
 \item{model_list}{list of model control files to be used for model averaging}
@@ -37,7 +39,13 @@ check_requirements(
 
 \item{simulation_data_path}{path to the data file}
 
-\item{run.dir}{source  model files}
+\item{user_R_code}{\itemize{
+\item logical, whether to call user define R code after the NONMEM run for bootstrap,
+}}
+
+\item{R_code_path}{\itemize{
+\item path to user defined R code to be run after NONMEM bootstrap. Returns a penalty to be added to the BIC
+}}
 }
 \description{
 Check if all the requirements for model based BE assessment are present

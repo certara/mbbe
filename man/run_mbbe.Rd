@@ -84,16 +84,22 @@ run_mbbe(
 \item path to simulation data set
 }}
 
+\item{plan}{\itemize{
+\item the parallel exection plan, one of "multisession", "sequential", "multicore"
+}}
+
+\item{alpha_error}{alpha error for statistical testing}
+
+\item{NTID}{logical , whether the drug is a narrow therapeutic index drug}
+
+\item{model_averaging_by}{one "study", "subject"}
+
 \item{user_R_code}{\itemize{
-\item logical, wheteher user provide code us used for the penalty for selectin models
+\item logical, whether user provide code us used for the penalty for selectin models
 }}
 
 \item{R_code_path}{\itemize{
 \item if user_R_code, required path to R code
-}}
-
-\item{nmodels}{\itemize{
-\item number of models for model averaging
 }}
 }
 \value{

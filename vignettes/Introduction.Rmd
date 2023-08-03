@@ -3,11 +3,14 @@ title: "Introduction"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r, include = FALSE}
+```{r options, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -19,38 +22,47 @@ library(mbbe)
 library(ggplot2) 
 
 ```
+ 
 
 ### Why Model Based Bioequivalence?
 
-Traditional BE study design and statistical methods are well established (1, 2) and are based on non compartmental analysis (NCA). There are however, a number of clinical scenarios were a traditional BE study is not feasible. Examples include:
+Traditional BE study design and statistical methods are well established
+(1,2) and are based on non compartmental analysis (NCA). There are
+however, a number of clinical scenarios were a traditional BE study is
+not feasible (3,4) Examples include:
 
 -   Very long half life drug
 
--   Clinical scenarios were rich sampling is not feasible, for example, pediatrics.
+-   Clinical scenarios were rich sampling is not feasible, for example,
+    pediatrics.
 
--   Clinical scenarios were a multi-period cross over study is not feasible, e.g. cytotoxic drugs that cannot be given to healthy volunteers.
+-   Clinical scenarios were a multi-period cross over study is not
+    feasible, e.g. cytotoxic drugs that cannot be given to healthy
+    volunteers.
 
-There is value in developing method to meet the regulatory requirements for such drug. Model based Bio Equivalence is one method to achieve this.
+There is value in developing method to meet the regulatory requirements
+for such drug. Model based Bio Equivalence is one method to achieve
+this.
 
-1.  Bioavailability-and-Bioequivalence-Studies-Submitted-in-NDAs-or-INDs-----General-Considerations .pdf
+1.  Bioavailability-and-Bioequivalence-Studies-Submitted-in-NDAs-or-INDs-----General-Considerations
+    .pdf
 
-2.  Gabrielsson, J. and Weiner, D. (2001). Pharmacokinetic and pharmacodynamic data analysis: concepts and applications, volume 2. CRC Press
+2.  Gabrielsson, J. and Weiner, D. (2001). Pharmacokinetic and
+    pharmacodynamic data analysis: concepts and applications, volume 2.
+    CRC Press
 
-3.  Möllenhoff K, Loingeville F, Bertrand J, Nguyen TT, Sharan S, Zhao L, Fang L, Sun G, Grosser S, Mentré F, Dette H. Efficient model-based bioequivalence testing. Biostatistics. 2022 Jan 13;23(1):314-327. doi: 10.1093/biostatistics/kxaa026. PMID: 32696053
+3.  Hu, C., Moore, K. H., Kim, Y. H., and Sale, M. E. (2004).
+    Statistical issues in a modeling approach to assessing
+    bioequivalence or pk similarity with presence of sparsely sampled
+    subjects. Journal of pharmacokinetics and pharmacodynamics,
+    31(4):321--3
 
-4.  Hu, C., Moore, K. H., Kim, Y. H., and Sale, M. E. (2004). Statistical issues in a modeling approach to assessing bioequivalence or pk similarity with presence of sparsely sampled subjects. Journal of pharmacokinetics and pharmacodynamics, 31(4):321--3
+4.  Seng Yue C, Ozdin D, Selber-Hnatiw S, Ducharme MP. Opportunities and
+    Challenges Related to the Implementation of Model-Based
+    Bioequivalence Criteria. Clin Pharmacol Ther. 2019
+    Feb;105(2):350-362. doi: 10.1002/cpt.1270. Epub 2019 Jan 8. PMID:
 
-5.  Dubois, A., Lavielle, M., Gsteiger, S., Pigeolet, E., and Mentr´e, F. (2011). Model-based analyses of bioequivalence crossover trials using the stochastic approximation expectation maximisation algorithm. Statistics in medicine, 30(21):2582--2600.
-
-6.  Pentikis, H. S., Henderson, J. D., Tran, N. L., and Ludden, T. M. (1996). Bioequivalence: individual and population compartmental modeling compared to the noncompartmental approach. Pharmaceutical research, 13(7):1116--1121
-
-7.  Choi SH, Lionberger RA. Clinical, Pharmacokinetic, and In Vitro Studies to Support Bioequivalence of Ophthalmic Drug Products. AAPS J. 2016 Jul;18(4):1032-8. doi: 10.1208/s12248-016-9932-z. Epub 2016 May 16. PMID: 27184578.
-
-8.  Guhl, M., Mercier, F., Hofmann, C. *et al.* Impact of model misspecification on model-based tests in PK studies with parallel design: real case and simulation studies. *J Pharmacokinet Pharmacodyn* **49**, 557--577 (2022). <https://doi.org/10.1007/s10928-022-09821-z> - NCA TOST vs MB TOST (not MLMEM?)
-
-9.  Tardivon C, Loingeville F, Donnelly M, Feng K, Sun W, Sun G, Grosser S, Zhao L, Fang L, Mentré F, Bertrand J. Evaluation of model-based bioequivalence approach for single sample pharmacokinetic studies. CPT Pharmacometrics Syst Pharmacol. 2023 Jul;12(7):904-915. doi: 10.1002/psp4.12960. Epub 2023 Apr 27. PMID: 37114321; PMCID: PMC10349197.
-
-10. Seng Yue C, Ozdin D, Selber-Hnatiw S, Ducharme MP. Opportunities and Challenges Related to the Implementation of Model-Based Bioequivalence Criteria. Clin Pharmacol Ther. 2019 Feb;105(2):350-362. doi: 10.1002/cpt.1270. Epub 2019 Jan 8. PMID: 30375647.
+    30375647. 
 
 ------------------------------------------------------------------------
 
@@ -58,122 +70,136 @@ There is value in developing method to meet the regulatory requirements for such
 
 ### Algorithm
 
-1.  Develop model(s) of the data. Model development and criteria for an "adequate" model are not discussed, buy typicall would include separate estimation by formulation for all absorption parameters (e..g, F, Ka, Lag time, zero order infusion duration, transit compartment rate constants etc). An adequate model typically would also include between occasion variability on Volume and elimination terms.
+The key parameter for implementing model based bioequivalence is the
+power of simulated studies. The power is key, rather than the outcome of
+any single simulated study, as the outcome of any single study will
+depend on the random seed chosen. A more general and robust answer
+regarding the likely BE can obtained by simulating many studies, and
+examining the "typyical" oucome. The use of non linear mixed effect
+models for Monte Carlo simulation is well established (1).
 
-2.  If indicated, perform "model averaging" based on boot strap analysis of a set of adequate models
+Typically the study design that gives rise to the data used for model
+development not be a BE study, if it were then the simulated BE studies
+would not be needed, as real data are available.
 
-3.  For each bootstrap sample, select the "best" model. In the current implementation, the best model is selected based on Bayesian information criteria (BIC). That is, each model is run using each bootstrap sample. For each sample, the bootstrap model, and associated parameter estimates, with the best BIC is selected. In this way, the uncertainty of both the model structure and the model parameters is described.
+#### Model uncetainty and model averaging
 
-4.  From the selected models, perform Monte Carlo simulation, with a reasonable study design (e.g., 4 period, cross over, 50 subjects.
+"All model are wrong, some models are useful" [2]. We interpret this
+well known aphorism to mean that if you use a single model, you will be
+wrong, but is if you use "some" models (e.g., model averaging), it may
+be useful. In general, we extend model uncertainty from a single model
+with uncertain parameters to uncertainty about the model structure.
 
-5.  Determine power of the analysis by calculating two one sides test statistics on each simulated study.
+1.  Develop model(s) of the data. Model development and criteria for an
+    "adequate" model are not discussed, buy typicall would include
+    separate estimation by formulation for all absorption parameters
+    (e..g, F, Ka, Lag time, zero order infusion duration, transit
+    compartment rate constants etc). An adequate model typically would
+    also include between occasion variability on Volume and elimination
+    terms.
 
-------------------------------------------------------------------------
+2.  If indicated, perform "model averaging" based on boot strap analysis
+    of a set of adequate models
 
-### Why Model Averaging?
+3.  For each bootstrap sample, select the "best" model. In the current
+    implementation, the best model is selected based on Bayesian
+    information criteria (BIC). That is, each model is run using each
+    bootstrap sample. For each sample, the bootstrap model, and
+    associated parameter estimates, with the best BIC is selected. In
+    this way, the uncertainty of both the model structure and the model
+    parameters is described.
 
-There is general awareness that parameter for any given model are estimate with uncertainty. In NONMEM as well as other software solutions, this uncertainty is quantified as the estimation variance-covariance matrix. Not unlike the uncertainty associated with model parameter estimates, the model structure is likely determined with some uncertainty. There has been a good bit of interest in quantify this model structure uncertainty and including it in predictions. Generally, the model structure uncertainty is addressed in Monte Carlo simulation with model averaging. This has been applied in covariate selection [1] using reversible jump MCMC. However, reversible jump is not available at this time in any NONMEM method. Instead, the MBBE package uses bootstrap to estimate a probability for each model, again, similar to how bootstrap is used to quantify uncertainty in parameters, as described by Aoki et. al [2].
+4.  From the selected models, perform Monte Carlo simulation, with a
+    reasonable study design (e.g., 4 period, cross over, 50 subjects.
 
-NONMEM execution for each candidate model-bootstrap data set combination is performed. For each sample, the model with the best (lowest) Bayesian Information Criteria (BIC [3]) is selected. The Monte Carlo simulation is then done with the model structure and parameter estimates selected for each bootstrap data set, thus capturing uncertainty in both the model structure and parameters. The simulations can be performed using a data set different from the source data, as, not uncommonly, the reason for doing MBBE is that there are no format BE studies available. In this way, non-BE study data can be used for model definition and then a format BE study (e.g., 4 period, single dose cross over study) can be simulated. The NCA parameters for each (simulated) subject in each study are then calculated using and algorithm derived
+5.  Determine power of the analysis by calculating two one sides test
+    statistics on each simulated study.
 
-Two options exist for how to combine those different models/parameter estimate. First, the data from each of the simulations can be used as simulated, with a single model per simulated study (the "model_averaging_by": "study" option). This represents the possibility that any given model may be "correct" for all subjects. Alternatively, the study data can be recombined such that each study has a population of individuals based on the representation of overall models. (the "model_averaging_by": "subject" option). For this option, any given study will be comprised of the same subjects (demo graphics, sample time etc), but have different structure models. In this way the uncertainty of model structure is by subject, with each subject having a given probability of any model being "correct".
+There is general awareness that parameter for any given model are
+estimate with uncertainty. In NONMEM as well as other software
+solutions, this uncertainty is quantified as the estimation
+variance-covariance matrix. Not unlike the uncertainty associated with
+model parameter estimates, the model structure is likely determined with
+some uncertainty. There has been a good bit of interest in quantify this
+model structure uncertainty and including it in predictions. Generally,
+the model structure uncertainty is addressed in Monte Carlo simulation
+with model averaging. This has been applied in covariate selection [1]
+using reversible jump MCMC. However, reversible jump is not available at
+this time in any NONMEM method. Instead, the MBBE package uses bootstrap
+to estimate a probability for each model, again, similar to how
+bootstrap is used to quantify uncertainty in parameters, as described by
+Aoki et. al [2] and illustrated below (sd[![From Aoki, Y., Röshammar,
+D., Hamrén, B. et al. Model selection and averaging of nonlinear
+mixed-effect models for robust phase III dose selection. J Pharmacokinet
+Pharmacodyn 44, 581--597 (2017).
+https://doi.org/10.1007/s10928-017-9550-0](images/Average-Hooker-01.png)](Aoki,%20Y.,%20Röshammar,%20D.,%20Hamrén,%20B.%20et%20al.%20Model%20selection%20and%20averaging%20of%20nonlinear%20mixed-effect%20models%20for%20robust%20phase%20III%20dose%20selection.%20J%20Pharmacokinet%20Pharmacodyn%2044,%20581–597%20(2017).%20https://doi.org/10.1007/s10928-017-9550-0)
+
+NONMEM execution for each candidate model-bootstrap data set combination
+is performed. For each sample, the model with the best (lowest) Bayesian
+Information Criteria (BIC [3]) is selected. The Monte Carlo simulation
+is then done with the model structure and parameter estimates selected
+for each bootstrap data set, thus capturing uncertainty in both the
+model structure and parameters. The simulations can be performed using a
+data set different from the source data, as, not uncommonly, the reason
+for doing MBBE is that there are no format BE studies available. In this
+way, non-BE study data can be used for model definition and then a
+format BE study (e.g., 4 period, single dose cross over study) can be
+simulated. The NCA parameters for each (simulated) subject in each study
+are then calculated using and algorithm derived
+
+Two options exist for how to combine those different models/parameter
+estimate. First, the data from each of the simulations can be used as
+simulated, with a single model per simulated study (the
+"model_averaging_by": "study" option). This represents the possibility
+that any given model may be "correct" for all subjects. Alternatively,
+the study data can be recombined such that each study has a population
+of individuals based on the representation of overall models. (the
+"model_averaging_by": "subject" option). For this option, any given
+study will be comprised of the same subjects (demo graphics, sample time
+etc), but have different structure models. In this way the uncertainty
+of model structure is by subject, with each subject having a given
+probability of any model being "correct".
 
 ### Identifiability:
 
-Nyberg et. al [4] described using a SADDLE_RESET as a check for local non-identifiability. MBBE included an option
+Nyberg et. al [4] described using a SADDLE_RESET as a check for local
+non-identifiability. MBBE included an option
 
 "use_check_identifiable": true,
 
-to instruct the algorithm to determined whether any model resulting from the bootstrap is identifiable, based on the absolute fractional difference between any pre and post saddle reset parameters of delta_parms. delta_parms can be set in the json argument file e.g:
+to instruct the algorithm to determined whether any model resulting from
+the bootstrap is identifiable, based on the absolute fractional
+difference between any pre and post saddle reset parameters of
+delta_parms. delta_parms can be set in the json argument file e.g:
 
 "delta_parms": 0.2,
 
 #### Power:
 
-The success of each study is then calculated based on the method described by [Schütz](https://cran.r-project.org/web/packages/replicateBE/replicateBE.pdf) and in the replicateBE package. The resulting power then is simply the fraction of simulated studies that successfully demonstrate bio-equivalence for each NCA endpoint.
+The success of each study is then calculated based on the method
+described by
+[Schütz](https://cran.r-project.org/web/packages/replicateBE/replicateBE.pdf)
+and in the replicateBE package. The resulting power then is simply the
+fraction of simulated studies that successfully demonstrate
+bio-equivalence for each NCA endpoint.
 
-1.  Lunn, D.J. Automated covariate selection and Bayesian model averaging in population PK/PD models. *J Pharmacokinet Pharmacodyn* **35**, 85--100 (2008). <https://doi.org/10.1007/s10928-007-9077-x>
-2.  Aoki, Y., Röshammar, D., Hamrén, B. *et al.* Model selection and averaging of nonlinear mixed-effect models for robust phase III dose selection. *J Pharmacokinet Pharmacodyn* **44**, 581--597 (2017). <https://doi.org/10.1007/s10928-017-9550-0>
-3.  Neath, A.A. and Cavanaugh, J.E. (2012), The Bayesian information criterion: background, derivation, and applications. WIREs Comp Stat, 4: 199-203. <https://doi.org/10.1002/wics.199>
-4.  Nyberg HM, Hooker AC, Bauer RJ, Aoki Y. SADDLE_RESET: more robust parameter estimation with a check for local practical identifiability. <https://www.page-meeting.org/pdf_assets/1345-PAGE_2017_SADDLE_RESET_Final.pdf>
+1.  Lunn, D.J. Automated covariate selection and Bayesian model
+    averaging in population PK/PD models. *J Pharmacokinet
+    Pharmacodyn* **35**, 85--100 (2008).
+    <https://doi.org/10.1007/s10928-007-9077-x>
+2.  Aoki, Y., Röshammar, D., Hamrén, B. *et al.* Model selection and
+    averaging of nonlinear mixed-effect models for robust phase III dose
+    selection. *J Pharmacokinet Pharmacodyn* **44**, 581--597 (2017).
+    <https://doi.org/10.1007/s10928-017-9550-0>
+3.  Neath, A.A. and Cavanaugh, J.E. (2012), The Bayesian information
+    criterion: background, derivation, and applications. WIREs Comp
+    Stat, 4: 199-203. <https://doi.org/10.1002/wics.199>
+4.  Nyberg HM, Hooker AC, Bauer RJ, Aoki Y. SADDLE_RESET: more robust
+    parameter estimation with a check for local practical
+    identifiability.
+    <https://www.page-meeting.org/pdf_assets/1345-PAGE_2017_SADDLE_RESET_Final.pdf>
 
 ------------------------------------------------------------------------
 
 ### Input json File
-
-{
-"run_dir": "c:/fda/mbbe",
-```{=html}
-"model_source": ["U:/fda/mbbe/mbbe/inst/examples/NM_05D01_11.mod",<br>
-```
-```{=html}
-&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_05D01_05.mod",<br>
-```
-```{=html}
-&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_04_085.mod",<br>
-```
-```{=html}
-&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_05D01_12.mod",<br>
-```
-```{=html}
-&nbsp&nbsp&nbsp&nbsp&nbsp"U:/mbbe/mbbe/inst/examples/NM_04_090.mod"],<br>
-```
-"num_parallel": 32,
-"crash_value": 999999,
-"nmfe_path": "c:/nm74g64/util/nmfe74.bat",
-"delta_parms": 0.2,
-"use_check_identifiable": true,
-"NCA_end_time": 72,
-"rndseed": 1, 
-"simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
-"ngroups": 4,
-"samp_size": 100,
-"reference_groups": [ 1, 2 ],
-"test_groups": [3, 4 ],
-"plan": "multisession",
-"alpha_error": 0.05,
-"NTID": false,
-"save_output": true,
-"model_averaging_by": "study",
-"user_R_code": true,
-"R_code_path": "u:/fda/mbbe/R/testRCall.r"
-
-}
-
-------------------------------------------------------------------------
-
-### Outputs
-
-------------------------------------------------------------------------
  
-------------------------------------------------------------------------
- 
-[CNN](http://www.cnn.com)
-
-image - put double space before link to put it on a new line
-
-bulletes:
-
--   first level
-
--   2nd level
-
-numbered
-
-1.  first
-
-2.  second
-
-```{r, echo=FALSE}
-
-```
-
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| 1    | 76   | 3    |
-| 1    | 3    | 3    |
-| 2    | 4    | 4    |
-
-```{r, echo=FALSE, fig.align="center", fig.cap="test figure"}
- 
-```

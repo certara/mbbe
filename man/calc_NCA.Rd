@@ -27,7 +27,7 @@ calc_NCA(
 \item{samp_size}{numeric; integer value specifying sample size}
 }
 \description{
-perform NCA (Cmax, AUCin,AUClst, from 0 to end.time)
+perform NCA (Cmax, AUCin,AUClst, from 0 to NCA_end_time)
 }
 \details{
 calc_NCA calls getNCA for each sample in 1:samp_size
