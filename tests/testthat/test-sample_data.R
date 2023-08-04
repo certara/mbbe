@@ -51,5 +51,5 @@ test_that("sample_data works", {
   expect_equal(data_samp$data_samp3, read.csv(file.path(run_dir, "data_samp3.csv")))
   expect_equal(data_samp$data_samp4, read.csv(file.path(run_dir, "data_samp4.csv")))
 
-
+  unlink(run_dir, recursive = TRUE)
 })

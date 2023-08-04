@@ -40,4 +40,6 @@ test_that("get_parameters works", {
   final_models <- write_sim_controls(run_dir, parms, base_models, 1, file.path(run_dir,"data_sim.csv"))
   testBICs <- read.csv(file.path(run_dir,"BICS.csv"))
   expect_equal(testBICs, referenceBICs)
+
+  unlink(run_dir, recursive = TRUE)
 })

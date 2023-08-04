@@ -4,7 +4,9 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Mark", "Sale", , "mark.sale@certara.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6239-2359"))
-Description: Uses several NONMEM models (as NONMEM control files), performs bootstrap model averaging, and Monte Carlo simulation for model based BE. Power is returned as the fraction of the Simulations with successful BE test, for Cmax, AUClast and AUCinf
+Description: Uses several NONMEM models (as NONMEM control files) to perform bootstrap model averaging 
+    and Monte Carlo simulation for model based Model Based Bio-Equivalence (MBBE). Power is returned 
+    as the fraction of the simulations with successful BE test, for Cmax, AUClast and AUCinf.
 License: LGPL-3
 Encoding: UTF-8
 Imports:
@@ -26,5 +28,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
