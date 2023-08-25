@@ -20,4 +20,5 @@ test_that("calc_power works", {
 
   expect_equal(referencepower, testpower)
 
+  unlink(run_dir, recursive = TRUE)
 })

@@ -20,5 +20,5 @@ test_that("calc_NCA works", {
   expect_equal(nca_test1, nca_ref1)
   expect_equal(nca_test2, nca_ref2)
 
-
+  unlink(run_dir, recursive = TRUE)
 })

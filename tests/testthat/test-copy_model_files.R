@@ -27,4 +27,5 @@ test_that("copy_model_files works", {
   expect_equal(source_file1, run_file1)
   expect_equal(source_file2, run_file2)
 
+  unlink(run_dir, recursive = TRUE)
 })
