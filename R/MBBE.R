@@ -753,7 +753,7 @@ get_parameters <- function(run_dir, nmodels,
             }
           )
           if(user_R_code){
-            penalty<- MBBE_RCode(run_dir,
+            penalty<- MBBE_RPenaltyCode(run_dir,
                                 this_model,
                                 this_samp)
             Total_penalty[this_samp, this_model] <- penalty + BICS[this_samp, this_model]
@@ -792,6 +792,7 @@ get_parameters <- function(run_dir, nmodels,
   # write out results,
   tryCatch(
     {
+      # convert BICS to simple data frame for writing to file
       flatBICs <- apply(BICS, 2, as.character)
       write.csv(flatBICs, file.path(run_dir, "BICS.csv"), quote = FALSE)
       message("BICS = ")

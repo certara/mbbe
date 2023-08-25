@@ -1,4 +1,10 @@
-MBBE_RCode <- function(run_dir,
+# code returns penalty (numeric) that is added to the BIC for selection of the model for a given bootstrap sample
+# calculate the absolute fractional difference between simulated and observed Cmax, AUCinf and AUCtau
+# each penalty is a linear function of that difference and the maximum (crash_value)
+# returns the sum of the three penalties, or crash_value if fails
+# function name MUST be MBBE_RPenaltyCode, this is hard code in the package
+# file name is user defined, provided as an optionn in the json file.
+MBBE_RPenaltyCode <- function(run_dir,
                        this_model,
                        this_samp){
 
