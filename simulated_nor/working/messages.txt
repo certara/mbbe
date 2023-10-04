@@ -1,0 +1,722 @@
+[09:19:01] Model run priority is below_normal
+[09:19:01] Using darwin.MemoryModelCache
+[09:19:01] Algorithm is PSO
+[09:19:01] Project dir: U:\fda\mbbe\simulated_nor
+[09:19:01] Data dir: U:\fda\mbbe\simulated_nor
+[09:19:01] Project working dir: u:/fda/mbbe/simulated_nor/working
+[09:19:01] Project temp dir: c:/fda/mbbe/simulated_nor/run
+[09:19:01] Project output dir: u:/fda/mbbe/simulated_nor/output
+[09:19:01] Writing intermediate output to u:/fda/mbbe/simulated_nor/output\results.csv
+[09:19:01] Models will be saved in u:/fda/mbbe/simulated_nor/working\models.json
+[09:19:01] Template file found at template.txt
+[09:19:01] Tokens file found at tokens.json
+[09:19:01] Search start time = Thu Sep  7 09:19:01 2023
+[09:19:01] NMFE found: c:/nm74g64/util/nmfe74.bat
+[09:19:01] Not using Post Run R code
+[09:19:01] Not using Post Run Python code
+[09:19:01] Checking files in c:\fda\mbbe\simulated_nor\run\0\002
+[09:19:01] Data set # 1 was found: U:/FDA/SIMULATED/BE-PASSES/DATA.csv
+[09:20:21] Iteration = 0, Model    15,           Done,    fitness = 99999999,    message = No important warnings, error = Unidentified error in PRDERR for model run 0, 15
+
+[09:20:24] Iteration = 0, Model     3,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[09:22:44] Iteration = 0, Model    28,           Done,    fitness = 18760.377,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[09:24:31] Iteration = 0, Model    10,           Done,    fitness = 22878.403,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[09:26:21] Iteration = 0, Model    11,           Done,    fitness = 14617.580,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:32:55] Iteration = 0, Model    33,           Done,    fitness = 22021.253,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:35:24] Iteration = 0, Model     2,           Done,    fitness = 17584.161,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:35:46] Iteration = 0, Model    37,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[09:37:34] Iteration = 0, Model     1,           Done,    fitness = 15304.663,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:43:36] Iteration = 0, Model    12,           Done,    fitness = 16208.428,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[09:45:25] Iteration = 0, Model    34,           Done,    fitness = 16529.226,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:48:06] Iteration = 0, Model    25,           Done,    fitness = 19551.448,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[09:49:25] Iteration = 0, Model    30,           Done,    fitness = 14582.922,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[09:50:22] Iteration = 0, Model    32,           Done,    fitness = 16669.786,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[09:55:25] Iteration = 0, Model     4,           Done,    fitness = 20364.244,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:56:18] Iteration = 0, Model    45,           Done,    fitness = 99999999,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:56:20] Iteration = 0, Model    22,           Done,    fitness = 17120.756,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:00:25] Iteration = 0, Model    21,           Done,    fitness = 13820.969,    message = No important warnings
+[10:03:29] Iteration = 0, Model    46,           Done,    fitness = 19144.130,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:04:08] Iteration = 0, Model    26,           Done,    fitness = 14929.974,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:04:13] Iteration = 0, Model    13,           Done,    fitness = 16040.996,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:04:14] Iteration = 0, Model    27,           Done,    fitness = 15683.987,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[10:11:22] Iteration = 0, Model    47,           Done,    fitness = 25230.930,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:25:30] Iteration = 0, Model    35,           Done,    fitness = 20982.197,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:27:07] Iteration = 0, Model    23,           Done,    fitness = 15962.125,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:27:24] Iteration = 0, Model    55,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:27:59] Iteration = 0, Model    48,           Done,    fitness = 15586.095,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:32:49] Iteration = 0, Model    17,           Done,    fitness = 13354.278,    message = No important warnings
+[10:36:06] Iteration = 0, Model    50,           Done,    fitness = 16989.505,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:36:16] Iteration = 0, Model    41,           Done,    fitness = 21931.043,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:40:09] Iteration = 0, Model    51,           Done,    fitness = 19340.028,    message = No important warnings
+[10:42:29] Iteration = 0, Model    60,           Done,    fitness = 17208.776,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[10:43:53] Iteration = 0, Model     9,           Done,    fitness = 16958.256,    message = No important warnings
+[10:47:21] Iteration = 0, Model    38,           Done,    fitness = 14245.135,    message = No important warnings
+[10:54:32] Iteration = 0, Model    14,           Done,    fitness = 15183.186,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:55:40] Iteration = 0, Model    53,           Done,    fitness = 29388.917,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[10:55:42] Iteration = 0, Model    49,           Done,    fitness = 14735.940,    message = No important warnings
+[10:57:37] Iteration = 0, Model    24,           Done,    fitness = 12879.548,    message = No important warnings
+[11:02:00] Iteration = 0, Model     7,           Done,    fitness = 13589.879,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[11:02:49] Iteration = 0, Model    63,           Done,    fitness = 16195.997,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:06:31] Iteration = 0, Model    31,           Done,    fitness = 21078.785,    message = No important warnings
+[11:09:30] Iteration = 0, Model    66,           Done,    fitness = 16227.180,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:10:45] Iteration = 0, Model    58,           Done,    fitness = 25603.096,    message = No important warnings
+[11:15:24] Iteration = 0, Model    18,           Done,    fitness = 18427.155,    message = No important warnings
+[11:22:02] Iteration = 0, Model    57,           Done,    fitness = 12833.716,    message = No important warnings
+[11:26:45] Iteration = 0, Model    61,           Done,    fitness = 15784.297,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:27:28] Iteration = 0, Model    39,           Done,    fitness = 17798.338,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[11:27:39] Iteration = 0, Model    52,           Done,    fitness = 23529.503,    message = No important warnings
+[11:27:39] Iteration = 0, Model    78,  Duplicate(28),    fitness = 99999999,    message = 
+[11:28:04] Iteration = 0, Model    54,           Done,    fitness = 20523.851,    message = No important warnings
+[11:30:59] Iteration = 0, Model    67,           Done,    fitness = 16864.664,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:31:35] Iteration = 0, Model    75,           Done,    fitness = 17154.618,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[11:31:55] Iteration = 0, Model    42,           Done,    fitness = 13578.215,    message = No important warnings
+[11:37:19] Iteration = 0, Model    83,           Done,    fitness = 17955.941,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:48:02] Iteration = 0, Model    59,           Done,    fitness = 15230.730,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:48:41] Iteration = 0, Model    40,           Done,    fitness = 18146.828,    message = No important warnings
+[12:02:59] Iteration = 0, Model    65,           Done,    fitness = 13192.009,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[12:03:07] Iteration = 0, Model    69,           Done,    fitness = 17797.997,    message = No important warnings
+[12:05:16] Iteration = 0, Model    62,           Done,    fitness = 13872.184,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:05:38] Iteration = 0, Model    80,           Done,    fitness = 16853.813,    message = No important warnings
+[12:08:32] Iteration = 0, Model    81,           Done,    fitness = 18623.638,    message = No important warnings
+[12:13:16] Iteration = 0, Model    84,           Done,    fitness = 13856.807,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:22:07] Iteration = 0, Model    29,           Done,    fitness = 20969.549,    message = No important warnings
+[12:22:07] Iteration = 0, Model    93,  Duplicate(28),    fitness = 99999999,    message = 
+[12:23:44] Iteration = 0, Model    92,           Done,    fitness = 17119.264,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:25:45] Iteration = 0, Model    19,           Done,    fitness = 16179.662,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:25:57] Iteration = 0, Model    73,           Done,    fitness = 14452.125,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[12:28:29] Iteration = 0, Model    86,           Done,    fitness = 17096.702,    message = No important warnings
+[12:33:48] Iteration = 0, Model    72,           Done,    fitness = 18899.461,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[12:34:12] Iteration = 0, Model     6,           Done,    fitness = 20993.983,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[12:38:25] Iteration = 0, Model     5,           Done,    fitness = 15630.825,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:39:20] Iteration = 0, Model    44,           Done,    fitness = 14841.796,    message = No important warnings
+[12:39:26] Iteration = 0, Model    74,           Done,    fitness = 12984.171,    message = No important warnings
+[12:40:25] Iteration = 0, Model    76,           Done,    fitness = 14845.734,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:43:52] Iteration = 0, Model    89,           Done,    fitness = 19200.881,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:45:25] Iteration = 0, Model    99,           Done,    fitness = 21064.480,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:52:13] Iteration = 0, Model    98,           Done,    fitness = 13498.970,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:57:51] Iteration = 0, Model    91,           Done,    fitness = 14496.976,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[13:02:56] Iteration = 0, Model    85,           Done,    fitness = 13250.527,    message = No important warnings
+[13:04:23] Iteration = 0, Model    20,           Done,    fitness = 12177.010,    message = No important warnings
+[13:07:43] Iteration = 0, Model    90,           Done,    fitness = 13060.377,    message = No important warnings
+[13:11:57] Iteration = 0, Model    77,           Done,    fitness = 14964.320,    message = No important warnings
+[13:15:33] Iteration = 0, Model    79,           Done,    fitness = 14672.425,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:18:09] Iteration = 0, Model    43,           Done,    fitness = 20877.276,    message = No important warnings
+[13:22:29] Iteration = 0, Model    16,           Done,    fitness = 14839.758,    message = No important warnings
+[13:31:54] Iteration = 0, Model    87,           Done,    fitness = 24132.008,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[13:34:32] Iteration = 0, Model    71,           Done,    fitness = 13548.253,    message = No important warnings
+[13:35:28] Iteration = 0, Model     8,           Done,    fitness = 12048.999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[13:36:11] Iteration = 0, Model    56,           Done,    fitness = 16230.967,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:49:43] Iteration = 0, Model    82,           Done,    fitness = 16369.131,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:51:38] Iteration = 0, Model    70,           Done,    fitness = 14599.886,    message = No important warnings
+[13:57:48] Iteration = 0, Model    88,           Done,    fitness = 15628.569,    message = No important warnings
+[13:58:25] Iteration = 0, Model    68,           Done,    fitness = 14435.521,    message = No important warnings
+[13:59:20] Iteration = 0, Model    94,           Done,    fitness = 13599.879,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[14:04:23] Iteration = 0, Model    96,           Done,    fitness = 13994.384,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[14:08:19] Iteration = 0, Model    64,           Done,    fitness = 18488.559,    message = No important warnings
+[14:13:20] Iteration = 0, Model    36,           Done,    fitness = 14808.696,    message = No important warnings
+[14:16:04] Iteration = 0, Model   100,           Done,    fitness = 15161.852,    message = No important warnings
+[14:44:41] Iteration = 0, Model    97,           Done,    fitness = 17950.427,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[14:47:23] Iteration = 0, Model    95,           Done,    fitness = 14633.970,    message = No important warnings, error = PK PARAMETER FOR KA IS NON-POSITIVE 
+[14:47:23] Better model found by PSO, cost = 12048.99869885575, iteration = 0
+[14:47:23] Iteration = 1, Model     3,           Done,    fitness = 12177.010,    message = From NM_0_020: No important warnings
+[14:47:23] Iteration = 1, Model    12,   Duplicate(1),    fitness = 99999999,    message = 
+[14:47:23] Iteration = 1, Model    27,           Done,    fitness = 14929.974,    message = From NM_0_026: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[14:47:23] Iteration = 1, Model    28,           Done,    fitness = 12048.999,    message = From NM_0_008: No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[14:48:50] Iteration = 1, Model    32,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[14:58:28] Iteration = 1, Model     7,           Done,    fitness = 14258.251,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:08:06] Iteration = 1, Model     6,           Done,    fitness = 17656.411,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:09:00] Iteration = 1, Model     4,           Done,    fitness = 15838.321,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:09:26] Iteration = 1, Model    38,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:09:26] Iteration = 1, Model    39,           Done,    fitness = 13498.970,    message = From NM_0_098: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:10:18] Iteration = 1, Model    18,           Done,    fitness = 16656.120,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:16:28] Iteration = 1, Model    26,           Done,    fitness = 16672.565,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:16:36] Iteration = 1, Model    37,           Done,    fitness = 20061.613,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:20:11] Iteration = 1, Model    17,           Done,    fitness = 22865.673,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:22:37] Iteration = 1, Model    21,           Done,    fitness = 17110.756,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:28:35] Iteration = 1, Model    10,           Done,    fitness = 19953.908,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:34:35] Iteration = 1, Model     8,           Done,    fitness = 16172.503,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:36:23] Iteration = 1, Model    33,           Done,    fitness = 15227.632,    message = No important warnings
+[15:36:45] Iteration = 1, Model     1,           Done,    fitness = 14428.915,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[15:39:26] Iteration = 1, Model     9,           Done,    fitness = 17217.500,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:41:55] Iteration = 1, Model    40,           Done,    fitness = 27224.920,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:42:58] Iteration = 1, Model    46,           Done,    fitness = 16259.760,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[15:44:17] Iteration = 1, Model    13,           Done,    fitness = 18374.805,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[15:50:45] Iteration = 1, Model    30,           Done,    fitness = 14870.816,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:51:59] Iteration = 1, Model    43,           Done,    fitness = 24438.027,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:53:07] Iteration = 1, Model     5,           Done,    fitness = 16601.846,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[15:53:07] Iteration = 1, Model    56,           Done,    fitness = 12833.716,    message = From NM_0_057: No important warnings
+[15:53:07] Iteration = 1, Model    57,           Done,    fitness = 12879.548,    message = From NM_0_024: No important warnings
+[15:57:37] Iteration = 1, Model    44,           Done,    fitness = 19641.652,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[16:05:02] Iteration = 1, Model    51,           Done,    fitness = 19181.716,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:05:15] Iteration = 1, Model    19,           Done,    fitness = 15614.644,    message = No important warnings
+[16:06:41] Iteration = 1, Model    36,           Done,    fitness = 20847.088,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:07:30] Iteration = 1, Model    48,           Done,    fitness = 14090.065,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:10:02] Iteration = 1, Model    55,           Done,    fitness = 19511.019,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[16:10:02] Iteration = 1, Model    64,  Duplicate(50),    fitness = 99999999,    message = 
+[16:12:02] Iteration = 1, Model    50,           Done,    fitness = 21772.012,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:12:10] Iteration = 1, Model    20,           Done,    fitness = 13246.821,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:15:19] Iteration = 1, Model    16,           Done,    fitness = 16697.212,    message = No important warnings
+[16:20:46] Iteration = 1, Model    14,           Done,    fitness = 17326.008,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[16:20:59] Iteration = 1, Model     2,           Done,    fitness = 15965.022,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[16:21:28] Iteration = 1, Model    54,           Done,    fitness = 18179.434,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:21:46] Iteration = 1, Model    62,           Done,    fitness = 17882.247,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:24:27] Iteration = 1, Model    15,           Done,    fitness = 15021.876,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:29:10] Iteration = 1, Model    29,           Done,    fitness = 14662.425,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:30:44] Iteration = 1, Model    70,           Done,    fitness = 18793.456,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:31:17] Iteration = 1, Model    45,           Done,    fitness = 13911.707,    message = No important warnings
+[16:31:59] Iteration = 1, Model    35,           Done,    fitness = 19051.251,    message = No important warnings
+[16:43:33] Iteration = 1, Model    63,           Done,    fitness = 19322.950,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:43:33] Iteration = 1, Model    78,  Duplicate(62),    fitness = 99999999,    message = 
+[16:44:55] Iteration = 1, Model    75,           Done,    fitness = 17693.751,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:45:13] Iteration = 1, Model    34,           Done,    fitness = 12643.413,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[16:45:17] Iteration = 1, Model    47,           Done,    fitness = 16039.499,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[16:46:11] Iteration = 1, Model    80,           Done,    fitness = 99999999,    message = No important warnings
+[16:47:35] Iteration = 1, Model    41,           Done,    fitness = 14066.232,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:49:55] Iteration = 1, Model    53,           Done,    fitness = 16388.676,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[16:49:56] Iteration = 1, Model    85,  Duplicate(37),    fitness = 99999999,    message = 
+[16:51:04] Iteration = 1, Model    73,           Done,    fitness = 21572.219,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[16:52:29] Iteration = 1, Model    74,           Done,    fitness = 22992.175,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[16:53:26] Iteration = 1, Model    49,           Done,    fitness = 14004.733,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[16:57:07] Iteration = 1, Model    79,           Done,    fitness = 19494.409,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[16:59:09] Iteration = 1, Model    23,           Done,    fitness = 20783.070,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:00:19] Iteration = 1, Model    83,           Done,    fitness = 18421.043,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:01:14] Iteration = 1, Model    82,           Done,    fitness = 15294.663,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:01:29] Iteration = 1, Model    76,           Done,    fitness = 16679.786,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[17:01:29] Iteration = 1, Model    94,  Duplicate(57),    fitness = 12879.548,    message = From NM_0_024: No important warnings
+[17:05:07] Iteration = 1, Model    65,           Done,    fitness = 22662.469,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[17:06:48] Iteration = 1, Model    72,           Done,    fitness = 14923.587,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[17:13:19] Iteration = 1, Model    66,           Done,    fitness = 13978.197,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[17:14:08] Iteration = 1, Model    81,           Done,    fitness = 16682.565,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:18:02] Iteration = 1, Model    87,           Done,    fitness = 15482.440,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:18:12] Iteration = 1, Model    11,           Done,    fitness = 18950.902,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[17:18:57] Iteration = 1, Model    95,           Done,    fitness = 16547.194,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:25:24] Iteration = 1, Model    77,           Done,    fitness = 13674.462,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:26:25] Iteration = 1, Model    25,           Done,    fitness = 21262.550,    message = No important warnings
+[17:28:32] Iteration = 1, Model    97,           Done,    fitness = 21510.005,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[17:33:27] Iteration = 1, Model    89,           Done,    fitness = 19746.989,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[17:34:34] Iteration = 1, Model    98,           Done,    fitness = 16317.821,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[17:35:43] Iteration = 1, Model    24,           Done,    fitness = 20878.211,    message = No important warnings
+[17:47:36] Iteration = 1, Model    60,           Done,    fitness = 15169.242,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[17:54:10] Iteration = 1, Model    58,           Done,    fitness = 13669.852,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[17:58:44] Iteration = 1, Model    92,           Done,    fitness = 18128.442,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[18:02:47] Iteration = 1, Model    67,           Done,    fitness = 14631.050,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[18:02:58] Iteration = 1, Model    93,           Done,    fitness = 16464.922,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[18:05:07] Iteration = 1, Model    31,           Done,    fitness = 13867.526,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[18:24:51] Iteration = 1, Model    68,           Done,    fitness = 18764.361,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[18:25:47] Iteration = 1, Model    99,           Done,    fitness = 19354.754,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[18:31:39] Iteration = 1, Model    42,           Done,    fitness = 18550.382,    message = No important warnings
+[18:36:50] Iteration = 1, Model    91,           Done,    fitness = 17521.229,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[18:38:09] Iteration = 1, Model    88,           Done,    fitness = 23245.271,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[18:40:38] Iteration = 1, Model    22,           Done,    fitness = 14384.955,    message = No important warnings
+[18:41:26] Iteration = 1, Model    52,           Done,    fitness = 19412.221,    message = No important warnings
+[19:08:35] Iteration = 1, Model    86,           Done,    fitness = 13154.679,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:17:41] Iteration = 1, Model    61,           Done,    fitness = 16985.668,    message = No important warnings
+[19:21:04] Iteration = 1, Model    84,           Done,    fitness = 21687.726,    message = No important warnings
+[19:21:26] Iteration = 1, Model    69,           Done,    fitness = 14609.886,    message = No important warnings
+[19:36:53] Iteration = 1, Model    96,           Done,    fitness = 13528.651,    message = No important warnings
+[19:45:55] Iteration = 1, Model    71,           Done,    fitness = 17319.912,    message = No important warnings
+[19:58:38] Iteration = 1, Model    90,           Done,    fitness = 21736.022,    message = No important warnings
+[20:11:11] Iteration = 1, Model   100,           Done,    fitness = 17076.091,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:17:55] Iteration = 1, Model    59,           Done,    fitness = 15098.421,    message = No important warnings
+[20:17:55] Iterations without improvement = 1, iteration = 1
+[20:17:55] Iteration = 2, Model     5,           Done,    fitness = 14617.580,    message = From NM_0_011: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:17:55] Iteration = 2, Model    18,           Done,    fitness = 19551.448,    message = From NM_0_025: No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:17:55] Iteration = 2, Model    24,           Done,    fitness = 16682.565,    message = From NM_1_081: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:17:55] Iteration = 2, Model    26,           Done,    fitness = 14929.974,    message = From NM_0_026: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:17:55] Iteration = 2, Model    28,           Done,    fitness = 13856.807,    message = From NM_0_084: No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:19:29] Iteration = 2, Model     8,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:19:29] Iteration = 2, Model    36,           Done,    fitness = 12048.999,    message = From NM_0_008: No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:19:33] Iteration = 2, Model    12,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:21:32] Iteration = 2, Model    22,           Done,    fitness = 15600.848,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[20:22:36] Iteration = 2, Model    27,           Done,    fitness = 21643.395,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[20:26:55] Iteration = 2, Model    32,           Done,    fitness = 15766.219,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:28:11] Iteration = 2, Model    23,           Done,    fitness = 17225.711,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:31:23] Iteration = 2, Model    38,           Done,    fitness = 16777.209,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:40:52] Iteration = 2, Model    17,           Done,    fitness = 18902.116,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:42:43] Iteration = 2, Model    25,           Done,    fitness = 15816.607,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[20:45:18] Iteration = 2, Model    43,           Done,    fitness = 16608.151,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:49:07] Iteration = 2, Model    21,           Done,    fitness = 17785.436,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:49:07] Iteration = 2, Model    47,           Done,    fitness = 13060.377,    message = From NM_0_090: No important warnings
+[20:52:44] Iteration = 2, Model    13,           Done,    fitness = 22178.176,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:53:15] Iteration = 2, Model    39,           Done,    fitness = 19127.579,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:53:41] Iteration = 2, Model     3,           Done,    fitness = 19312.950,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[20:54:38] Iteration = 2, Model    45,           Done,    fitness = 26434.997,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:57:29] Iteration = 2, Model    11,           Done,    fitness = 17439.757,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[20:59:02] Iteration = 2, Model    33,           Done,    fitness = 19361.895,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[21:05:14] Iteration = 2, Model    15,           Done,    fitness = 11952.133,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:05:14] Iteration = 2, Model    55,           Done,    fitness = 18950.902,    message = From NM_1_011: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[21:05:39] Iteration = 2, Model    56,           Done,    fitness = 99999999,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[21:09:06] Iteration = 2, Model     4,           Done,    fitness = 20618.366,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:10:22] Iteration = 2, Model    14,           Done,    fitness = 13564.462,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:13:21] Iteration = 2, Model    19,           Done,    fitness = 15716.283,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[21:14:31] Iteration = 2, Model    10,           Done,    fitness = 19697.875,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:16:52] Iteration = 2, Model    35,           Done,    fitness = 12922.865,    message = No important warnings
+[21:20:54] Iteration = 2, Model    59,           Done,    fitness = 15293.940,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:21:48] Iteration = 2, Model    57,           Done,    fitness = 24255.502,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:23:50] Iteration = 2, Model    58,           Done,    fitness = 16050.123,    message = No important warnings
+[21:24:11] Iteration = 2, Model    65,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[21:29:57] Iteration = 2, Model    40,           Done,    fitness = 22598.481,    message = No important warnings
+[21:30:13] Iteration = 2, Model     1,           Done,    fitness = 14442.125,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[21:30:14] Iteration = 2, Model    51,           Done,    fitness = 21362.409,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:40:05] Iteration = 2, Model    63,           Done,    fitness = 20235.094,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:46:16] Iteration = 2, Model    60,           Done,    fitness = 16382.034,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:46:16] Iteration = 2, Model    71,           Done,    fitness = 12177.010,    message = From NM_0_020: No important warnings
+[21:54:04] Iteration = 2, Model    44,           Done,    fitness = 15198.052,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[21:54:16] Iteration = 2, Model     9,           Done,    fitness = 19721.817,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:54:31] Iteration = 2, Model    69,           Done,    fitness = 18485.403,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:56:33] Iteration = 2, Model    46,           Done,    fitness = 15660.126,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:56:33] Iteration = 2, Model    76,           Done,    fitness = 17656.411,    message = From NM_1_006: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[21:57:07] Iteration = 2, Model    77,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[21:58:14] Iteration = 2, Model    48,           Done,    fitness = 16868.859,    message = No important warnings
+[21:58:14] Iteration = 2, Model    79,           Done,    fitness = 12643.413,    message = From NM_1_034: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:06:05] Iteration = 2, Model    52,           Done,    fitness = 17212.781,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[22:06:27] Iteration = 2, Model    81,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:06:55] Iteration = 2, Model    82,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:09:00] Iteration = 2, Model    20,           Done,    fitness = 17669.853,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:11:45] Iteration = 2, Model    73,           Done,    fitness = 14182.174,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:18:15] Iteration = 2, Model    66,           Done,    fitness = 22122.977,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:18:35] Iteration = 2, Model    86,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:27:15] Iteration = 2, Model    50,           Done,    fitness = 15193.186,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:34:14] Iteration = 2, Model    72,           Done,    fitness = 17864.133,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:34:51] Iteration = 2, Model    64,           Done,    fitness = 14659.943,    message = No important warnings
+[22:35:38] Iteration = 2, Model    54,           Done,    fitness = 16350.856,    message = No important warnings
+[22:37:45] Iteration = 2, Model    68,           Done,    fitness = 14983.323,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[22:43:26] Iteration = 2, Model    37,           Done,    fitness = 14322.489,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:44:12] Iteration = 2, Model    34,           Done,    fitness = 12607.514,    message = No important warnings
+[22:44:56] Iteration = 2, Model    91,           Done,    fitness = 22011.253,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:47:58] Iteration = 2, Model    75,           Done,    fitness = 14374.126,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:47:58] Iteration = 2, Model    96,           Done,    fitness = 15183.186,    message = From NM_0_014: No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[22:48:15] Iteration = 2, Model    41,           Done,    fitness = 14226.057,    message = No important warnings
+[22:48:15] Iteration = 2, Model    98,           Done,    fitness = 12833.716,    message = From NM_0_057: No important warnings
+[22:49:28] Iteration = 2, Model    90,           Done,    fitness = 17872.247,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:49:28] Iteration = 2, Model   100,  Duplicate(16),    fitness = 99999999,    message = 
+[22:49:39] Iteration = 2, Model     6,           Done,    fitness = 21677.726,    message = No important warnings
+[22:51:44] Iteration = 2, Model     7,           Done,    fitness = 13262.917,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[22:57:58] Iteration = 2, Model    94,           Done,    fitness = 16286.776,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[23:09:49] Iteration = 2, Model    95,           Done,    fitness = 18656.593,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[23:15:15] Iteration = 2, Model    78,           Done,    fitness = 13782.820,    message = No important warnings
+[23:19:28] Iteration = 2, Model    87,           Done,    fitness = 15542.994,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[23:19:58] Iteration = 2, Model    97,           Done,    fitness = 15163.985,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[23:20:14] Iteration = 2, Model    89,           Done,    fitness = 16302.289,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[23:22:10] Iteration = 2, Model    31,           Done,    fitness = 20893.070,    message = No important warnings
+[23:23:26] Iteration = 2, Model    30,           Done,    fitness = 18421.841,    message = No important warnings
+[23:30:33] Iteration = 2, Model    84,           Done,    fitness = 16285.808,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[23:33:41] Iteration = 2, Model    85,           Done,    fitness = 13488.344,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[23:33:56] Iteration = 2, Model    16,           Done,    fitness = 12879.496,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[23:36:50] Iteration = 2, Model    92,           Done,    fitness = 12843.716,    message = No important warnings
+[23:46:19] Iteration = 2, Model     2,           Done,    fitness = 16305.156,    message = No important warnings, error = PK PARAMETER FOR DURATION IS NON-POSITIVE 
+[23:49:25] Iteration = 2, Model    49,           Done,    fitness = 21051.641,    message = No important warnings
+[23:53:18] Iteration = 2, Model    29,           Done,    fitness = 19260.428,    message = No important warnings
+[23:53:49] Iteration = 2, Model    99,           Done,    fitness = 14921.155,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[23:55:57] Iteration = 2, Model    53,           Done,    fitness = 12040.550,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[23:56:19] Iteration = 2, Model    83,           Done,    fitness = 14216.057,    message = No important warnings
+[23:58:35] Iteration = 2, Model    62,           Done,    fitness = 14963.345,    message = No important warnings
+[00:01:22] Iteration = 2, Model    67,           Done,    fitness = 14499.229,    message = No important warnings
+[00:03:58] Iteration = 2, Model    42,           Done,    fitness = 14683.230,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[00:05:27] Iteration = 2, Model    80,           Done,    fitness = 16605.667,    message = No important warnings
+[00:26:42] Iteration = 2, Model    70,           Done,    fitness = 11930.550,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[00:33:43] Iteration = 2, Model    61,           Done,    fitness = 13877.526,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[00:37:35] Iteration = 2, Model    88,           Done,    fitness = 13263.470,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[00:52:39] Iteration = 2, Model    93,           Done,    fitness = 16481.780,    message = No important warnings
+[02:33:41] Iteration = 2, Model    74,           Done,    fitness = 16971.328,    message = No important warnings
+[02:33:41] Better model found by PSO, cost = 11930.550331528702, iteration = 2
+[02:33:41] Iteration = 3, Model     1,           Done,    fitness = 12177.010,    message = From NM_0_020: No important warnings
+[02:33:41] Iteration = 3, Model     4,           Done,    fitness = 16605.667,    message = From NM_2_080: No important warnings
+[02:33:41] Iteration = 3, Model     7,           Done,    fitness = 25603.096,    message = From NM_0_058: No important warnings
+[02:33:41] Iteration = 3, Model    12,           Done,    fitness = 19697.875,    message = From NM_2_010: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:33:41] Iteration = 3, Model    22,           Done,    fitness = 12040.550,    message = From NM_2_053: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:33:41] Iteration = 3, Model    29,           Done,    fitness = 19181.716,    message = From NM_1_051: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:33:41] Iteration = 3, Model    35,           Done,    fitness = 14428.915,    message = From NM_1_001: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:35:03] Iteration = 3, Model    31,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:35:03] Iteration = 3, Model    24,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:35:05] Iteration = 3, Model     2,           Done,    fitness = 99999999,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:43:54] Iteration = 3, Model    14,           Done,    fitness = 17402.509,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:44:34] Iteration = 3, Model    34,           Done,    fitness = 16347.469,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:47:53] Iteration = 3, Model     3,           Done,    fitness = 20777.731,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[02:47:53] Iteration = 3, Model    43,           Done,    fitness = 15193.186,    message = From NM_2_050: No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:47:53] Iteration = 3, Model    44,           Done,    fitness = 99999999,    message = From NM_2_008: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:47:53] Iteration = 3, Model    45,  Duplicate(39),    fitness = 99999999,    message = 
+[02:51:10] Iteration = 3, Model    27,           Done,    fitness = 17062.388,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:51:33] Iteration = 3, Model    47,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[02:52:19] Iteration = 3, Model    23,           Done,    fitness = 16220.894,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:53:16] Iteration = 3, Model    25,           Done,    fitness = 13756.415,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[02:53:16] Iteration = 3, Model    50,           Done,    fitness = 15600.848,    message = From NM_2_022: No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[02:58:27] Iteration = 3, Model     8,           Done,    fitness = 13743.125,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:06:50] Iteration = 3, Model    10,           Done,    fitness = 15153.985,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:08:09] Iteration = 3, Model    18,           Done,    fitness = 15486.683,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:12:50] Iteration = 3, Model     6,           Done,    fitness = 15993.238,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[03:12:50] Iteration = 3, Model    55,  Duplicate(33),    fitness = 99999999,    message = 
+[03:13:21] Iteration = 3, Model    51,           Done,    fitness = 19880.160,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:21:39] Iteration = 3, Model    52,           Done,    fitness = 15132.041,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:21:39] Iteration = 3, Model    58,           Done,    fitness = 11952.133,    message = From NM_2_015: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:22:38] Iteration = 3, Model    13,           Done,    fitness = 14767.848,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:23:09] Iteration = 3, Model    42,           Done,    fitness = 16528.593,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:23:09] Iteration = 3, Model    61,  Duplicate(47),    fitness = 99999999,    message = 
+[03:23:26] Iteration = 3, Model    38,           Done,    fitness = 15343.137,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:24:32] Iteration = 3, Model    15,           Done,    fitness = 18886.952,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:28:08] Iteration = 3, Model    11,           Done,    fitness = 16199.997,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:32:19] Iteration = 3, Model    17,           Done,    fitness = 15681.277,    message = No important warnings
+[03:36:53] Iteration = 3, Model    33,           Done,    fitness = 15405.416,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:39:50] Iteration = 3, Model    66,           Done,    fitness = 17949.443,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:39:56] Iteration = 3, Model    56,           Done,    fitness = 13703.009,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:39:57] Iteration = 3, Model    69,  Duplicate(58),    fitness = 11952.133,    message = From NM_2_015: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:40:27] Iteration = 3, Model    63,           Done,    fitness = 16114.630,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:40:49] Iteration = 3, Model    26,           Done,    fitness = 13135.250,    message = No important warnings
+[03:42:07] Iteration = 3, Model     5,           Done,    fitness = 13988.197,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:44:20] Iteration = 3, Model    73,           Done,    fitness = 15590.848,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[03:46:22] Iteration = 3, Model    19,           Done,    fitness = 16386.589,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:50:13] Iteration = 3, Model    67,           Done,    fitness = 14132.271,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[03:50:58] Iteration = 3, Model    28,           Done,    fitness = 12674.001,    message = No important warnings
+[03:53:08] Iteration = 3, Model    68,           Done,    fitness = 20137.376,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[03:54:48] Iteration = 3, Model    40,           Done,    fitness = 14888.934,    message = No important warnings
+[03:59:12] Iteration = 3, Model    21,           Done,    fitness = 14355.135,    message = No important warnings
+[03:59:35] Iteration = 3, Model    60,           Done,    fitness = 25123.419,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:05:05] Iteration = 3, Model    77,           Done,    fitness = 21040.473,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:05:05] Iteration = 3, Model    82,           Done,    fitness = 12048.999,    message = From NM_0_008: No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:05:32] Iteration = 3, Model    36,           Done,    fitness = 18828.320,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:06:15] Iteration = 3, Model    64,           Done,    fitness = 11842.133,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:10:49] Iteration = 3, Model    37,           Done,    fitness = 14277.962,    message = No important warnings
+[04:13:08] Iteration = 3, Model    84,           Done,    fitness = 15776.219,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:13:29] Iteration = 3, Model    87,           Done,    fitness = 99999999,    message = No important warnings, error = Unidentified error in PRDERR for model run 3, 87
+
+[04:13:29] Iteration = 3, Model    88,           Done,    fitness = 15294.663,    message = From NM_1_082: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:13:29] Iteration = 3, Model    89,           Done,    fitness = 11930.550,    message = From NM_2_070: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:16:56] Iteration = 3, Model    54,           Done,    fitness = 16066.914,    message = No important warnings, error = Unidentified error in PRDERR for model run 3, 54
+
+[04:16:56] Iteration = 3, Model    91,  Duplicate(54),    fitness = 99999999,    message = 
+[04:17:14] Iteration = 3, Model    32,           Done,    fitness = 13531.619,    message = No important warnings
+[04:17:40] Iteration = 3, Model    30,           Done,    fitness = 14420.648,    message = No important warnings
+[04:19:58] Iteration = 3, Model    53,           Done,    fitness = 20093.084,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:22:46] Iteration = 3, Model    81,           Done,    fitness = 20094.635,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[04:23:34] Iteration = 3, Model    78,           Done,    fitness = 19044.626,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:23:34] Iteration = 3, Model    97,           Done,    fitness = 14384.955,    message = From NM_1_022: No important warnings
+[04:23:35] Iteration = 3, Model    76,           Done,    fitness = 18530.677,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:24:27] Iteration = 3, Model    72,           Done,    fitness = 15855.109,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:25:06] Iteration = 3, Model    90,           Done,    fitness = 26424.997,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:27:06] Iteration = 3, Model    70,           Done,    fitness = 13500.200,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:33:17] Iteration = 3, Model    41,           Done,    fitness = 19627.744,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:34:45] Iteration = 3, Model   100,           Done,    fitness = 15516.897,    message = No important warnings
+[04:35:36] Iteration = 3, Model    93,           Done,    fitness = 25826.384,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[04:38:29] Iteration = 3, Model    94,           Done,    fitness = 19776.978,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[04:39:20] Iteration = 3, Model    80,           Done,    fitness = 13677.536,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[04:41:51] Iteration = 3, Model    86,           Done,    fitness = 17725.121,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[04:44:14] Iteration = 3, Model    75,           Done,    fitness = 13613.190,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[04:44:18] Iteration = 3, Model    62,           Done,    fitness = 13898.490,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[04:50:11] Iteration = 3, Model    85,           Done,    fitness = 12944.030,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:51:23] Iteration = 3, Model    98,           Done,    fitness = 21762.012,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:55:34] Iteration = 3, Model    79,           Done,    fitness = 14474.247,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[04:57:28] Iteration = 3, Model    59,           Done,    fitness = 16597.798,    message = No important warnings
+[05:02:16] Iteration = 3, Model    57,           Done,    fitness = 13153.484,    message = No important warnings
+[05:06:52] Iteration = 3, Model     9,           Done,    fitness = 16109.503,    message = No important warnings
+[05:06:57] Iteration = 3, Model    95,           Done,    fitness = 15353.137,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[05:08:11] Iteration = 3, Model    83,           Done,    fitness = 14062.275,    message = No important warnings
+[05:12:13] Iteration = 3, Model    20,           Done,    fitness = 19617.744,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[05:14:26] Iteration = 3, Model    39,           Done,    fitness = 13737.285,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[05:23:26] Iteration = 3, Model    71,           Done,    fitness = 16010.956,    message = No important warnings
+[05:23:37] Iteration = 3, Model    16,           Done,    fitness = 14295.963,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[05:24:22] Iteration = 3, Model    99,           Done,    fitness = 11530.816,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE 
+[05:57:59] Iteration = 3, Model    92,           Done,    fitness = 11518.627,    message = No important warnings
+[06:35:22] Iteration = 3, Model    46,           Done,    fitness = 12287.010,    message = No important warnings
+[06:45:49] Iteration = 3, Model    65,           Done,    fitness = 13245.083,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:00:47] Iteration = 3, Model    48,           Done,    fitness = 15556.829,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:13:31] Iteration = 3, Model    96,           Done,    fitness = 13264.679,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[08:09:52] Iteration = 3, Model    49,           Done,    fitness = 18994.753,    message = No important warnings
+[09:57:56] Iteration = 3, Model    74,           Done,    fitness = 14618.787,    message = No important warnings
+[09:57:56] Better model found by PSO, cost = 11518.626776771702, iteration = 3
+[09:57:56] Iteration = 4, Model     2,           Done,    fitness = 15586.095,    message = From NM_0_048: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:57:56] Iteration = 4, Model     6,           Done,    fitness = 11842.133,    message = From NM_3_064: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:57:56] Iteration = 4, Model     7,           Done,    fitness = 14839.758,    message = From NM_0_016: No important warnings
+[09:57:56] Iteration = 4, Model    16,           Done,    fitness = 15556.829,    message = From NM_3_048: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[09:57:56] Iteration = 4, Model    24,           Done,    fitness = 99999999,    message = From NM_2_056: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[09:57:56] Iteration = 4, Model    27,           Done,    fitness = 15816.607,    message = From NM_2_025: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[09:57:56] Iteration = 4, Model    34,           Done,    fitness = 12879.496,    message = From NM_2_016: No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[09:59:28] Iteration = 4, Model    31,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:10:19] Iteration = 4, Model     1,           Done,    fitness = 14227.881,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[10:15:18] Iteration = 4, Model    10,           Done,    fitness = 13794.583,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:16:16] Iteration = 4, Model    14,           Done,    fitness = 20733.559,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:18:28] Iteration = 4, Model     8,           Done,    fitness = 15227.714,    message = No important warnings
+[10:21:43] Iteration = 4, Model    11,           Done,    fitness = 15562.508,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:23:04] Iteration = 4, Model    18,           Done,    fitness = 19652.152,    message = No important warnings, error = Unidentified error in PRDERR for model run 4, 18
+
+[10:25:23] Iteration = 4, Model    35,           Done,    fitness = 15220.150,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[10:25:23] Iteration = 4, Model    45,           Done,    fitness = 13674.462,    message = From NM_1_077: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:25:23] Iteration = 4, Model    46,           Done,    fitness = 18421.841,    message = From NM_2_030: No important warnings
+[10:26:42] Iteration = 4, Model    26,           Done,    fitness = 18494.641,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:28:23] Iteration = 4, Model    42,           Done,    fitness = 18199.331,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:31:11] Iteration = 4, Model     4,           Done,    fitness = 15562.520,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:31:31] Iteration = 4, Model    50,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:37:29] Iteration = 4, Model    23,           Done,    fitness = 16031.602,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:43:10] Iteration = 4, Model    22,           Done,    fitness = 17299.513,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:44:29] Iteration = 4, Model    19,           Done,    fitness = 14948.481,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:44:29] Iteration = 4, Model    54,           Done,    fitness = 17062.388,    message = From NM_3_027: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[10:44:29] Iteration = 4, Model    55,           Done,    fitness = 11930.550,    message = From NM_2_070: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:44:29] Iteration = 4, Model    56,           Done,    fitness = 14277.962,    message = From NM_3_037: No important warnings
+[10:44:29] Iteration = 4, Model    57,  Duplicate(39),    fitness = 99999999,    message = 
+[10:45:45] Iteration = 4, Model    12,           Done,    fitness = 16292.289,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:46:03] Iteration = 4, Model    13,           Done,    fitness = 18079.844,    message = No important warnings
+[10:49:58] Iteration = 4, Model    43,           Done,    fitness = 17775.436,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[10:54:41] Iteration = 4, Model    38,           Done,    fitness = 13139.491,    message = No important warnings
+[10:56:30] Iteration = 4, Model    58,           Done,    fitness = 16787.209,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:00:55] Iteration = 4, Model    53,           Done,    fitness = 19501.019,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:04:27] Iteration = 4, Model    40,           Done,    fitness = 15147.546,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:06:26] Iteration = 4, Model    44,           Done,    fitness = 15273.850,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:08:22] Iteration = 4, Model    61,           Done,    fitness = 14712.224,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:08:22] Iteration = 4, Model    67,  Duplicate(10),    fitness = 99999999,    message = 
+[11:15:57] Iteration = 4, Model    32,           Done,    fitness = 25763.261,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:15:58] Iteration = 4, Model    69,           Done,    fitness = 19511.019,    message = From NM_1_055: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:16:09] Iteration = 4, Model    36,           Done,    fitness = 17541.177,    message = No important warnings
+[11:16:28] Iteration = 4, Model    71,           Done,    fitness = 99999999,    message = No important warnings, error = Unidentified error in PRDERR for model run 4, 71
+
+[11:22:04] Iteration = 4, Model    20,           Done,    fitness = 13607.747,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[11:22:04] Iteration = 4, Model    49,           Done,    fitness = 17788.868,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:22:05] Iteration = 4, Model    74,           Done,    fitness = 13154.679,    message = From NM_1_086: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:22:44] Iteration = 4, Model    66,           Done,    fitness = 13746.415,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:24:20] Iteration = 4, Model    62,           Done,    fitness = 13752.462,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:24:34] Iteration = 4, Model    41,           Done,    fitness = 13925.790,    message = No important warnings
+[11:25:29] Iteration = 4, Model    48,           Done,    fitness = 15948.959,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:29:31] Iteration = 4, Model    30,           Done,    fitness = 21234.386,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:33:46] Iteration = 4, Model     5,           Done,    fitness = 18282.657,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:33:46] Iteration = 4, Model    81,  Duplicate(41),    fitness = 99999999,    message = 
+[11:35:37] Iteration = 4, Model    15,           Done,    fitness = 13617.747,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[11:35:57] Iteration = 4, Model    83,           Done,    fitness = 99999999,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:37:54] Iteration = 4, Model     3,           Done,    fitness = 15537.057,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:37:54] Iteration = 4, Model    85,  Duplicate(45),    fitness = 13674.462,    message = From NM_1_077: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:37:54] Iteration = 4, Model    86,           Done,    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[11:37:54] Iteration = 4, Model    87,           Done,    fitness = 15304.663,    message = From NM_0_001: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:40:01] Iteration = 4, Model    17,           Done,    fitness = 14619.445,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[11:40:01] Iteration = 4, Model    89,           Done,    fitness = 22662.469,    message = From NM_1_065: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[11:40:01] Iteration = 4, Model    90,           Done,    fitness = 20783.070,    message = From NM_1_023: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:40:02] Iteration = 4, Model     9,           Done,    fitness = 17190.839,    message = No important warnings
+[11:40:02] Iteration = 4, Model    92,  Duplicate(88),    fitness = 99999999,    message = 
+[11:40:02] Iteration = 4, Model    93,           Done,    fitness = 13737.285,    message = From NM_3_039: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:41:00] Iteration = 4, Model    39,           Done,    fitness = 17200.839,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[11:50:14] Iteration = 4, Model    29,           Done,    fitness = 12954.652,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[11:50:14] Iteration = 4, Model    96,           Done,    fitness = 18760.377,    message = From NM_0_028: No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[11:50:14] Iteration = 4, Model    97,           Done,    fitness = 11530.816,    message = From NM_3_099: No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE 
+[11:51:40] Iteration = 4, Model    37,           Done,    fitness = 21528.667,    message = No important warnings
+[11:52:40] Iteration = 4, Model    72,           Done,    fitness = 15571.568,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:56:01] Iteration = 4, Model    60,           Done,    fitness = 16526.107,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[11:58:54] Iteration = 4, Model    68,           Done,    fitness = 17102.093,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:01:26] Iteration = 4, Model    64,           Done,    fitness = 15858.993,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:01:35] Iteration = 4, Model    98,           Done,    fitness = 21955.146,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:05:16] Iteration = 4, Model    84,           Done,    fitness = 18778.894,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:06:13] Iteration = 4, Model    76,           Done,    fitness = 14725.940,    message = No important warnings
+[12:10:24] Iteration = 4, Model    95,           Done,    fitness = 19570.726,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:10:45] Iteration = 4, Model    75,           Done,    fitness = 15865.109,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:13:31] Iteration = 4, Model    59,           Done,    fitness = 13944.818,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[12:14:49] Iteration = 4, Model   100,           Done,    fitness = 16156.859,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:15:26] Iteration = 4, Model    21,           Done,    fitness = 18940.902,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[12:37:09] Iteration = 4, Model    88,           Done,    fitness = 15111.471,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[12:41:05] Iteration = 4, Model    91,           Done,    fitness = 11520.816,    message = No important warnings, error = PK PARAMETER FOR OBSERVATION COMPARTMENT'S SCALE IS NON-POSITIVE 
+[12:46:26] Iteration = 4, Model    78,           Done,    fitness = 24796.769,    message = No important warnings
+[12:51:44] Iteration = 4, Model    77,           Done,    fitness = 13057.092,    message = No important warnings
+[13:01:12] Iteration = 4, Model    51,           Done,    fitness = 12509.932,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:01:17] Iteration = 4, Model    82,           Done,    fitness = 21031.728,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:03:01] Iteration = 4, Model    79,           Done,    fitness = 14493.864,    message = No important warnings
+[13:08:00] Iteration = 4, Model    52,           Done,    fitness = 14488.135,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[13:10:15] Iteration = 4, Model    70,           Done,    fitness = 21379.541,    message = No important warnings
+[13:26:02] Iteration = 4, Model    80,           Done,    fitness = 13192.366,    message = No important warnings
+[13:34:22] Iteration = 4, Model    73,           Done,    fitness = 12399.932,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[13:39:03] Iteration = 4, Model    94,           Done,    fitness = 11679.332,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[13:48:05] Iteration = 4, Model    28,           Done,    fitness = 14321.277,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[13:59:40] Iteration = 4, Model    65,           Done,    fitness = 15739.948,    message = No important warnings
+[14:07:26] Iteration = 4, Model    99,           Done,    fitness = 14267.712,    message = No important warnings
+[14:09:12] Iteration = 4, Model    33,           Done,    fitness = 13840.905,    message = No important warnings, error = K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[14:47:28] Iteration = 4, Model    47,           Done,    fitness = 16268.119,    message = No important warnings
+[15:00:22] Iteration = 4, Model    63,           Done,    fitness = 16068.654,    message = No important warnings
+[16:23:45] Iteration = 4, Model    25,           Done,    fitness = 13362.250,    message = No important warnings, error = KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[16:23:45] Starting downhill for iteration 4
+[16:23:45] code for niche (minimal binary) 1 = [1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1], fitness = 11518.626776771702
+[16:23:45] Starting downhill step 1, total of 12 in 1 niches to be run.
+[16:23:45] Iteration = 4D01, Model     2,           Done,    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[16:23:46] Iteration = 4D01, Model     9,           Done,    fitness = 13153.484,    message = From NM_3_057: No important warnings
+[16:40:51] Iteration = 4D01, Model     5,           Done,    fitness = 17045.752,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[16:53:08] Iteration = 4D01, Model    10,           Done,    fitness = 14915.875,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[17:01:59] Iteration = 4D01, Model     4,           Done,    fitness = 13264.425,    message = No important warnings
+[17:12:25] Iteration = 4D01, Model     3,           Done,    fitness = 11532.929,    message = No important warnings
+[17:19:53] Iteration = 4D01, Model     1,           Done,    fitness = 17205.743,    message = No important warnings
+[17:36:26] Iteration = 4D01, Model    12,           Done,    fitness = 12107.562,    message = No important warnings
+[17:40:52] Iteration = 4D01, Model     7,           Done,    fitness = 14267.962,    message = No important warnings
+[17:51:27] Iteration = 4D01, Model    11,           Done,    fitness = 19890.473,    message = No important warnings
+[18:11:54] Iteration = 4D01, Model     6,           Done,    fitness = 11528.627,    message = No important warnings
+[19:00:34] Iteration = 4D01, Model     8,           Done,    fitness = 14391.269,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[19:00:34] Begin local exhaustive 2-bit search, generation = 4, step = 2
+[19:00:34] Model for local exhaustive search = 4, phenotype = OrderedDict([('ADVAN', 2), ('KAETA', 1), ('ALAG1', 2), ('BOVALAG1', 0), ('DURATION1', 0), ('BOVV', 0), ('BOVCL', 1), ('BOVKA', 0), ('COVARVCL', 1)]) model Num = 86, fitness = 11518.626776771702
+[19:00:34] 12 models in local exhaustive search, 1 bits
+[19:00:34] 78 models in local exhaustive search, 2 bits
+[19:00:35] Iteration = 4S020, Model     1,           Done,    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:00:35] Iteration = 4S020, Model     7,           Done,    fitness = 13925.790,    message = From NM_4_041: No important warnings
+[19:00:35] Iteration = 4S020, Model    13,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:00:35] Iteration = 4S020, Model    14,           Done,    fitness = 11532.929,    message = From NM_4D01_03: No important warnings
+[19:00:35] Iteration = 4S020, Model    15,           Done,    fitness = 13264.425,    message = From NM_4D01_04: No important warnings
+[19:00:35] Iteration = 4S020, Model    16,           Done,    fitness = 17045.752,    message = From NM_4D01_05: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:00:35] Iteration = 4S020, Model    17,           Done,    fitness = 11528.627,    message = From NM_4D01_06: No important warnings
+[19:00:35] Iteration = 4S020, Model    18,           Done,    fitness = 14267.962,    message = From NM_4D01_07: No important warnings
+[19:00:35] Iteration = 4S020, Model    19,           Done,    fitness = 14391.269,    message = From NM_4D01_08: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[19:00:35] Iteration = 4S020, Model    20,           Done,    fitness = 13153.484,    message = From NM_3_057: No important warnings
+[19:00:35] Iteration = 4S020, Model    21,           Done,    fitness = 14915.875,    message = From NM_4D01_10: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[19:00:35] Iteration = 4S020, Model    22,           Done,    fitness = 19890.473,    message = From NM_4D01_11: No important warnings
+[19:00:35] Iteration = 4S020, Model    23,           Done,    fitness = 12107.562,    message = From NM_4D01_12: No important warnings
+[19:00:35] Iteration = 4S020, Model    24,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:00:35] Iteration = 4S020, Model    34,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:00:35] Iteration = 4S020, Model    38,           Done,    fitness = 16195.997,    message = From NM_0_063: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:00:35] Iteration = 4S020, Model    42,           Done,    fitness = 14245.135,    message = From NM_0_038: No important warnings
+[19:00:35] Iteration = 4S020, Model    43,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:01:45] Iteration = 4S020, Model    48,           Done,    fitness = 99999999,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[19:17:34] Iteration = 4S020, Model    31,           Done,    fitness = 15109.413,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[19:19:32] Iteration = 4S020, Model    46,           Done,    fitness = 14702.224,    message = No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:19:32] Iteration = 4S020, Model    51,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[19:19:32] Iteration = 4S020, Model    52,           Done,    fitness = 14277.962,    message = From NM_3_037: No important warnings
+[19:21:47] Iteration = 4S020, Model    29,           Done,    fitness = 13329.303,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:22:14] Iteration = 4S020, Model    44,           Done,    fitness = 17055.752,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[19:27:00] Iteration = 4S020, Model    41,           Done,    fitness = 13689.682,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:11] Iteration = 4S020, Model    26,           Done,    fitness = 20795.704,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:11] Iteration = 4S020, Model    45,           Done,    fitness = 14103.717,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:11] Iteration = 4S020, Model    58,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:11] Iteration = 4S020, Model    59,  Duplicate(18),    fitness = 14267.962,    message = From NM_4D01_07: No important warnings
+[07:06:11] Iteration = 4S020, Model    25,           Done,    fitness = 12972.640,    message = No important warnings
+[07:06:11] Iteration = 4S020, Model     4,           Done,    fitness = 14116.107,    message = No important warnings
+[07:06:11] Iteration = 4S020, Model    62,           Done,    fitness = 12399.932,    message = From NM_4_073: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:11] Iteration = 4S020, Model    40,           Done,    fitness = 15562.168,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:12] Iteration = 4S020, Model    64,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:12] Iteration = 4S020, Model    50,           Done,    fitness = 18932.916,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:12] Iteration = 4S020, Model    66,           Done,    fitness = 20523.851,    message = From NM_0_054: No important warnings
+[07:06:12] Iteration = 4S020, Model    67,           Done,    fitness = 13746.415,    message = From NM_4_066: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:12] Iteration = 4S020, Model    68,           Done,    fitness = 14963.345,    message = From NM_2_062: No important warnings
+[07:06:12] Iteration = 4S020, Model    69,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:12] Iteration = 4S020, Model    10,           Done,    fitness = 14996.730,    message = No important warnings
+[07:06:12] Iteration = 4S020, Model     3,           Done,    fitness = 11893.276,    message = No important warnings
+[07:06:12] Iteration = 4S020, Model    28,           Done,    fitness = 13230.771,    message = No important warnings
+[07:06:12] Iteration = 4S020, Model    73,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:12] Iteration = 4S020, Model     2,           Done,    fitness = 13812.844,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE KA, K32, OR K42 IS TOO CLOSE TO AN EIGENVALUE 
+[07:06:12] Iteration = 4S020, Model    36,           Done,    fitness = 13274.425,    message = No important warnings
+[07:06:12] Iteration = 4S020, Model    76,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:12] Iteration = 4S020, Model    12,           Done,    fitness = 12076.577,    message = No important warnings
+[07:06:12] Iteration = 4S020, Model    78,   Duplicate(1),    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:12] Iteration = 4S020, Model    55,           Done,    fitness = 14925.875,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:13] Iteration = 4S020, Model    27,           Done,    fitness = 11642.929,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model    61,           Done,    fitness = 19770.160,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:13] Iteration = 4S020, Model    65,           Done,    fitness = 16021.602,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:13] Iteration = 4S020, Model    33,           Done,    fitness = 11773.842,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model     6,           Done,    fitness = 17315.743,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model    70,           Done,    fitness = 15380.096,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:13] Iteration = 4S020, Model    30,           Done,    fitness = 12003.361,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model    39,           Done,    fitness = 14529.634,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model    32,           Done,    fitness = 11257.340,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model     5,           Done,    fitness = 21068.785,    message = No important warnings
+[07:06:13] Iteration = 4S020, Model     8,           Done,    fitness = 14229.661,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    37,           Done,    fitness = 13956.232,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:14] Iteration = 4S020, Model     9,           Done,    fitness = 14827.229,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    75,           Done,    fitness = 14438.625,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    74,           Done,    fitness = 14105.405,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:14] Iteration = 4S020, Model    35,           Done,    fitness = 15567.091,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:14] Iteration = 4S020, Model    57,           Done,    fitness = 12117.562,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    11,           Done,    fitness = 11711.411,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    56,           Done,    fitness = 19900.473,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    63,           Done,    fitness = 11622.016,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    47,           Done,    fitness = 17946.705,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:14] Iteration = 4S020, Model    54,           Done,    fitness = 13163.484,    message = No important warnings
+[07:06:14] Iteration = 4S020, Model    72,           Done,    fitness = 16495.667,    message = No important warnings
+[07:06:15] Iteration = 4S020, Model    60,           Done,    fitness = 13727.285,    message = No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:15] Iteration = 4S020, Model    77,           Done,    fitness = 12671.908,    message = No important warnings
+[07:06:15] Iteration = 4S020, Model    49,           Done,    fitness = 14377.557,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:15] Iteration = 4S020, Model    53,           Done,    fitness = 14501.269,    message = No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:15] Iteration = 4S020, Model    71,           Done,    fitness = 12026.904,    message = No important warnings
+[07:06:15] 12 models in local exhaustive search, 1 bits
+[07:06:15] 78 models in local exhaustive search, 2 bits
+[07:06:16] Iteration = 4S021, Model     1,           Done,    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model     3,           Done,    fitness = 11711.411,    message = From NM_4S020_11: No important warnings
+[07:06:16] Iteration = 4S021, Model     5,           Done,    fitness = 17154.618,    message = From NM_0_075: No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). OCCURS DURING SEARCH FOR ETA AT INITIAL VALUE, ETA=0 
+[07:06:16] Iteration = 4S021, Model     6,           Done,    fitness = 13250.527,    message = From NM_0_085: No important warnings
+[07:06:16] Iteration = 4S021, Model     7,           Done,    fitness = 13607.747,    message = From NM_4_020: No important warnings, error = F OR DERIVATIVE RETURNED BY PRED IS INFINITE (INF) OR NOT A NUMBER (NAN). 
+[07:06:16] Iteration = 4S021, Model    11,           Done,    fitness = 11893.276,    message = From NM_4S020_03: No important warnings
+[07:06:16] Iteration = 4S021, Model    13,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    14,           Done,    fitness = 19890.473,    message = From NM_4D01_11: No important warnings
+[07:06:16] Iteration = 4S021, Model    21,           Done,    fitness = 17096.702,    message = From NM_0_086: No important warnings
+[07:06:16] Iteration = 4S021, Model    22,           Done,    fitness = 11532.929,    message = From NM_4D01_03: No important warnings
+[07:06:16] Iteration = 4S021, Model    24,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    25,           Done,    fitness = 13689.682,    message = From NM_4S020_41: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    26,           Done,    fitness = 14377.557,    message = From NM_4S020_49: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE 
+[07:06:16] Iteration = 4S021, Model    27,           Done,    fitness = 19900.473,    message = From NM_4S020_56: No important warnings
+[07:06:16] Iteration = 4S021, Model    28,           Done,    fitness = 12399.932,    message = From NM_4_073: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    29,           Done,    fitness = 13746.415,    message = From NM_4_066: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    30,           Done,    fitness = 12026.904,    message = From NM_4S020_71: No important warnings
+[07:06:16] Iteration = 4S021, Model    31,           Done,    fitness = 14105.405,    message = From NM_4S020_74: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    32,           Done,    fitness = 11518.627,    message = From NM_3_092: No important warnings
+[07:06:16] Iteration = 4S021, Model    33,           Done,    fitness = 12671.908,    message = From NM_4S020_77: No important warnings
+[07:06:16] Iteration = 4S021, Model    34,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    41,           Done,    fitness = 12972.640,    message = From NM_4S020_25: No important warnings
+[07:06:16] Iteration = 4S021, Model    43,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    45,           Done,    fitness = 17062.388,    message = From NM_3_027: No important warnings, error = PK PARAMETER FOR K IS NON-POSITIVE A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    47,           Done,    fitness = 15586.095,    message = From NM_0_048: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    48,           Done,    fitness = 17797.997,    message = From NM_0_069: No important warnings
+[07:06:16] Iteration = 4S021, Model    49,           Done,    fitness = 20795.704,    message = From NM_4S020_26: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    51,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    54,           Done,    fitness = 14267.712,    message = From NM_4_099: No important warnings
+[07:06:16] Iteration = 4S021, Model    56,           Done,    fitness = 11642.929,    message = From NM_4S020_27: No important warnings
+[07:06:16] Iteration = 4S021, Model    58,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:06:16] Iteration = 4S021, Model    59,  Duplicate(18),    fitness = 99999999,    message = 
+[07:06:16] Iteration = 4S021, Model    60,           Done,    fitness = 14374.126,    message = From NM_2_075: No important warnings, error = A ROOT OF THE CHARACTERISTIC EQUATION IS ZERO BECAUSE 
+[07:06:16] Iteration = 4S021, Model    62,           Done,    fitness = 13230.771,    message = From NM_4S020_28: No important warnings
+[07:06:16] Iteration = 4S021, Model    64,   Duplicate(1),    fitness = 11257.340,    message = From NM_4S020_32: No important warnings
+[07:07:11] +++ Execution will stop after finishing ongoing model runs
+[07:08:09] +++ Execution has been interrupted
+[07:08:09] Terminating 60 processes...
+[07:08:09] !!! Model run 12 was interrupted
+[07:08:09] !!! Model run 23 was interrupted
+[07:08:09] !!! Model run 15 was interrupted
+[07:08:09] !!! Model run 9 was interrupted
+[07:08:09] !!! Model run 42 was interrupted
+[07:08:09] !!! Model run 8 was interrupted
+[07:08:09] !!! Model run 44 was interrupted
+[07:08:09] !!! Model run 57 was interrupted
+[07:08:09] !!! Model run 18 was interrupted
+[07:08:09] !!! Model run 53 was interrupted
+[07:08:09] !!! Model run 10 was interrupted
+[07:08:09] !!! Model run 39 was interrupted
+[07:08:09] !!! Model run 4 was interrupted
+[07:08:09] !!! Model run 55 was interrupted
+[07:08:09] !!! Model run 50 was interrupted
+[07:08:09] !!! Model run 35 was interrupted
+[07:08:09] !!! Model run 65 was interrupted
+[07:08:09] !!! Model run 2 was interrupted
+[07:08:09] !!! Model run 17 was interrupted
+[07:08:09] !!! Model run 16 was interrupted
+[07:08:09] !!! Model run 37 was interrupted
+[07:08:09] !!! Model run 40 was interrupted
+[07:08:09] !!! Model run 20 was interrupted
+[07:08:09] !!! Model run 46 was interrupted
+[07:08:09] !!! Model run 52 was interrupted
+[07:08:09] !!! Model run 38 was interrupted
+[07:08:09] !!! Model run 36 was interrupted
+[07:08:09] !!! Model run 61 was interrupted
+[07:08:09] !!! Model run 19 was interrupted
+[07:08:09] !!! Model run 63 was interrupted
+[07:08:09] +++ Execution has stopped
+[07:08:10] Better model found by PSO, cost = 11257.339856742485, iteration = 4
+[07:08:10] +++ Execution has stopped
+[07:08:10] Iterations without improvement = 1, iteration = 5
+[07:08:11] +++ Execution has stopped
+[07:08:12] Iterations without improvement = 2, iteration = 6
+[07:08:12] +++ Execution has stopped
+[07:08:12] Iterations without improvement = 3, iteration = 7
+[07:08:13] +++ Execution has stopped
+[07:08:13] Starting downhill for iteration 8
+[07:08:13] code for niche (minimal binary) 1 = [1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1], fitness = 11257.339856742485
+[07:08:13] Starting downhill step 1, total of 12 in 1 niches to be run.
+[07:08:14] +++ Execution has stopped
+[07:08:14] Iterations without improvement = 4, iteration = 8
+[07:08:15] +++ Execution has stopped
+[07:08:15] Iterations without improvement = 5, iteration = 9
+[07:08:15] Starting final downhill
+[07:08:15] code for niche (minimal binary) 1 = [1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1], fitness = 11257.339856742485
+[07:08:15] Starting downhill step 1, total of 12 in 1 niches to be run.
+[07:08:15] +++ Execution has stopped
+[07:08:16] best fitness 11257.339856742485, model [1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1]
+[07:08:16] Final output from best model is in u:/fda/mbbe/simulated_nor/output\FinalResultFile.lst
+[07:08:16] Number of unique models to best model = 484
+[07:08:16] Time to best model = 2747.2 minutes
+[07:08:16] Best overall fitness = 11257.339857, iteration 4S020, model 32
+[07:08:16] Elapsed time = 2749.3 minutes 
+
+[07:08:16] Search end time = Sat Sep  9 07:08:16 2023

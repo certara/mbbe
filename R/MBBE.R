@@ -627,7 +627,6 @@ get_parameters <- function(run_dir, nmodels,
       for (this_samp in 1:samp_size) {
         num_successful <- 1 # only save parameters if model finished, doesn't need to converge, just finish, this is the number of successful samples for this model
         parameters_this_sample <- vector("list", nmodels)
-
         all_identifiables <- rep(TRUE, nmodels)
         for (this_model in 1:nmodels) {
           theta <- NA
@@ -740,11 +739,11 @@ get_parameters <- function(run_dir, nmodels,
                 paste0(
                   "BIC = ", round(BICS[this_samp, this_model], 3),
                   ", identifiable = ", identifiable_ok["passes"],
-                  ", max_delta = ", round(identifiable_ok$max_delta, 5)
+                  ", max_delta = ", round(identifiable_ok["max_delta"], 5)
                 ),
                 file = lstFile, append = TRUE
               )
-              cat(paste0(", max_delta_parm = ", identifiable_ok$max_delta_parm),
+              cat(paste0(", max_delta_parm = ", identifiable_ok["max_delta_parm"]),
                 file = lstFile, append = TRUE
               )
             },
@@ -1337,7 +1336,7 @@ calc_power <- function(run_dir,
   )
   nsubs <- NA
 
-
+  this_samp = 1
   for (this_samp in 1:samp_size) {
     this_ncafile <- file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
@@ -1728,7 +1727,10 @@ run_mbbe <- function(crash_value, ngroups,
   on.exit(options(oldOptions))
   options(future.globals.onReference = "error")
   on.exit(future::plan(old_plan))
-  message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = \n", writeLines(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
+  message("Start time =")
+  message(format(Sys.time(), digits = 0))
+  message("Model file(s) = ")
+  message(writeLines(model_source), "reference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
   if (!model_averaging_by %in% c("study", "subject")) {
     stop("Error, model_averaging is ",model_averaging_by, " model_averaging_by must be one of study or subject, exiting")
   } else {
@@ -1775,7 +1777,7 @@ run_mbbe <- function(crash_value, ngroups,
     nmodels <- copy_model_files(model_source, run_dir)
 
     if (nmodels > 0) {
-      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, " writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
+      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, ", writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
       message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
       if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE)) {
@@ -1783,7 +1785,7 @@ run_mbbe <- function(crash_value, ngroups,
       } else {
         # need to wait until all are done, this returns when all are started.
 
-        message("\n", format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
+        message("\n", format(Sys.time(), digits = 0), " Getting bootstrap model NCA parameters, samples 1-", samp_size)
         if(user_R_code){
           message("and running user provided R code from ", R_code_path)
         }
@@ -1830,7 +1832,8 @@ run_mbbe <- function(crash_value, ngroups,
           # read NCA output and do stats
           all_results <- calc_power(run_dir, samp_size,
                                     alpha = alpha_error,
-                                    model_averaging_by, NTID = NTID
+                                    model_averaging_by,
+                                    NTID = NTID
           )
         } else {
           all_results <- NULL

@@ -1,0 +1,395 @@
+Iteration,Model number,Run Directory,Fitness,Model,ofv,success,covar,correlation #,ntheta,nomega,nsigm,condition,RPenalty,PythonPenalty,NMTran messages
+0,015,c:/fda/mbbe/simulated_nor/run\0\015,99999999.000000,103100000,99999999,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,003,c:/fda/mbbe/simulated_nor/run\0\003,99999999.000000,112120110,99999999,False,False,False,23,12,2,99999999,0,0,No important warnings
+0,028,c:/fda/mbbe/simulated_nor/run\0\028,18760.376871,103120000,18310.376871129913,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,010,c:/fda/mbbe/simulated_nor/run\0\010,22878.403476,001101010,22468.403475826468,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,011,c:/fda/mbbe/simulated_nor/run\0\011,14617.580213,200021001,14237.580213011026,False,False,False,14,12,2,99999999,0,0,No important warnings
+0,033,c:/fda/mbbe/simulated_nor/run\0\033,22021.253139,210111011,21581.253138711956,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,002,c:/fda/mbbe/simulated_nor/run\0\002,17584.161088,202110001,17164.161088323443,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,037,c:/fda/mbbe/simulated_nor/run\0\037,99999999.000000,100101100,99999999,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,001,c:/fda/mbbe/simulated_nor/run\0\001,15304.662754,203121100,14854.662754498991,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,012,c:/fda/mbbe/simulated_nor/run\0\012,16208.427862,003100011,15818.427861840817,False,False,False,15,12,2,99999999,0,0,No important warnings
+0,034,c:/fda/mbbe/simulated_nor/run\0\034,16529.225981,201120010,16089.225981322985,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,025,c:/fda/mbbe/simulated_nor/run\0\025,19551.448488,112100110,19101.44848832508,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,030,c:/fda/mbbe/simulated_nor/run\0\030,14582.921909,102120011,14152.921909191866,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,032,c:/fda/mbbe/simulated_nor/run\0\032,16669.786499,113020000,16209.786499087422,False,False,False,22,12,2,99999999,0,0,No important warnings
+0,004,c:/fda/mbbe/simulated_nor/run\0\004,20364.243736,201111011,19904.243736308155,False,False,False,22,12,2,99999999,0,0,No important warnings
+0,045,c:/fda/mbbe/simulated_nor/run\0\045,99999999.000000,211101100,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,022,c:/fda/mbbe/simulated_nor/run\0\022,17120.755833,213111011,16640.755832911676,False,False,False,24,12,2,99999999,0,0,No important warnings
+0,021,c:/fda/mbbe/simulated_nor/run\0\021,13820.968802,002001000,13450.968801890389,False,True,False,13,12,2,2.422252719241042e+18,0,0,No important warnings
+0,046,c:/fda/mbbe/simulated_nor/run\0\046,19144.130131,211020000,18704.130130620153,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,026,c:/fda/mbbe/simulated_nor/run\0\026,14929.973639,113100111,14469.973639430866,False,False,False,22,12,2,99999999,0,0,No important warnings
+0,013,c:/fda/mbbe/simulated_nor/run\0\013,16040.996072,212010110,15680.996071994017,True,False,False,22,12,2,99999999,0,0,No important warnings
+0,027,c:/fda/mbbe/simulated_nor/run\0\027,15683.987189,102111011,15223.987189182664,False,False,False,22,12,2,99999999,0,0,No important warnings
+0,047,c:/fda/mbbe/simulated_nor/run\0\047,25230.929894,103020011,24790.929893613888,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,035,c:/fda/mbbe/simulated_nor/run\0\035,20982.197299,111120110,20492.19729862698,False,False,False,25,12,2,99999999,0,0,No important warnings
+0,023,c:/fda/mbbe/simulated_nor/run\0\023,15962.125382,203111001,15512.125382076449,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,055,c:/fda/mbbe/simulated_nor/run\0\055,99999999.000000,102021110,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,048,c:/fda/mbbe/simulated_nor/run\0\048,15586.094516,203001111,15166.09451625137,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,017,c:/fda/mbbe/simulated_nor/run\0\017,13354.277703,012020011,12954.277702917872,False,True,False,16,12,2,5.3363974389272186e+17,0,0,No important warnings
+0,050,c:/fda/mbbe/simulated_nor/run\0\050,16989.504568,211011110,16499.504567855387,False,False,False,25,12,2,99999999,0,0,No important warnings
+0,041,c:/fda/mbbe/simulated_nor/run\0\041,21931.042848,101010001,21481.042848059165,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,051,c:/fda/mbbe/simulated_nor/run\0\051,19340.027872,001020001,19050.027871714432,True,False,False,15,12,2,99999999,0,0,No important warnings
+0,060,c:/fda/mbbe/simulated_nor/run\0\060,17208.775765,003000100,16818.775764990492,False,False,False,15,12,2,99999999,0,0,No important warnings
+0,009,c:/fda/mbbe/simulated_nor/run\0\009,16958.256078,003121001,16548.25607766657,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,038,c:/fda/mbbe/simulated_nor/run\0\038,14245.135308,210000100,13955.135307501185,True,True,False,15,12,2,1.4151821243308971e+17,0,0,No important warnings
+0,014,c:/fda/mbbe/simulated_nor/run\0\014,15183.186343,113011110,14673.186343181784,False,False,False,27,12,2,99999999,0,0,No important warnings
+0,053,c:/fda/mbbe/simulated_nor/run\0\053,29388.916521,001100001,29008.91652123731,False,False,False,14,12,2,99999999,0,0,No important warnings
+0,049,c:/fda/mbbe/simulated_nor/run\0\049,14735.939563,012120000,14325.939563411142,False,True,False,17,12,2,5.952099140709226e+17,0,0,No important warnings
+0,024,c:/fda/mbbe/simulated_nor/run\0\024,12879.548314,202101100,12469.548314207854,False,True,False,17,12,2,1.5296512270158792e+18,0,0,No important warnings
+0,007,c:/fda/mbbe/simulated_nor/run\0\007,13589.879423,110001110,13159.879423091876,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,063,c:/fda/mbbe/simulated_nor/run\0\063,16195.997181,210010101,15775.997181451832,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,031,c:/fda/mbbe/simulated_nor/run\0\031,21078.784776,013100101,20668.78477611514,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,066,c:/fda/mbbe/simulated_nor/run\0\066,16227.179647,203021111,15787.179647413319,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,058,c:/fda/mbbe/simulated_nor/run\0\058,25603.095610,003020000,25303.09560975974,True,False,False,16,12,2,99999999,0,0,No important warnings
+0,018,c:/fda/mbbe/simulated_nor/run\0\018,18427.155464,013021001,18007.15546433829,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,057,c:/fda/mbbe/simulated_nor/run\0\057,12833.715824,200001101,12463.71582374087,False,True,False,13,12,2,2.594298385752068e+18,0,0,No important warnings
+0,061,c:/fda/mbbe/simulated_nor/run\0\061,15784.296935,211121110,15304.296934959371,False,False,False,24,12,2,99999999,0,0,No important warnings
+0,039,c:/fda/mbbe/simulated_nor/run\0\039,17798.337884,103100001,17378.337883958593,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,052,c:/fda/mbbe/simulated_nor/run\0\052,23529.502720,212010000,23089.50272021094,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,078,c:/fda/mbbe/simulated_nor/run\0\028,99999999.000000,103120000,99999999,False,False,False,0,0,0,99999999,0,0,
+0,054,c:/fda/mbbe/simulated_nor/run\0\054,20523.851321,212010001,20093.851320979775,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,067,c:/fda/mbbe/simulated_nor/run\0\067,16864.663920,203101011,16444.6639197272,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,075,c:/fda/mbbe/simulated_nor/run\0\075,17154.617685,003000111,16764.617685026722,False,False,False,15,12,2,99999999,0,0,No important warnings
+0,042,c:/fda/mbbe/simulated_nor/run\0\042,13578.214896,210020111,13268.214896270107,True,True,False,17,12,2,6.750854048734825e+17,0,0,No important warnings
+0,083,c:/fda/mbbe/simulated_nor/run\0\083,17955.940506,201120001,17635.940505944953,True,False,False,18,12,2,99999999,0,0,No important warnings
+0,059,c:/fda/mbbe/simulated_nor/run\0\059,15230.729675,213001010,14890.729675353738,True,False,False,20,12,2,99999999,0,0,No important warnings
+0,040,c:/fda/mbbe/simulated_nor/run\0\040,18146.827707,012021001,17846.827707123673,True,False,False,16,12,2,99999999,0,0,No important warnings
+0,065,c:/fda/mbbe/simulated_nor/run\0\065,13192.009242,210101111,12782.009241702192,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,069,c:/fda/mbbe/simulated_nor/run\0\069,17797.997286,203000011,17397.99728607173,False,False,False,16,12,2,99999999,0,0,No important warnings
+0,062,c:/fda/mbbe/simulated_nor/run\0\062,13872.184227,111011000,13382.184226777188,False,False,False,25,12,2,99999999,0,0,No important warnings
+0,080,c:/fda/mbbe/simulated_nor/run\0\080,16853.813249,010100000,16483.813248573173,False,False,False,13,12,2,99999999,0,0,No important warnings
+0,081,c:/fda/mbbe/simulated_nor/run\0\081,18623.638401,001020000,18223.638401446013,False,True,False,16,12,2,1.1189231777533027e+17,0,0,No important warnings
+0,084,c:/fda/mbbe/simulated_nor/run\0\084,13856.806709,202121000,13436.80670861904,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,029,c:/fda/mbbe/simulated_nor/run\0\029,20969.548953,211020111,20519.54895330842,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,093,c:/fda/mbbe/simulated_nor/run\0\028,99999999.000000,103120000,99999999,False,False,False,0,0,0,99999999,0,0,
+0,092,c:/fda/mbbe/simulated_nor/run\0\092,17119.263748,202120011,16709.263748326095,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,019,c:/fda/mbbe/simulated_nor/run\0\019,16179.661553,201101111,15849.66155344992,True,False,False,19,12,2,99999999,0,0,No important warnings
+0,073,c:/fda/mbbe/simulated_nor/run\0\073,14452.125404,102111001,14002.1254035524,False,False,False,21,12,2,99999999,0,0,No important warnings
+0,086,c:/fda/mbbe/simulated_nor/run\0\086,17096.702004,202000011,16716.702003864153,False,True,False,14,12,2,4.440680832186733e+17,0,0,No important warnings
+0,072,c:/fda/mbbe/simulated_nor/run\0\072,18899.461484,001100111,18599.461483537256,True,False,False,16,12,2,99999999,0,0,No important warnings
+0,006,c:/fda/mbbe/simulated_nor/run\0\006,20993.983285,213111101,20513.98328546911,False,False,False,24,12,2,99999999,0,0,No important warnings
+0,005,c:/fda/mbbe/simulated_nor/run\0\005,15630.824882,111021000,15160.824882363851,False,False,False,23,12,2,99999999,0,0,No important warnings
+0,044,c:/fda/mbbe/simulated_nor/run\0\044,14841.796404,011020110,14401.796403755936,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,074,c:/fda/mbbe/simulated_nor/run\0\074,12984.170967,200020110,12584.17096661213,False,False,False,16,12,2,99999999,0,0,No important warnings
+0,076,c:/fda/mbbe/simulated_nor/run\0\076,14845.734308,200121010,14435.734308348327,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,089,c:/fda/mbbe/simulated_nor/run\0\089,19200.881485,200111111,18770.8814850654,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,099,c:/fda/mbbe/simulated_nor/run\0\099,21064.480292,203021001,20644.480291565895,False,False,False,18,12,2,99999999,0,0,No important warnings
+0,098,c:/fda/mbbe/simulated_nor/run\0\098,13498.970400,212111100,13028.97039990414,False,False,False,23,12,2,99999999,0,0,No important warnings
+0,091,c:/fda/mbbe/simulated_nor/run\0\091,14496.976361,113020110,14016.976361358704,False,False,False,24,12,2,99999999,0,0,No important warnings
+0,085,c:/fda/mbbe/simulated_nor/run\0\085,13250.526562,002100111,12870.526561504284,False,True,False,14,12,2,2.257964361780727e+17,0,0,No important warnings
+0,020,c:/fda/mbbe/simulated_nor/run\0\020,12177.010110,013021100,11837.010109853416,True,False,False,20,12,2,99999999,0,0,No important warnings
+0,090,c:/fda/mbbe/simulated_nor/run\0\090,13060.377220,200100110,12670.377220355685,False,True,False,15,12,2,2.880599552175444e+17,0,0,No important warnings
+0,077,c:/fda/mbbe/simulated_nor/run\0\077,14964.320260,002121111,14554.320259859956,False,False,False,17,12,2,99999999,0,0,No important warnings
+0,079,c:/fda/mbbe/simulated_nor/run\0\079,14672.424711,200121100,14262.424711205962,False,True,False,17,12,2,1.4541760312690865e+18,0,0,No important warnings
+0,043,c:/fda/mbbe/simulated_nor/run\0\043,20877.276230,011021111,20437.276229589414,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,016,c:/fda/mbbe/simulated_nor/run\0\016,14839.758384,003121110,14399.758383571088,False,True,False,20,12,2,2.012160336482795e+18,0,0,No important warnings
+0,087,c:/fda/mbbe/simulated_nor/run\0\087,24132.008383,101011101,23662.008383080574,False,False,False,23,12,2,99999999,0,0,No important warnings
+0,071,c:/fda/mbbe/simulated_nor/run\0\071,13548.252821,202111010,13098.25282116258,False,True,False,21,12,2,1.0680288020051362e+17,0,0,No important warnings
+0,008,c:/fda/mbbe/simulated_nor/run\0\008,12048.998699,112101000,11608.99869885575,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,056,c:/fda/mbbe/simulated_nor/run\0\056,16230.967181,211110110,15740.967180995973,False,False,False,25,12,2,99999999,0,0,No important warnings
+0,082,c:/fda/mbbe/simulated_nor/run\0\082,16369.131248,213110111,15889.13124813279,False,False,False,24,12,2,99999999,0,0,No important warnings
+0,070,c:/fda/mbbe/simulated_nor/run\0\070,14599.886248,013020111,14169.886248157802,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,088,c:/fda/mbbe/simulated_nor/run\0\088,15628.569334,000011110,15218.569334348402,False,True,False,17,12,2,2.34132914402177e+18,0,0,No important warnings
+0,068,c:/fda/mbbe/simulated_nor/run\0\068,14435.521093,001021111,14115.52109342735,True,False,False,18,12,2,99999999,0,0,No important warnings
+0,094,c:/fda/mbbe/simulated_nor/run\0\094,13599.879423,110101110,13159.879423091876,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,096,c:/fda/mbbe/simulated_nor/run\0\096,13994.383630,101111010,13504.383630140328,False,False,False,25,12,2,99999999,0,0,No important warnings
+0,064,c:/fda/mbbe/simulated_nor/run\0\064,18488.559176,003011010,18048.559175577197,False,False,False,20,12,2,99999999,0,0,No important warnings
+0,036,c:/fda/mbbe/simulated_nor/run\0\036,14808.696263,211120110,14438.69626330799,True,False,False,23,12,2,99999999,0,0,No important warnings
+0,100,c:/fda/mbbe/simulated_nor/run\0\100,15161.851696,200110110,14731.851696033878,False,False,False,19,12,2,99999999,0,0,No important warnings
+0,097,c:/fda/mbbe/simulated_nor/run\0\097,17950.426588,113110111,17450.426588426184,False,False,False,26,12,2,99999999,0,0,No important warnings
+0,095,c:/fda/mbbe/simulated_nor/run\0\095,14633.969614,013100111,14213.969614174892,False,False,False,18,12,2,99999999,0,0,No important warnings
+1,003,c:/fda/mbbe/simulated_nor/run\0\020,12177.010110,013021100,11837.010109853416,True,False,False,20,12,2,99999999,0,0,From NM_0_020: No important warnings
+1,012,c:/fda/mbbe/simulated_nor/run\1\001,99999999.000000,211021111,99999999,False,False,False,0,0,0,99999999,0,0,
+1,027,c:/fda/mbbe/simulated_nor/run\0\026,14929.973639,113100111,14469.973639430866,False,False,False,22,12,2,99999999,0,0,From NM_0_026: No important warnings
+1,028,c:/fda/mbbe/simulated_nor/run\0\008,12048.998699,112101000,11608.99869885575,False,False,False,20,12,2,99999999,0,0,From NM_0_008: No important warnings
+1,032,c:/fda/mbbe/simulated_nor/run\1\032,99999999.000000,102111110,99999999,False,False,False,24,12,2,99999999,0,0,No important warnings
+1,007,c:/fda/mbbe/simulated_nor/run\1\007,14258.251138,210021000,13948.251137859854,True,False,False,17,12,2,99999999,0,0,No important warnings
+1,006,c:/fda/mbbe/simulated_nor/run\1\006,17656.411310,210021111,17236.411309766012,False,False,False,18,12,2,99999999,0,0,No important warnings
+1,004,c:/fda/mbbe/simulated_nor/run\1\004,15838.320520,213021010,15378.3205198417,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,038,c:/fda/mbbe/simulated_nor/run\1\038,99999999.000000,103101010,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,039,c:/fda/mbbe/simulated_nor/run\0\098,13498.970400,212111100,13028.97039990414,False,False,False,23,12,2,99999999,0,0,From NM_0_098: No important warnings
+1,018,c:/fda/mbbe/simulated_nor/run\1\018,16656.120195,201021110,16206.120195265941,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,026,c:/fda/mbbe/simulated_nor/run\1\026,16672.565391,213021101,16222.565391462042,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,037,c:/fda/mbbe/simulated_nor/run\1\037,20061.613379,213111001,19591.613378766935,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,017,c:/fda/mbbe/simulated_nor/run\1\017,22865.673307,211121000,22405.67330714526,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,021,c:/fda/mbbe/simulated_nor/run\1\021,17110.755833,213011011,16640.755832911676,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,010,c:/fda/mbbe/simulated_nor/run\1\010,19953.908370,113121111,19463.908369933135,False,False,False,25,12,2,99999999,0,0,No important warnings
+1,008,c:/fda/mbbe/simulated_nor/run\1\008,16172.503101,211120010,15812.503100892918,True,False,False,22,12,2,99999999,0,0,No important warnings
+1,033,c:/fda/mbbe/simulated_nor/run\1\033,15227.632220,210120000,14817.632219717505,False,False,False,17,12,2,99999999,0,0,No important warnings
+1,001,c:/fda/mbbe/simulated_nor/run\1\001,14428.914542,211021111,13968.914542474666,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,009,c:/fda/mbbe/simulated_nor/run\1\009,17217.500455,111101101,16757.500454867743,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,040,c:/fda/mbbe/simulated_nor/run\1\040,27224.919606,103101001,26794.91960642996,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,046,c:/fda/mbbe/simulated_nor/run\1\046,16259.760489,113121110,15759.760489023425,False,False,False,26,12,2,99999999,0,0,No important warnings
+1,013,c:/fda/mbbe/simulated_nor/run\1\013,18374.804853,111021110,17884.804852878005,False,False,False,25,12,2,99999999,0,0,No important warnings
+1,030,c:/fda/mbbe/simulated_nor/run\1\030,14870.815837,111000101,14430.815837397142,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,043,c:/fda/mbbe/simulated_nor/run\1\043,24438.026578,103120111,23978.026578438887,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,005,c:/fda/mbbe/simulated_nor/run\1\005,16601.845520,111121111,16111.845520123852,False,False,False,25,12,2,99999999,0,0,No important warnings
+1,056,c:/fda/mbbe/simulated_nor/run\0\057,12833.715824,200001101,12463.71582374087,False,True,False,13,12,2,2.594298385752068e+18,0,0,From NM_0_057: No important warnings
+1,057,c:/fda/mbbe/simulated_nor/run\0\024,12879.548314,202101100,12469.548314207854,False,True,False,17,12,2,1.5296512270158792e+18,0,0,From NM_0_024: No important warnings
+1,044,c:/fda/mbbe/simulated_nor/run\1\044,19641.651618,203111111,19171.65161793873,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,051,c:/fda/mbbe/simulated_nor/run\1\051,19181.716109,212021110,18731.716108794062,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,019,c:/fda/mbbe/simulated_nor/run\1\019,15614.643568,212001000,15204.643568467514,False,False,False,17,12,2,99999999,0,0,No important warnings
+1,036,c:/fda/mbbe/simulated_nor/run\1\036,20847.088001,201121111,20397.08800057766,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,048,c:/fda/mbbe/simulated_nor/run\1\048,14090.065235,213121100,13620.065235238826,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,055,c:/fda/mbbe/simulated_nor/run\1\055,19511.019034,112120101,19061.0190337089,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,064,c:/fda/mbbe/simulated_nor/run\1\050,99999999.000000,213120001,99999999,False,False,False,0,0,0,99999999,0,0,
+1,050,c:/fda/mbbe/simulated_nor/run\1\050,21772.011827,213120001,21332.01182662521,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,020,c:/fda/mbbe/simulated_nor/run\1\020,13246.820523,210120100,12826.820523386312,False,False,False,18,12,2,99999999,0,0,No important warnings
+1,016,c:/fda/mbbe/simulated_nor/run\1\016,16697.212348,001120111,16277.212348036981,False,True,False,18,12,2,1.346660783150981e+18,0,0,No important warnings
+1,014,c:/fda/mbbe/simulated_nor/run\1\014,17326.007520,103121111,16856.0075202007,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,002,c:/fda/mbbe/simulated_nor/run\1\002,15965.021774,112011111,15485.021773674227,False,False,False,24,12,2,99999999,0,0,No important warnings
+1,054,c:/fda/mbbe/simulated_nor/run\1\054,18179.433696,202110011,17749.433695627748,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,062,c:/fda/mbbe/simulated_nor/run\1\062,17882.247392,213101011,17442.247391671022,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,015,c:/fda/mbbe/simulated_nor/run\1\015,15021.876179,201120011,14691.876179212524,True,False,False,19,12,2,99999999,0,0,No important warnings
+1,029,c:/fda/mbbe/simulated_nor/run\1\029,14662.424711,200021100,14262.424711205962,False,True,False,16,12,2,8.774702019799288e+17,0,0,No important warnings
+1,070,c:/fda/mbbe/simulated_nor/run\1\070,18793.456138,203110101,18343.456137954785,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,045,c:/fda/mbbe/simulated_nor/run\1\045,13911.706961,010020111,13521.706961403732,False,False,False,15,12,2,99999999,0,0,No important warnings
+1,035,c:/fda/mbbe/simulated_nor/run\1\035,19051.250785,013010001,18621.250785043863,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,063,c:/fda/mbbe/simulated_nor/run\1\063,19322.950472,203120100,18882.950471871703,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,078,c:/fda/mbbe/simulated_nor/run\1\062,99999999.000000,213101011,99999999,False,False,False,0,0,0,99999999,0,0,
+1,075,c:/fda/mbbe/simulated_nor/run\1\075,17693.750847,203121000,17253.750847109553,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,034,c:/fda/mbbe/simulated_nor/run\1\034,12643.413254,112100111,12203.413253587025,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,047,c:/fda/mbbe/simulated_nor/run\1\047,16039.498867,112010010,15569.498867088178,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,080,c:/fda/mbbe/simulated_nor/run\1\080,99999999.000000,203120101,99999999,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,041,c:/fda/mbbe/simulated_nor/run\1\041,14066.232422,210120101,13656.23242241393,False,False,False,17,12,2,99999999,0,0,No important warnings
+1,053,c:/fda/mbbe/simulated_nor/run\1\053,16388.676217,101121100,15918.676216737935,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,085,c:/fda/mbbe/simulated_nor/run\1\037,99999999.000000,213111001,99999999,False,False,False,0,0,0,99999999,0,0,
+1,073,c:/fda/mbbe/simulated_nor/run\1\073,21572.219335,111100100,21112.219335187325,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,074,c:/fda/mbbe/simulated_nor/run\1\074,22992.174835,013101010,22562.174834969694,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,049,c:/fda/mbbe/simulated_nor/run\1\049,14004.732538,201110110,13534.73253800031,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,079,c:/fda/mbbe/simulated_nor/run\1\079,19494.409201,110121011,19054.409200589856,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,023,c:/fda/mbbe/simulated_nor/run\1\023,20783.069741,213020111,20433.06974133828,True,False,False,21,12,2,99999999,0,0,No important warnings
+1,083,c:/fda/mbbe/simulated_nor/run\1\083,18421.042744,203110100,17961.04274381844,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,082,c:/fda/mbbe/simulated_nor/run\1\082,15294.662754,203021100,14854.662754498991,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,076,c:/fda/mbbe/simulated_nor/run\1\076,16679.786499,113120000,16209.786499087422,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,094,c:/fda/mbbe/simulated_nor/run\0\024,12879.548314,202101100,12469.548314207854,False,True,False,17,12,2,1.5296512270158792e+18,0,0,From NM_0_024: No important warnings
+1,065,c:/fda/mbbe/simulated_nor/run\1\065,22662.469222,211121001,22212.46922239943,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,072,c:/fda/mbbe/simulated_nor/run\1\072,14923.586598,112011100,14443.586597760317,False,False,False,24,12,2,99999999,0,0,No important warnings
+1,066,c:/fda/mbbe/simulated_nor/run\1\066,13978.196976,110001010,13558.196975715038,False,False,False,18,12,2,99999999,0,0,No important warnings
+1,081,c:/fda/mbbe/simulated_nor/run\1\081,16682.565391,213121101,16222.565391462042,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,087,c:/fda/mbbe/simulated_nor/run\1\087,15482.439814,203101110,15042.439814146976,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,011,c:/fda/mbbe/simulated_nor/run\1\011,18950.901772,213101001,18520.901772066194,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,095,c:/fda/mbbe/simulated_nor/run\1\095,16547.194011,202121001,16137.19401081697,False,False,False,17,12,2,99999999,0,0,No important warnings
+1,077,c:/fda/mbbe/simulated_nor/run\1\077,13674.462482,212121100,13224.462481620629,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,025,c:/fda/mbbe/simulated_nor/run\1\025,21262.549926,001121101,20842.54992646303,False,False,False,18,12,2,99999999,0,0,No important warnings
+1,097,c:/fda/mbbe/simulated_nor/run\1\097,21510.004541,111101100,21040.00454054444,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,089,c:/fda/mbbe/simulated_nor/run\1\089,19746.989034,111110100,19246.989033596725,False,False,False,26,12,2,99999999,0,0,No important warnings
+1,098,c:/fda/mbbe/simulated_nor/run\1\098,16317.821266,110001011,15907.821265856977,False,False,False,17,12,2,99999999,0,0,No important warnings
+1,024,c:/fda/mbbe/simulated_nor/run\1\024,20878.211351,213020010,20428.21135109919,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,060,c:/fda/mbbe/simulated_nor/run\1\060,15169.241903,211101000,14829.241903400061,True,True,False,20,12,2,1.0575663656889404e+18,0,0,No important warnings
+1,058,c:/fda/mbbe/simulated_nor/run\1\058,13669.851970,110101111,13239.851970147996,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,092,c:/fda/mbbe/simulated_nor/run\1\092,18128.442408,211100001,17808.442408335544,True,False,False,18,12,2,99999999,0,0,No important warnings
+1,067,c:/fda/mbbe/simulated_nor/run\1\067,14631.050162,203121101,14191.050162495709,False,True,False,20,12,2,4.858742336457884e+17,0,0,No important warnings
+1,093,c:/fda/mbbe/simulated_nor/run\1\093,16464.922178,113111111,15954.922177937513,False,False,False,27,12,2,99999999,0,0,No important warnings
+1,031,c:/fda/mbbe/simulated_nor/run\1\031,13867.525906,113021101,13397.525905602826,False,False,False,23,12,2,99999999,0,0,No important warnings
+1,068,c:/fda/mbbe/simulated_nor/run\1\068,18764.360981,111011010,18264.36098089418,False,False,False,26,12,2,99999999,0,0,No important warnings
+1,099,c:/fda/mbbe/simulated_nor/run\1\099,19354.754455,111120001,18894.754455226655,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,042,c:/fda/mbbe/simulated_nor/run\1\042,18550.382083,011120101,18120.382083309963,False,False,False,19,12,2,99999999,0,0,No important warnings
+1,091,c:/fda/mbbe/simulated_nor/run\1\091,17521.229073,113101011,17061.229073028568,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,088,c:/fda/mbbe/simulated_nor/run\1\088,23245.271345,013111011,22785.27134480086,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,022,c:/fda/mbbe/simulated_nor/run\1\022,14384.955213,013121110,13924.955213247815,False,False,False,22,12,2,99999999,0,0,No important warnings
+1,052,c:/fda/mbbe/simulated_nor/run\1\052,19412.221107,011121011,18972.221106768942,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,086,c:/fda/mbbe/simulated_nor/run\1\086,13154.679039,212021111,12814.67903879561,True,False,False,20,12,2,99999999,0,0,No important warnings
+1,061,c:/fda/mbbe/simulated_nor/run\1\061,16985.667549,202111011,16545.6675488162,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,084,c:/fda/mbbe/simulated_nor/run\1\084,21687.725739,013121000,21247.72573885767,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,069,c:/fda/mbbe/simulated_nor/run\1\069,14609.886248,013120111,14169.886248157802,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,096,c:/fda/mbbe/simulated_nor/run\1\096,13528.650770,202121110,13088.650769620763,False,False,False,20,12,2,99999999,0,0,No important warnings
+1,071,c:/fda/mbbe/simulated_nor/run\1\071,17319.911575,012010110,16979.911574981816,True,False,False,20,12,2,99999999,0,0,No important warnings
+1,090,c:/fda/mbbe/simulated_nor/run\1\090,21736.022162,013121010,21286.022161675908,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,100,c:/fda/mbbe/simulated_nor/run\1\100,17076.090795,213021000,16626.090795362605,False,False,False,21,12,2,99999999,0,0,No important warnings
+1,059,c:/fda/mbbe/simulated_nor/run\1\059,15098.420634,213120110,14628.4206338342,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,005,c:/fda/mbbe/simulated_nor/run\0\011,14617.580213,200021001,14237.580213011026,False,False,False,14,12,2,99999999,0,0,From NM_0_011: No important warnings
+2,018,c:/fda/mbbe/simulated_nor/run\0\025,19551.448488,112100110,19101.44848832508,False,False,False,21,12,2,99999999,0,0,From NM_0_025: No important warnings
+2,024,c:/fda/mbbe/simulated_nor/run\1\081,16682.565391,213121101,16222.565391462042,False,False,False,22,12,2,99999999,0,0,From NM_1_081: No important warnings
+2,026,c:/fda/mbbe/simulated_nor/run\0\026,14929.973639,113100111,14469.973639430866,False,False,False,22,12,2,99999999,0,0,From NM_0_026: No important warnings
+2,028,c:/fda/mbbe/simulated_nor/run\0\084,13856.806709,202121000,13436.80670861904,False,False,False,18,12,2,99999999,0,0,From NM_0_084: No important warnings
+2,008,c:/fda/mbbe/simulated_nor/run\2\008,99999999.000000,113101001,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,036,c:/fda/mbbe/simulated_nor/run\0\008,12048.998699,112101000,11608.99869885575,False,False,False,20,12,2,99999999,0,0,From NM_0_008: No important warnings
+2,012,c:/fda/mbbe/simulated_nor/run\2\012,99999999.000000,112021110,99999999,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,022,c:/fda/mbbe/simulated_nor/run\2\022,15600.848384,203121011,15160.848384403,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,027,c:/fda/mbbe/simulated_nor/run\2\027,21643.394922,110100010,21223.394922444695,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,032,c:/fda/mbbe/simulated_nor/run\2\032,15766.219062,202021010,15346.219062380811,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,023,c:/fda/mbbe/simulated_nor/run\2\023,17225.710993,200120000,16835.71099342519,False,False,False,15,12,2,99999999,0,0,No important warnings
+2,038,c:/fda/mbbe/simulated_nor/run\2\038,16777.208989,112020011,16337.208989475886,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,017,c:/fda/mbbe/simulated_nor/run\2\017,18902.116109,201121101,18462.116108559043,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,025,c:/fda/mbbe/simulated_nor/run\2\025,15816.606647,113110101,15326.60664710647,False,False,False,25,12,2,99999999,0,0,No important warnings
+2,043,c:/fda/mbbe/simulated_nor/run\2\043,16608.150850,212121000,16168.150850409547,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,021,c:/fda/mbbe/simulated_nor/run\2\021,17785.435899,112121100,17315.435899043052,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,047,c:/fda/mbbe/simulated_nor/run\0\090,13060.377220,200100110,12670.377220355685,False,True,False,15,12,2,2.880599552175444e+17,0,0,From NM_0_090: No important warnings
+2,013,c:/fda/mbbe/simulated_nor/run\2\013,22178.175874,102121011,21738.17587425145,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,039,c:/fda/mbbe/simulated_nor/run\2\039,19127.578553,111121010,18637.578553046173,False,False,False,25,12,2,99999999,0,0,No important warnings
+2,003,c:/fda/mbbe/simulated_nor/run\2\003,19312.950472,203020100,18882.950471871703,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,045,c:/fda/mbbe/simulated_nor/run\2\045,26434.996573,103121100,25964.99657273511,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,011,c:/fda/mbbe/simulated_nor/run\2\011,17439.756966,100120111,17019.75696615704,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,033,c:/fda/mbbe/simulated_nor/run\2\033,19361.894806,113121001,18891.89480623084,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,015,c:/fda/mbbe/simulated_nor/run\2\015,11952.133328,202121101,11532.13332819414,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,055,c:/fda/mbbe/simulated_nor/run\1\011,18950.901772,213101001,18520.901772066194,False,False,False,19,12,2,99999999,0,0,From NM_1_011: No important warnings
+2,056,c:/fda/mbbe/simulated_nor/run\2\056,99999999.000000,103121000,99999999,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,004,c:/fda/mbbe/simulated_nor/run\2\004,20618.365861,201011001,20178.3658610893,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,014,c:/fda/mbbe/simulated_nor/run\2\014,13564.462482,212021100,13224.462481620629,True,False,False,20,12,2,99999999,0,0,No important warnings
+2,019,c:/fda/mbbe/simulated_nor/run\2\019,15716.283188,110121101,15276.283188428008,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,010,c:/fda/mbbe/simulated_nor/run\2\010,19697.875074,203121010,19247.875074013155,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,035,c:/fda/mbbe/simulated_nor/run\2\035,12922.865205,200120101,12532.865204989734,False,True,False,15,12,2,2.7109227543928566e+17,0,0,No important warnings
+2,059,c:/fda/mbbe/simulated_nor/run\2\059,15293.939522,200111001,14883.93952202376,False,False,False,17,12,2,99999999,0,0,No important warnings
+2,057,c:/fda/mbbe/simulated_nor/run\2\057,24255.502239,201100011,23845.502238502908,False,False,False,17,12,2,99999999,0,0,No important warnings
+2,058,c:/fda/mbbe/simulated_nor/run\2\058,16050.123343,200000000,15690.123343067475,False,False,False,12,12,2,99999999,0,0,No important warnings
+2,065,c:/fda/mbbe/simulated_nor/run\2\065,99999999.000000,103100110,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,040,c:/fda/mbbe/simulated_nor/run\2\040,22598.480985,210120010,22178.48098481994,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,001,c:/fda/mbbe/simulated_nor/run\2\001,14442.125404,102011001,14002.1254035524,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,051,c:/fda/mbbe/simulated_nor/run\2\051,21362.408844,211111010,20872.40884365098,False,False,False,25,12,2,99999999,0,0,No important warnings
+2,063,c:/fda/mbbe/simulated_nor/run\2\063,20235.094463,211000010,19805.094463439524,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,060,c:/fda/mbbe/simulated_nor/run\2\060,16382.034338,211110100,15902.03433770637,False,False,False,24,12,2,99999999,0,0,No important warnings
+2,071,c:/fda/mbbe/simulated_nor/run\0\020,12177.010110,013021100,11837.010109853416,True,False,False,20,12,2,99999999,0,0,From NM_0_020: No important warnings
+2,044,c:/fda/mbbe/simulated_nor/run\2\044,15198.052406,112100000,14768.052405552944,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,009,c:/fda/mbbe/simulated_nor/run\2\009,19721.817326,210111101,19281.817325600936,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,069,c:/fda/mbbe/simulated_nor/run\2\069,18485.402836,201111001,18035.40283582048,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,046,c:/fda/mbbe/simulated_nor/run\2\046,15660.125560,211111111,15270.125559911787,True,False,False,25,12,2,99999999,0,0,No important warnings
+2,076,c:/fda/mbbe/simulated_nor/run\1\006,17656.411310,210021111,17236.411309766012,False,False,False,18,12,2,99999999,0,0,From NM_1_006: No important warnings
+2,077,c:/fda/mbbe/simulated_nor/run\2\077,99999999.000000,112121110,99999999,False,False,False,24,12,2,99999999,0,0,No important warnings
+2,048,c:/fda/mbbe/simulated_nor/run\2\048,16868.859355,203101000,16448.859354782726,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,079,c:/fda/mbbe/simulated_nor/run\1\034,12643.413254,112100111,12203.413253587025,False,False,False,20,12,2,99999999,0,0,From NM_1_034: No important warnings
+2,052,c:/fda/mbbe/simulated_nor/run\2\052,17212.781399,113120111,16732.781398907824,False,False,False,24,12,2,99999999,0,0,No important warnings
+2,081,c:/fda/mbbe/simulated_nor/run\2\081,99999999.000000,102121010,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,082,c:/fda/mbbe/simulated_nor/run\2\082,99999999.000000,102111100,99999999,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,020,c:/fda/mbbe/simulated_nor/run\2\020,17669.852771,201101000,17249.852771056227,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,073,c:/fda/mbbe/simulated_nor/run\2\073,14182.173667,202021100,13762.173666729337,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,066,c:/fda/mbbe/simulated_nor/run\2\066,22122.976736,101121011,21662.976735830533,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,086,c:/fda/mbbe/simulated_nor/run\2\086,99999999.000000,103120010,99999999,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,050,c:/fda/mbbe/simulated_nor/run\2\050,15193.186343,113111110,14673.186343181784,False,False,False,28,12,2,99999999,0,0,No important warnings
+2,072,c:/fda/mbbe/simulated_nor/run\2\072,17864.132812,201111000,17404.132812016513,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,064,c:/fda/mbbe/simulated_nor/run\2\064,14659.942527,012120010,14239.94252663891,False,True,False,18,12,2,7.682079671464925e+16,0,0,No important warnings
+2,054,c:/fda/mbbe/simulated_nor/run\2\054,16350.855977,013101011,15930.855976986097,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,068,c:/fda/mbbe/simulated_nor/run\2\068,14983.322702,112021010,14523.322701959602,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,037,c:/fda/mbbe/simulated_nor/run\2\037,14322.488949,110021110,13872.488949345801,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,034,c:/fda/mbbe/simulated_nor/run\2\034,12607.514232,212120110,12157.514231950076,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,091,c:/fda/mbbe/simulated_nor/run\2\091,22011.253139,210011011,21581.253138711956,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,075,c:/fda/mbbe/simulated_nor/run\2\075,14374.125978,202021111,13954.125977861218,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,096,c:/fda/mbbe/simulated_nor/run\0\014,15183.186343,113011110,14673.186343181784,False,False,False,27,12,2,99999999,0,0,From NM_0_014: No important warnings
+2,041,c:/fda/mbbe/simulated_nor/run\2\041,14226.057285,012121100,13796.05728507399,False,True,False,19,12,2,6.448869847342188e+17,0,0,No important warnings
+2,098,c:/fda/mbbe/simulated_nor/run\0\057,12833.715824,200001101,12463.71582374087,False,True,False,13,12,2,2.594298385752068e+18,0,0,From NM_0_057: No important warnings
+2,090,c:/fda/mbbe/simulated_nor/run\2\090,17872.247392,213001011,17442.247391671022,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,100,c:/fda/mbbe/simulated_nor/run\2\016,99999999.000000,112121000,99999999,False,False,False,0,0,0,99999999,0,0,
+2,006,c:/fda/mbbe/simulated_nor/run\2\006,21677.725739,013021000,21247.72573885767,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,007,c:/fda/mbbe/simulated_nor/run\2\007,13262.916885,202101110,12842.916885466804,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,094,c:/fda/mbbe/simulated_nor/run\2\094,16286.776103,211021011,15836.776102810103,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,095,c:/fda/mbbe/simulated_nor/run\2\095,18656.593144,213110001,18196.593143678263,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,078,c:/fda/mbbe/simulated_nor/run\2\078,13782.820328,012021101,13372.820327593525,False,True,False,17,12,2,3.5765517371726304e+17,0,0,No important warnings
+2,087,c:/fda/mbbe/simulated_nor/run\2\087,15542.993587,112100001,15122.993586782773,False,False,False,18,12,2,99999999,0,0,No important warnings
+2,097,c:/fda/mbbe/simulated_nor/run\2\097,15163.984535,212120000,14733.984535386615,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,089,c:/fda/mbbe/simulated_nor/run\2\089,16302.289148,113120011,15832.28914821456,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,031,c:/fda/mbbe/simulated_nor/run\2\031,20893.069741,213120111,20433.06974133828,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,030,c:/fda/mbbe/simulated_nor/run\2\030,18421.840812,212111011,17961.84081236823,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,084,c:/fda/mbbe/simulated_nor/run\2\084,16285.807606,213021110,15815.80760600761,False,False,False,23,12,2,99999999,0,0,No important warnings
+2,085,c:/fda/mbbe/simulated_nor/run\2\085,13488.343522,100021000,13178.343522302448,True,True,False,17,12,2,3.509649150825952e+17,0,0,No important warnings
+2,016,c:/fda/mbbe/simulated_nor/run\2\016,12879.495999,112121000,12419.495998514767,False,False,False,22,12,2,99999999,0,0,No important warnings
+2,092,c:/fda/mbbe/simulated_nor/run\2\092,12843.715824,200101101,12463.71582374087,False,True,False,14,12,2,6.201902786811423e+17,0,0,No important warnings
+2,002,c:/fda/mbbe/simulated_nor/run\2\002,16305.155513,011111001,15955.15551250456,True,False,False,21,12,2,99999999,0,0,No important warnings
+2,049,c:/fda/mbbe/simulated_nor/run\2\049,21051.641010,012111111,20601.64100961844,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,029,c:/fda/mbbe/simulated_nor/run\2\029,19260.428454,013111001,18810.428454384662,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,099,c:/fda/mbbe/simulated_nor/run\2\099,14921.154783,213111111,14431.15478344708,False,False,False,25,12,2,99999999,0,0,No important warnings
+2,053,c:/fda/mbbe/simulated_nor/run\2\053,12040.550332,102121101,11600.550331528702,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,083,c:/fda/mbbe/simulated_nor/run\2\083,14216.057285,012021100,13796.05728507399,False,True,False,18,12,2,1.7994979630016733e+17,0,0,No important warnings
+2,062,c:/fda/mbbe/simulated_nor/run\2\062,14963.344841,212010100,14513.344841061982,False,False,False,21,12,2,99999999,0,0,No important warnings
+2,067,c:/fda/mbbe/simulated_nor/run\2\067,14499.228695,212101010,14069.228694889918,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,042,c:/fda/mbbe/simulated_nor/run\2\042,14683.230431,100101111,14273.230431315302,False,False,False,17,12,2,99999999,0,0,No important warnings
+2,080,c:/fda/mbbe/simulated_nor/run\2\080,16605.666538,212101100,16175.666538353178,False,False,False,19,12,2,99999999,0,0,No important warnings
+2,070,c:/fda/mbbe/simulated_nor/run\2\070,11930.550332,102021101,11600.550331528702,True,False,False,19,12,2,99999999,0,0,No important warnings
+2,061,c:/fda/mbbe/simulated_nor/run\2\061,13877.525906,113121101,13397.525905602826,False,False,False,24,12,2,99999999,0,0,No important warnings
+2,088,c:/fda/mbbe/simulated_nor/run\2\088,13263.470183,210101100,12853.470183335734,False,True,False,17,12,2,1.9517142789162275e+17,0,0,No important warnings
+2,093,c:/fda/mbbe/simulated_nor/run\2\093,16481.780106,013121011,16041.780106287339,False,False,False,20,12,2,99999999,0,0,No important warnings
+2,074,c:/fda/mbbe/simulated_nor/run\2\074,16971.328039,011120111,16631.328039226613,True,False,False,20,12,2,99999999,0,0,No important warnings
+3,001,c:/fda/mbbe/simulated_nor/run\0\020,12177.010110,013021100,11837.010109853416,True,False,False,20,12,2,99999999,0,0,From NM_0_020: No important warnings
+3,004,c:/fda/mbbe/simulated_nor/run\2\080,16605.666538,212101100,16175.666538353178,False,False,False,19,12,2,99999999,0,0,From NM_2_080: No important warnings
+3,007,c:/fda/mbbe/simulated_nor/run\0\058,25603.095610,003020000,25303.09560975974,True,False,False,16,12,2,99999999,0,0,From NM_0_058: No important warnings
+3,012,c:/fda/mbbe/simulated_nor/run\2\010,19697.875074,203121010,19247.875074013155,False,False,False,21,12,2,99999999,0,0,From NM_2_010: No important warnings
+3,022,c:/fda/mbbe/simulated_nor/run\2\053,12040.550332,102121101,11600.550331528702,False,False,False,20,12,2,99999999,0,0,From NM_2_053: No important warnings
+3,029,c:/fda/mbbe/simulated_nor/run\1\051,19181.716109,212021110,18731.716108794062,False,False,False,21,12,2,99999999,0,0,From NM_1_051: No important warnings
+3,035,c:/fda/mbbe/simulated_nor/run\1\001,14428.914542,211021111,13968.914542474666,False,False,False,22,12,2,99999999,0,0,From NM_1_001: No important warnings
+3,031,c:/fda/mbbe/simulated_nor/run\3\031,99999999.000000,102020110,99999999,False,False,False,20,12,2,99999999,0,0,No important warnings
+3,024,c:/fda/mbbe/simulated_nor/run\3\024,99999999.000000,100001010,99999999,False,False,False,16,12,2,99999999,0,0,No important warnings
+3,002,c:/fda/mbbe/simulated_nor/run\3\002,99999999.000000,101100100,99999999,False,False,False,20,12,2,99999999,0,0,No important warnings
+3,014,c:/fda/mbbe/simulated_nor/run\3\014,17402.509019,211021000,16952.509019349844,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,034,c:/fda/mbbe/simulated_nor/run\3\034,16347.468869,202020001,16057.468868569336,True,False,False,15,12,2,99999999,0,0,No important warnings
+3,003,c:/fda/mbbe/simulated_nor/run\3\003,20777.731218,113001101,20327.731218474426,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,043,c:/fda/mbbe/simulated_nor/run\2\050,15193.186343,113111110,14673.186343181784,False,False,False,28,12,2,99999999,0,0,From NM_2_050: No important warnings
+3,044,c:/fda/mbbe/simulated_nor/run\2\008,99999999.000000,113101001,99999999,False,False,False,21,12,2,99999999,0,0,From NM_2_008: No important warnings
+3,045,c:/fda/mbbe/simulated_nor/run\3\039,99999999.000000,212121101,99999999,False,False,False,0,0,0,99999999,0,0,
+3,027,c:/fda/mbbe/simulated_nor/run\3\027,17062.387789,203020111,16632.38778922097,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,047,c:/fda/mbbe/simulated_nor/run\3\047,99999999.000000,101020100,99999999,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,023,c:/fda/mbbe/simulated_nor/run\3\023,16220.893509,211111001,15750.893508953533,False,False,False,23,12,2,99999999,0,0,No important warnings
+3,025,c:/fda/mbbe/simulated_nor/run\3\025,13756.414834,212110111,13296.41483386727,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,050,c:/fda/mbbe/simulated_nor/run\2\022,15600.848384,203121011,15160.848384403,False,False,False,20,12,2,99999999,0,0,From NM_2_022: No important warnings
+3,008,c:/fda/mbbe/simulated_nor/run\3\008,13743.125049,100001001,13363.125049070948,False,False,False,14,12,2,99999999,0,0,No important warnings
+3,010,c:/fda/mbbe/simulated_nor/run\3\010,15153.984535,212020000,14733.984535386615,False,False,False,18,12,2,99999999,0,0,No important warnings
+3,018,c:/fda/mbbe/simulated_nor/run\3\018,15486.683366,200011011,15076.683366128567,False,False,False,17,12,2,99999999,0,0,No important warnings
+3,006,c:/fda/mbbe/simulated_nor/run\3\006,15993.237653,203021110,15543.237652684762,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,055,c:/fda/mbbe/simulated_nor/run\3\033,99999999.000000,102120001,99999999,False,False,False,0,0,0,99999999,0,0,
+3,051,c:/fda/mbbe/simulated_nor/run\3\051,19880.159802,212120001,19460.15980188702,False,False,False,18,12,2,99999999,0,0,No important warnings
+3,052,c:/fda/mbbe/simulated_nor/run\3\052,15132.040936,200021110,14722.040935511683,False,False,False,17,12,2,99999999,0,0,No important warnings
+3,058,c:/fda/mbbe/simulated_nor/run\2\015,11952.133328,202121101,11532.13332819414,False,False,False,18,12,2,99999999,0,0,From NM_2_015: No important warnings
+3,013,c:/fda/mbbe/simulated_nor/run\3\013,14767.848229,113110100,14267.848228606634,False,False,False,26,12,2,99999999,0,0,No important warnings
+3,042,c:/fda/mbbe/simulated_nor/run\3\042,16528.592691,213111100,16038.592691313159,False,False,False,25,12,2,99999999,0,0,No important warnings
+3,061,c:/fda/mbbe/simulated_nor/run\3\047,99999999.000000,101020100,99999999,False,False,False,0,0,0,99999999,0,0,
+3,038,c:/fda/mbbe/simulated_nor/run\3\038,15343.136907,112021101,14893.136906836944,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,015,c:/fda/mbbe/simulated_nor/run\3\015,18886.951514,111021001,18426.951513947326,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,011,c:/fda/mbbe/simulated_nor/run\3\011,16199.996677,112121011,15739.99667678169,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,017,c:/fda/mbbe/simulated_nor/run\3\017,15681.276516,012100000,15291.276516115508,False,True,False,15,12,2,1.1854556376324006e+17,0,0,No important warnings
+3,033,c:/fda/mbbe/simulated_nor/run\3\033,15405.415673,102120001,14985.415673137457,False,False,False,18,12,2,99999999,0,0,No important warnings
+3,066,c:/fda/mbbe/simulated_nor/run\3\066,17949.443341,100100001,17569.443340778926,False,False,False,14,12,2,99999999,0,0,No important warnings
+3,056,c:/fda/mbbe/simulated_nor/run\3\056,13703.009364,102020100,13273.00936368804,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,069,c:/fda/mbbe/simulated_nor/run\2\015,11952.133328,202121101,11532.13332819414,False,False,False,18,12,2,99999999,0,0,From NM_2_015: No important warnings
+3,063,c:/fda/mbbe/simulated_nor/run\3\063,16114.629923,211120101,15664.629922750819,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,026,c:/fda/mbbe/simulated_nor/run\3\026,13135.250429,200101100,12745.250428918405,False,False,False,15,12,2,99999999,0,0,No important warnings
+3,005,c:/fda/mbbe/simulated_nor/run\3\005,13988.196976,110101010,13558.196975715038,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,073,c:/fda/mbbe/simulated_nor/run\3\073,15590.848384,203021011,15160.848384403,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,019,c:/fda/mbbe/simulated_nor/run\3\019,16386.589050,112111001,15916.58905020643,False,False,False,23,12,2,99999999,0,0,No important warnings
+3,067,c:/fda/mbbe/simulated_nor/run\3\067,14132.270607,211020101,13692.270607367553,False,False,False,20,12,2,99999999,0,0,No important warnings
+3,028,c:/fda/mbbe/simulated_nor/run\3\028,12674.000543,002101101,12294.000542774786,False,False,False,14,12,2,99999999,0,0,No important warnings
+3,068,c:/fda/mbbe/simulated_nor/run\3\068,20137.376341,112111101,19657.376340739156,False,False,False,24,12,2,99999999,0,0,No important warnings
+3,040,c:/fda/mbbe/simulated_nor/run\3\040,14888.934422,012121010,14458.934422400846,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,021,c:/fda/mbbe/simulated_nor/run\3\021,14355.135308,210100100,13955.135307501185,False,True,False,16,12,2,5.421745192078356e+17,0,0,No important warnings
+3,060,c:/fda/mbbe/simulated_nor/run\3\060,25123.418933,103121011,24663.418933108856,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,077,c:/fda/mbbe/simulated_nor/run\3\077,21040.472743,213101000,20600.472743431892,False,False,False,20,12,2,99999999,0,0,No important warnings
+3,082,c:/fda/mbbe/simulated_nor/run\0\008,12048.998699,112101000,11608.99869885575,False,False,False,20,12,2,99999999,0,0,From NM_0_008: No important warnings
+3,036,c:/fda/mbbe/simulated_nor/run\3\036,18828.320242,111021101,18358.3202421966,False,False,False,23,12,2,99999999,0,0,No important warnings
+3,064,c:/fda/mbbe/simulated_nor/run\3\064,11842.133328,202021101,11532.13332819414,True,False,False,17,12,2,99999999,0,0,No important warnings
+3,037,c:/fda/mbbe/simulated_nor/run\3\037,14277.962278,212120101,13847.962277704626,False,True,False,19,12,2,8.483230851669504e+16,0,0,No important warnings
+3,084,c:/fda/mbbe/simulated_nor/run\3\084,15776.219062,202121010,15346.219062380811,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,087,c:/fda/mbbe/simulated_nor/run\3\087,99999999.000000,101100000,99999999,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,088,c:/fda/mbbe/simulated_nor/run\1\082,15294.662754,203021100,14854.662754498991,False,False,False,20,12,2,99999999,0,0,From NM_1_082: No important warnings
+3,089,c:/fda/mbbe/simulated_nor/run\2\070,11930.550332,102021101,11600.550331528702,True,False,False,19,12,2,99999999,0,0,From NM_2_070: No important warnings
+3,054,c:/fda/mbbe/simulated_nor/run\3\054,16066.913991,113121000,15586.913991462114,False,False,False,24,12,2,99999999,0,0,No important warnings
+3,091,c:/fda/mbbe/simulated_nor/run\3\054,99999999.000000,113121000,99999999,False,False,False,0,0,0,99999999,0,0,
+3,032,c:/fda/mbbe/simulated_nor/run\3\032,13531.619399,200101010,13141.619398820403,False,True,False,15,12,2,2.0628992974047197e+17,0,0,No important warnings
+3,030,c:/fda/mbbe/simulated_nor/run\3\030,14420.648127,003121100,13990.648127056715,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,053,c:/fda/mbbe/simulated_nor/run\3\053,20093.084209,213101111,19643.08420937498,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,081,c:/fda/mbbe/simulated_nor/run\3\081,20094.634618,113000110,19634.634618417964,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,078,c:/fda/mbbe/simulated_nor/run\3\078,19044.625661,101001011,18614.625661178507,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,097,c:/fda/mbbe/simulated_nor/run\1\022,14384.955213,013121110,13924.955213247815,False,False,False,22,12,2,99999999,0,0,From NM_1_022: No important warnings
+3,076,c:/fda/mbbe/simulated_nor/run\3\076,18530.677433,202111101,18090.677432969533,False,False,False,20,12,2,99999999,0,0,No important warnings
+3,072,c:/fda/mbbe/simulated_nor/run\3\072,15855.109002,200021011,15465.109001834846,False,False,False,15,12,2,99999999,0,0,No important warnings
+3,090,c:/fda/mbbe/simulated_nor/run\3\090,26424.996573,103021100,25964.99657273511,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,070,c:/fda/mbbe/simulated_nor/run\3\070,13500.199949,102120101,13070.19994923142,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,041,c:/fda/mbbe/simulated_nor/run\3\041,19627.744130,203101010,19197.74413044394,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,100,c:/fda/mbbe/simulated_nor/run\3\100,15516.896645,000020001,15166.896645038181,False,True,False,11,12,2,29096.26490031164,0,0,No important warnings
+3,093,c:/fda/mbbe/simulated_nor/run\3\093,25826.383842,103111101,25346.38384158296,False,False,False,24,12,2,99999999,0,0,No important warnings
+3,094,c:/fda/mbbe/simulated_nor/run\3\094,19776.978303,103120101,19326.978303394117,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,080,c:/fda/mbbe/simulated_nor/run\3\080,13677.536352,112011011,13307.53635152707,True,False,False,23,12,2,99999999,0,0,No important warnings
+3,086,c:/fda/mbbe/simulated_nor/run\3\086,17725.121038,101120100,17265.121038034962,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,075,c:/fda/mbbe/simulated_nor/run\3\075,13613.189997,102111101,13153.189997232454,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,062,c:/fda/mbbe/simulated_nor/run\3\062,13898.490283,011011110,13428.490282518354,False,False,False,23,12,2,99999999,0,0,No important warnings
+3,085,c:/fda/mbbe/simulated_nor/run\3\085,12944.029763,202011110,12494.029763226345,False,False,False,21,12,2,99999999,0,0,No important warnings
+3,098,c:/fda/mbbe/simulated_nor/run\3\098,21762.011827,213020001,21332.01182662521,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,079,c:/fda/mbbe/simulated_nor/run\3\079,14474.247207,201120110,14124.24720703316,True,False,False,21,12,2,99999999,0,0,No important warnings
+3,059,c:/fda/mbbe/simulated_nor/run\3\059,16597.797748,011020011,16277.797748140363,True,True,False,18,12,2,1.6075696276119127e+18,0,0,No important warnings
+3,057,c:/fda/mbbe/simulated_nor/run\3\057,13153.483525,212001101,12743.483525207967,False,False,False,17,12,2,99999999,0,0,No important warnings
+3,009,c:/fda/mbbe/simulated_nor/run\3\009,16109.503205,210120110,15679.503205493182,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,095,c:/fda/mbbe/simulated_nor/run\3\095,15353.136907,112121101,14893.136906836944,False,False,False,22,12,2,99999999,0,0,No important warnings
+3,083,c:/fda/mbbe/simulated_nor/run\3\083,14062.274547,010021000,13772.274547198675,True,True,False,15,12,2,1.3676393176057814e+17,0,0,No important warnings
+3,020,c:/fda/mbbe/simulated_nor/run\3\020,19617.744130,203001010,19197.74413044394,False,False,False,18,12,2,99999999,0,0,No important warnings
+3,039,c:/fda/mbbe/simulated_nor/run\3\039,13737.284926,212121101,13297.284926046706,False,True,False,20,12,2,4.208330396725193e+17,0,0,No important warnings
+3,071,c:/fda/mbbe/simulated_nor/run\3\071,16010.955776,201100101,15600.955776158084,False,False,False,17,12,2,99999999,0,0,No important warnings
+3,016,c:/fda/mbbe/simulated_nor/run\3\016,14295.962648,210010111,13865.962647594568,False,True,False,19,12,2,5.52192964713046e+17,0,0,No important warnings
+3,099,c:/fda/mbbe/simulated_nor/run\3\099,11530.816188,012120110,11100.816187780203,False,False,False,19,12,2,99999999,0,0,No important warnings
+3,092,c:/fda/mbbe/simulated_nor/run\3\092,11518.626777,212000101,11118.626776771702,False,False,False,16,12,2,99999999,0,0,No important warnings
