@@ -24,7 +24,7 @@ Five models are provided with the MBBE package. These models were selected using
 
 ?????
 
-Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. In general, the analysis data set, for bootstrap, will not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting inflatables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. The typical scenario is to use a different study design that the study(ies) that generated the observed data, assuming that if the observed data were from an adequate BE study, those data would be used to assess BE.
+Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. In general, the analysis data set, for bootstrap, will not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting inflatables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. The typical scenario is to use a different study design that the study(ies) that generated the observed data. Had the observed data were from an adequate BE study, those data would be used to assess BE and MBBE would not be needed.
 
 "simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
 

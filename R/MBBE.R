@@ -190,7 +190,7 @@ check_requirements <- function(run_dir,
         sep = "\n"
       )
   } else {
-    for (this_model in length(model_list)) {
+    for (this_model in 1:length(model_list)) {
       if (!file.exists(model_list[this_model])) {
         msg <-
           paste(msg,
@@ -616,7 +616,7 @@ get_parameters <- function(run_dir, nmodels,
   nfailed_ident <- 0 # number of samples in this model that fail the identifiability test
   # do by sample first only save parameters for the best model
   selected_parameters <- vector("list", samp_size)
-  identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+ # identifiable_ok <- list(passes = FALSE, max_delta = -999, max_delta_parm = -999)
   all_identifiables <- rep(TRUE, nmodels)
   this_model <- this_samp <-  1
   tryCatch(
@@ -631,7 +631,7 @@ get_parameters <- function(run_dir, nmodels,
         for (this_model in 1:nmodels) {
           theta <- NA
           xml_file <- file.path(run_dir, paste0("model", this_model), this_samp, paste0("bsSamp", this_model, "_", this_samp, ".xml"))
-          identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+          identifiable_ok <- list(passes = FALSE, max_delta = -999, max_delta_parm = -999)
           rval <- tryCatch(
             {
               count <- 0
@@ -650,7 +650,7 @@ get_parameters <- function(run_dir, nmodels,
               if (count >= 10) {
                 message("Failed to read xml file for sample ", this_samp, ", model = ", this_model, ", xml file = ", xml_file)
                 BICS[this_samp, this_model] <- crash_value
-                identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+                identifiable_ok <- list(passes = FALSE, max_delta = -999, max_delta_parm = -999)
                 parameters_this_sample[[this_model]] <- NA
                 tryCatch(
                   {
@@ -706,12 +706,12 @@ get_parameters <- function(run_dir, nmodels,
 
                 # if using saddle_reset, test for identifiability
                 if (!use_check_identifiable) {
-                  identifiable_ok["passes"] <- TRUE
+                  identifiable_ok$passes <- TRUE
                   passes_identifiable[this_model] <- passes_identifiable[this_model] + 1
                 } else {
                   # run_dir,this_model,this_sample,delta_parms
                   identifiable_ok <- check_identifiable(run_dir, this_model, this_samp, delta_parms, ntheta)
-                  all_identifiables[this_model] <- identifiable_ok["passes"]
+                  all_identifiables[this_model] <- identifiable_ok$passes
                   if (!identifiable_ok$passes) {
                     # first just get the number of parameters and observations for this model
                     BICS[this_samp, this_model] <- crash_value
@@ -722,9 +722,9 @@ get_parameters <- function(run_dir, nmodels,
               }
             },
             error = function(e) {
-              message("error in get_parameters, read data, inner loop, error  = ", cond, ", sample ", this_samp, ", model = ", this_model)
-              identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
-              all_identifiables[this_model] <- identifiable_ok["passes"]
+              message("error in get_parameters, read data, inner loop, error  = ", e, ", sample ", this_samp, ", model = ", this_model)
+              identifiable_ok <- list(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+              all_identifiables[this_model] <- identifiable_ok$passes
               BICS[this_samp, this_model] <- crash_value
               parameters_this_sample[[this_model]] <- NA
             }
@@ -738,12 +738,12 @@ get_parameters <- function(run_dir, nmodels,
               cat(
                 paste0(
                   "BIC = ", round(BICS[this_samp, this_model], 3),
-                  ", identifiable = ", identifiable_ok["passes"],
-                  ", max_delta = ", round(identifiable_ok["max_delta"], 5)
+                  ", identifiable = ", identifiable_ok$passes,
+                  ", max_delta = ", round(identifiable_ok$max_delta, 5)
                 ),
                 file = lstFile, append = TRUE
               )
-              cat(paste0(", max_delta_parm = ", identifiable_ok["max_delta_parm"]),
+              cat(paste0(", max_delta_parm = ", identifiable_ok$max_delta_parm),
                 file = lstFile, append = TRUE
               )
             },
@@ -777,8 +777,8 @@ get_parameters <- function(run_dir, nmodels,
           if(nparms$ntheta[best]!= length(selected_parameters[[this_samp]])){
             stop("Length of parameters for sample ", this_samp, " doesn't equal the number in the xml file for model ", best, ", exiting")
           }
-          BICS$Max_Delta[this_samp] <- identifiable_ok["max_delta"]
-          BICS$Max_Delta_parm[this_samp] <- identifiable_ok["max_delta_parm"]
+          BICS$Max_Delta[this_samp] <- identifiable_ok$max_delta
+          BICS$Max_Delta_parm[this_samp] <- identifiable_ok$max_delta_parm
         }
       }
       },
@@ -1059,44 +1059,46 @@ check_identifiable <- function(run_dir,
         suppressWarnings(output <- readLines(con, encoding = "UTF-8"))
         close(con)
         reset.line <- grep("^0SADDLE POINT RESET", output)
+        if(length(reset.line) == 0){
+            rval <- list(passes = FALSE, max_delta = -999, max_delta_parm = -999)
+          }else{
+            # get previous '0ITERATION NO.: '
+            first_output <- output[1:reset.line]
+            first_output <- first_output[grep("^0ITERATION NO.:", first_output)]
+            first_output <- first_output[length(first_output)]
+            reset_iteration <- as.integer(substr(first_output, 16, 24))
+            last_output <- output[reset.line:length(output)]
+            last_output <- last_output[grep("^0ITERATION NO.:", last_output)]
+            last_output <- last_output[1]
+            last.iteration <- as.integer(substr(last_output, 16, 24))
+            # read parameters from .ext
+            ext <- read.table(extfile, header = TRUE, skip = 1)
+            Pre.parms <- ext %>%
+              dplyr::filter(ITERATION == reset_iteration)
+            Post.parms <- ext %>%
+              dplyr::filter(ITERATION == last.iteration)
+            # nparms <- length(Pre.parms)  # includes the first column - 'ITERATION'
+            Passes_identifiability <- TRUE
 
-        # get previous '0ITERATION NO.: '
-        first_output <- output[1:reset.line]
-        first_output <- first_output[grep("^0ITERATION NO.:", first_output)]
-        first_output <- first_output[length(first_output)]
-        reset_iteration <- as.integer(substr(first_output, 16, 24))
-        last_output <- output[reset.line:length(output)]
-        last_output <- last_output[grep("^0ITERATION NO.:", last_output)]
-        last_output <- last_output[1]
-        last.iteration <- as.integer(substr(last_output, 16, 24))
-        # read parameters from .ext
-        ext <- read.table(extfile, header = TRUE, skip = 1)
-        Pre.parms <- ext %>%
-          dplyr::filter(ITERATION == reset_iteration)
-        Post.parms <- ext %>%
-          dplyr::filter(ITERATION == last.iteration)
-        # nparms <- length(Pre.parms)  # includes the first column - 'ITERATION'
-        Passes_identifiability <- TRUE
-
-        for (this_parm in 2:nparms) {
-          if (Post.parms[this_parm] != 0) {
-            difference <- abs((Pre.parms[this_parm] - Post.parms[this_parm]) / Post.parms[this_parm])
-            if (difference > delta_parms) {
-              Passes_identifiability <- FALSE
+            for (this_parm in 2:nparms) {
+              if (Post.parms[this_parm] != 0) {
+                difference <- abs((Pre.parms[this_parm] - Post.parms[this_parm]) / Post.parms[this_parm])
+                if (difference > delta_parms) {
+                  Passes_identifiability <- FALSE
+                }
+                if (difference > max_deltap) {
+                  max_deltap <- difference
+                  max_delta_parmp <- this_parm - 1
+                }
+              }
             }
-            if (difference > max_deltap) {
-              max_deltap <- difference
-              max_delta_parmp <- this_parm - 1
-            }
+            rval <- list(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
           }
-        }
-        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
-        names(rval) <- c("passes", "max_delta", "max_delta_parm")
         return(rval)
       },
       error = function(cond) {
-        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
-        names(rval) <- c("passes", "max_delta", "max_delta_parm")
+        rval <- list(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
+
         return(rval)
       }
     )
@@ -1777,7 +1779,7 @@ run_mbbe <- function(crash_value, ngroups,
     nmodels <- copy_model_files(model_source, run_dir)
 
     if (nmodels > 0) {
-      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, ", writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
+      message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, ",run writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
       message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
       if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE)) {

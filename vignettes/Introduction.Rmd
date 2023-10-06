@@ -206,6 +206,26 @@ bio-equivalence for each NCA endpoint.
     identifiability.
     <https://www.page-meeting.org/pdf_assets/1345-PAGE_2017_SADDLE_RESET_Final.pdf>
 
+### Control File/data set requirements
+
+The NONMEM data file and control file for the candidate model must
+include information required for BE evaluation. Specifically, the
+following data items are required in both the analysis data set and the
+simulation data set:
+
+-   Period
+
+-   Formulation
+
+-   Sequence
+
+Note that the the analysis data set need not have multiple periods or
+multiple sequences, in which case all the values for period and sequence
+may be 1. However, as the analysis control file is the basis for the
+simulation control file (the \$DATA, \$SIM and \$TABLE records are
+modfied/added) the \$INPUT record is the same and so must contain the
+data items required for BE analysis.
+
 ------------------------------------------------------------------------
 
 ### Input json File
