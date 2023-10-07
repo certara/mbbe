@@ -18,11 +18,15 @@ knitr::opts_chunk$set(
 
 ```
 
-### First you need model(s)
+## First you need model(s)
 
 Five models are provided with the MBBE package. These models were selected using [pyDarwin](https://certara.github.io/pyDarwin/html/index.html). The data source for these model is
 
 ?????
+
+These model need not have a \$COV record, unless that is needed for any user defined R code. There are few restriction on the structure of the model. The restriction are in the \$INPUT record. It is recommended that the full path to the data set be provided in the \$DATA record.
+
+## Next you need two data sets (although they can be the same one)
 
 Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. In general, the analysis data set, for bootstrap, will not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting inflatables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. The typical scenario is to use a different study design that the study(ies) that generated the observed data, assuming that if the observed data were from an adequate BE study, those data would be used to assess BE.
 
@@ -35,3 +39,47 @@ Several notes on the data:
 2.  Data item for period/OCC is provided (1-4). In general, between occasion variability (e.g., by study period) should be assessed and included in the model(s).
 
 3.  Data item for sequence (SEQ) is provided (1-2). Presumable period/OCC and sequence were tested in the model selection and not found to be supported. However, they are required for the Monte Carlo simulation and statistical testing.
+
+### 
+
+First is the data set for the bootstrap analysis. Second is the data set for the Monte Carlo Simulation. Note that these can be the same. The analysis data set is specified on the \$DATA record in the NONMEM control files for the bootstrap. The 2nd is specified as the
+
+simulation_data_path
+
+options. Note again, they can be the same file.
+
+## User supplied penalty R code
+
+The model averaging is, by default, based on the Bayesian Information criteria (BIC), with the option to preclude any results that fail the identifiability test. Another, more general option is to include a user defined R function, to return a penalty that is added to the BIC. The path to the file containing this function can be specified in the R_code_path option in the json file, and the user_R\_code option set to "true". The function must be called MBBE_RPenaltyCode, and take the arguments:
+
+-   run_dir - the parent run directory, as specified in the json file
+
+-   this_model - the model number
+
+-   this_samp - ths bootstrap sample number.
+
+These arguments can then be used to access any output from the NONMEM bootstrap model, such the .lst file, the .xml file. The file structure will be
+
+run_dir/modelM/N
+
+Where run_dir is the run directory (run_dir) specified in the json file, M is the model number and N is the bootstrap sample number. The output (.lst) and xml (.xml) files will be called:
+
+bsSampM_N.lst
+
+and bsSampM_N.xml
+
+respectively.
+
+Where M is the model number and N is the bootstrap sample number. Any \$TABLE file (including \$SIM) output) can be accesses as well, using the file structure information described above.
+
+The function should return, in all case, a numeric penalty. An example R to return a penalty for bias in simulated Cmax is given in RPenaltyCode.R. This function requires that a 2nd problem (for simulation) be included in the control files.
+
+## Output
+
+#### Console output
+
+##### 
+
+#### Files
+
+ll

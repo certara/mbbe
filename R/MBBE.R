@@ -128,7 +128,7 @@ check_requirements <- function(run_dir,
    if(!file.exists(R_code_path)){
     msg <-
      paste(msg,
-           paste0("Cannot find ", user_R_code),
+           paste0("Cannot find ", R_code_path),
            sep = "\n")
    }
  }
@@ -1728,7 +1728,12 @@ run_mbbe <- function(crash_value, ngroups,
   on.exit(options(oldOptions))
   options(future.globals.onReference = "error")
   on.exit(future::plan(old_plan))
-  message(format(Sys.time(), digits = 0), " Start time\nModel file(s) = \n", writeLines(model_source), "\nreference groups = ", toString(reference_groups), "\ntest groups = ", toString(test_groups))
+  message(format(Sys.time(), digits = 0), " Start time\nModel file(s) =")
+  for(this_model in model_source){message(this_model)}
+  message("reference groups = ", toString(reference_groups),
+            "\ntest groups = ", toString(test_groups))
+  message(paste("Run Directory =", run_dir))
+  message(paste("Number of groups =", ngroups))
   if (!model_averaging_by %in% c("study", "subject")) {
     stop("Error, model_averaging is ",model_averaging_by, " model_averaging_by must be one of study or subject, exiting")
   } else {
@@ -1737,16 +1742,24 @@ run_mbbe <- function(crash_value, ngroups,
   message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
   message("Narrow Therapeutic Index  = ", NTID)
   message("Alpha error rate for bioqulvalence testing = ", alpha_error)
-  message("Number parallel runs for bootstrap, simulations and NCA ", num_parallel)
+  message("Number parallel runs for bootstrap, simulations and NCA =", num_parallel)
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
   message("Simulation data set = ", simulation_data_path)
-
+  if(file.exists(simulation_data_path)){
+    message("Simulation data path = ", simulation_data_path)
+  }else{
+    stop("Cannot find",simulation_data_path )
+  }
   message("user_R_code = ", user_R_code)
   if(user_R_code){
-    message("R_code_path = ", R_code_path)
-  }
+    if(file.exists(R_code_path)){
+     message("R_code_path = ", R_code_path)
+    }
+    }else{
+      stop("Cannot find",R_code_path )
+       }
 
   path_parents <- split_path(run_dir)
   cur_path <- path_parents[1]
@@ -1758,6 +1771,20 @@ run_mbbe <- function(crash_value, ngroups,
   }
 
   set.seed(rndseed)
+#
+#
+#   run_dir,
+#   samp_size,
+#   model_list,
+#   ngroups,
+#   reference_groups,
+#   test_groups,
+#   nmfe_path,
+#   use_check_identifiable,
+#   simulation_data_path,
+#   user_R_code,
+#   R_code_path = NULL) {
+
 
   msg <- check_requirements(
     run_dir, samp_size, model_source, ngroups,
