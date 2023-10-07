@@ -391,6 +391,8 @@ copy_model_files <- function(model_source, run_dir) {
 #'
 #' create bootstrap samples of NONMEM data set, placed in run_dir, file names = data_sampN.csv
 #'
+#' @importFrom magrittr %>%
+#' @name %>%
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many bootstrap samples

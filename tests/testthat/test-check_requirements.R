@@ -11,14 +11,14 @@ test_that("check_requirements works", {
   # copy nmfe74.bat to run_dir
 
   # will get model files from copy files
-  source_nmfe <- file.path(system.file(package = "mbbe", "test_files", "check_requirements","nmfetest.bat"))
+  source_nmfe <- file.path(system.file(package = "mbbe"), "tests","test_files", "check_requirements","nmfetest.bat")
 
-  source_models <- system.file(package = "mbbe", "test_files", "copy_files")
+  source_models <- file.path(system.file(package = "mbbe"),"tests", "test_files", "copy_files")
   #$DATA  U:\\fda\\mbbe\\inst\\examples\\data_seq.csv does not exist so we must
   # update path in control file and write .mod files with new data path
   model1 <- suppressWarnings(readLines(file.path(source_models,"model1.mod")))
   model2 <- suppressWarnings(readLines(file.path(source_models,"model2.mod")))
-  data_file <- system.file(package = "mbbe", "examples", "data_seq.csv")
+  data_file <- file.path(system.file(package = "mbbe"),"tests", "test_files","data_seq.csv")
   file.copy(from = data_file, to = models_dir, overwrite = TRUE)
   data_file <- gsub("\\\\", "/", file.path(models_dir, "data_seq.csv"))
   model1[5] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
@@ -34,7 +34,8 @@ test_that("check_requirements works", {
 
   model_list <-  c(model1_temp_path, model2_temp_path)
   dir.create(file.path(run_dir,"MBBEsim1"))
-  source_sim_data <- file.path(system.file(package = "mbbe", "test_files", "get_parms","data_sim.csv"))
+  source_sim_data <- file.path(system.file(package = "mbbe"), "tests","test_files","data_seq.csv")
+
 
 
   with_mock(

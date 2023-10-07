@@ -1,16 +1,16 @@
 test_that("calc_NCA works", {
-  run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)),"nca")
+  run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)))
   if (!dir.exists(run_dir)) {
     dir.create(run_dir)
   }
   # copy everything to run_dir
    # need out.dat files for all
-  souce_dir <- system.file(package = "mbbe", "test_files", "calc_nca")
+  souce_dir <- file.path(system.file(package = "mbbe"),"tests" ,"test_files", "calc_nca")
   dir.create(file.path(run_dir,"MBBEsim1"))
   dir.create(file.path(run_dir,"MBBEsim2"))
-  file.copy(file.path(system.file(package = "mbbe", "test_files", "calc_nca", "MBBEsim1"),"out.dat"),
+  file.copy(file.path(system.file(package = "mbbe"),"tests", "test_files", "calc_nca", "MBBEsim1","out.dat"),
             file.path(run_dir,"MBBEsim1"))
-  file.copy(file.path(system.file(package = "mbbe", "test_files", "calc_nca", "MBBEsim2"),"out.dat"),
+  file.copy(file.path(system.file(package = "mbbe"),"tests", "test_files", "calc_nca", "MBBEsim2","out.dat"),
             file.path(run_dir,"MBBEsim2"))
   nca_ref1 <- read.csv(file.path(souce_dir,"MBBEsim1","NCAresults1.csv"))
   nca_ref2 <- read.csv(file.path(souce_dir,"MBBEsim2","NCAresults2.csv"))
