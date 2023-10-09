@@ -21,10 +21,10 @@ run_mbbe(
   simulation_data_path,
   plan = c("multisession", "sequential", "multicore"),
   alpha_error = 0.05,
-  NTID,
-  model_averaging_by,
-  user_R_code,
-  R_code_path
+  NTID = FALSE,
+  model_averaging_by = "study",
+  user_R_code = FALSE,
+  R_code_path = ""
 )
 }
 \arguments{

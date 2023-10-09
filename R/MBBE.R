@@ -117,7 +117,14 @@ check_requirements <- function(run_dir,
     }
 
   msg <- remove_old_files(run_dir, samp_size)
-
+ # purr >=1.01
+  purrversion <-  as.numeric(substring(packageVersion("purrr"),1,1))
+  if (purrversion == 0){
+    msg <-
+      paste(msg,
+            "purrr version must be >= 1.01, current version is ", purrversion,
+            sep = "\n")
+  }
  if(!is.logical(user_R_code)){
    msg <-
      paste(msg,
@@ -128,7 +135,7 @@ check_requirements <- function(run_dir,
    if(!file.exists(R_code_path)){
     msg <-
      paste(msg,
-           paste0("Cannot find ", R_code_path),
+           paste("Error, cannot find ", R_code_path),
            sep = "\n")
    }
  }
@@ -233,7 +240,7 @@ check_requirements <- function(run_dir,
         if (!file.exists(data_file)) {
           msg <-
             paste(msg,
-              paste("Cannot find data file", data_file),
+              paste("Cannot find data file", data_file,"from $DATA record in model", this_model),
               sep = "\n"
             )
           next
@@ -742,16 +749,16 @@ get_parameters <- function(run_dir, nmodels,
                 paste0(
                   "BIC = ", round(BICS[this_samp, this_model], 3),
                   ", identifiable = ", identifiable_ok["passes"],
-                  ", max_delta = ", round(identifiable_ok$max_delta, 5)
+                  ", max_delta = ", round(identifiable_ok['max_delta'], 5)
                 ),
                 file = lstFile, append = TRUE
               )
-              cat(paste0(", max_delta_parm = ", identifiable_ok$max_delta_parm),
+              cat(paste0(", max_delta_parm = ", identifiable_ok['max_delta_parm']),
                 file = lstFile, append = TRUE
               )
             },
             error = function(err) {
-              message("Failed to append parameters to ", lstFile, " after failing in get_parameters")
+              warning("Failed to append parameters to ", lstFile, " after failing in get_parameters, this is only a warning")
             }
           )
           if(user_R_code){
@@ -1131,11 +1138,11 @@ check_identifiable <- function(run_dir,
 #' @param NCA_end_time numeric, end time for AUClast and AUCinf, calculation starts at TIME=0 (TIME=0 data point is required in simulated study)
 #' @export
 #' @return Logical
-#'
 #' @examples
 #' \dontrun{
 #' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
 #' }
+
 getNCA <- function(run_dir,
                    this_sample,
                    NumGroups,
@@ -1156,6 +1163,7 @@ getNCA <- function(run_dir,
           Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric()
         )
         data <- read.table(NMoutFile, skip = 1, header = TRUE)
+        # remove negative concentrations
         data <- data %>%
           dplyr::filter(EVID == 0) %>%
           dplyr::filter(DV > 0)
@@ -1192,9 +1200,16 @@ getNCA <- function(run_dir,
               cmax = TRUE
             )
           )
+          tryCatch({
           suppressMessages(
             results_obj <- PKNCA::pk.nca(data_obj, verbose = FALSE)$result
           )
+            },  error = function(cond) {
+            message("Error in NCA calculation, ", this_sample, "\n")
+            message(cond)
+            return(FALSE)
+          }
+            )
           AUCinf <- results_obj %>%
             dplyr::filter(PPTESTCD == "aucinf.obs") %>%
             dplyr::select(ID, PPORRES)
@@ -1222,10 +1237,7 @@ getNCA <- function(run_dir,
             All_NCA_results,
             group_NCA_results
           )
-        }
-        # wait for file to be written??, this doesn't seem to help
-
-
+          }
         count <- 0
         while (file.exists(output_file) & count < 50) {
           file.remove(output_file)
@@ -1247,7 +1259,8 @@ getNCA <- function(run_dir,
           return(FALSE)
         }
         return(TRUE)
-      } else {
+      }else{
+        message("Cannot find file ",NMoutFile )
         return(FALSE)
       }
     },
@@ -1255,9 +1268,11 @@ getNCA <- function(run_dir,
       message("Error in NCA calculation, ", this_sample, "\n")
       message(cond)
       return(FALSE)
-    }
-  )
+    })
 }
+
+
+
 
 #' Calculate power
 #'
@@ -1339,7 +1354,6 @@ calc_power <- function(run_dir,
   )
   nsubs <- NA
 
-
   for (this_samp in 1:samp_size) {
     this_ncafile <- file.path(run_dir, paste0("MBBEsim", this_samp), paste0("NCAresults", this_samp, ".csv"))
     # wait for files to close?? otherwise get Error in file(file, "rt") : cannot open the connection
@@ -1408,7 +1422,10 @@ calc_power <- function(run_dir,
       )
       tryCatch(
         {
-          Cmax_result <- get_BEQDF(all_nca_data %>% dplyr::filter(!is.na(Cmax)) %>% dplyr::filter(sample == this_study),
+          Cmax_result <- get_BEQDF(all_nca_data %>%
+                                     dplyr::filter(!is.na(Cmax)) %>%
+                                     dplyr::filter(sample == this_study) %>%
+                                     dplyr::filter(sample == this_study),
             MetricColumn = "Cmax",
             SubjectColumn = "ID", TreatmentColumn = "treatment", SequenceColumn = "sequence",
             PeriodColumn = "period", RefValue = "Reference", alpha = alpha, PartialReplicate = FALSE, NTID
@@ -1708,12 +1725,12 @@ run_mbbe <- function(crash_value, ngroups,
                      NCA_end_time, rndseed,
                      simulation_data_path,
                      plan = c("multisession", "sequential", "multicore"),
-                     alpha_error = 0.05, NTID,
-                     model_averaging_by,
-                     user_R_code, R_code_path) {
+                     alpha_error = 0.05, NTID = FALSE,
+                     model_averaging_by = "study",
+                     user_R_code = FALSE, R_code_path="") {
   tictoc::tic()
   if (unlink(run_dir, recursive = TRUE, force = TRUE)) {
-    stop("Unable to delete run directory ", run_dir)
+    stop("Unable to delete run directory ", run_dir," is a file or a command line open in that directory?")
   }
 
   # setup all models
@@ -1752,15 +1769,17 @@ run_mbbe <- function(crash_value, ngroups,
   if(file.exists(simulation_data_path)){
     message("Simulation data path = ", simulation_data_path)
   }else{
-    stop("Cannot find",simulation_data_path )
+    stop("Cannot find", simulation_data_path )
   }
-  message("user_R_code = ", user_R_code)
   if(user_R_code){
+    message("post run R code for model averaging selection = ", user_R_code)
     if(file.exists(R_code_path)){
      message("R_code_path = ", R_code_path)
+    } else{
+      stop("Cannot find ", R_code_path )
     }
     }else{
-      stop("Cannot find",R_code_path )
+      message("Not using post run R code for model averaging selection")
        }
 
   path_parents <- split_path(run_dir)
