@@ -5,34 +5,37 @@ test_that("sample_data works", {
   }
   #when package is installed files in inst go to r library/package
 
- # model1_dir <- file.path(system.file(package = "mbbe"), "tests","test_files", "model_files", "model1")
-#  model2_dir <- file.path(system.file(package = "mbbe"), "tests","test_files", "model_files", "model2")
-  model1_dir <- file.path("u:","fda","mbbe", "tests","test_files", "model_files", "model1")
-  model2_dir <- file.path("u:","fda","mbbe", "tests","test_files", "model_files", "model2")
+  model1_dir <- test_path("../test_files", "model_files", "model1")
+  model2_dir <- test_path("../test_files", "model_files", "model2")
 
   file.copy(from = model1_dir, to = run_dir, recursive = TRUE)
   file.copy(from = model2_dir, to = run_dir, recursive = TRUE)
 
   #Replace datafile path in model files
 
-  #data_file <- file.path(system.file(package = "mbbe"),"tests", "test_files","data_seq.csv")
-  data_file <- file.path("u:","fda","mbbe","tests", "test_files","data_seq.csv")
+  data_file <- test_path("../test_files", "data_seq.csv")
 
   file.copy(from = data_file, to = run_dir, overwrite = TRUE)
-  #data_file <- gsub("\\\\", "/", file.path(run_dir, "data_seq.csv"))
-  data_file <- gsub("\\\\", "/",  file.path("u:","fda","mbbe","tests","test_files", "data_seq.csv"))
+  data_file <- gsub("\\\\", "/", file.path(run_dir, "data_seq.csv"))
+  test_path("../test_files", "model_files", "model1")
+  #data_file <- gsub("\\\\", "/",  file.path("u:","fda","mbbe","tests","test_files", "data_seq.csv"))
+  new_data_file <-   gsub("\\\\", "/", file.path(run_dir, "data_seq.csv"))
+  #file.path(run_dir, "data_seq.csv")
+  # need "\\\\: instead of "\\:
+  #new_data_file = sub("\\","\\\\",new_data_file)
   model1_file <- file.path(run_dir, "model1", "bs1.mod")
   model1_lines <- suppressWarnings(readLines(model1_file))
   model2_file <- file.path(run_dir, "model2", "bs2.mod")
   model2_lines <-  suppressWarnings(readLines(model2_file))
-  #model1_lines[4] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
-  #             paste0("$DATA ", data_file, " IGNORE=@"),
-  #             model1_lines[4])
-  #model2_lines[5] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
-  #                       paste0("$DATA ", data_file, " IGNORE=@"),
-  #                       model2_lines[5])
+  model1_lines[4] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
+               paste0("$DATA ", new_data_file, " IGNORE=@"),
+               model1_lines[4])
+  model2_lines[5] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
+                         paste0("$DATA ", new_data_file, " IGNORE=@"),
+                         model2_lines[5])
   writeLines(model1_lines, model1_file)
   writeLines(model2_lines, model2_file)
+  set.seed(1)
   mbbe:::sample_data(run_dir, nmodels = 2, samp_size = 4)
 
   #read in reference files
@@ -40,7 +43,8 @@ test_that("sample_data works", {
   for (i in 1:4) {
     data_samp[[paste0("data_samp",i)]] <-
       read.csv(
-        file.path("u:","fda","mbbe","tests",
+       # file.path("u:","fda","mbbe","tests",
+        file.path(test_path(".."),
           "test_files",
           "reference_data",
           "sample_data",

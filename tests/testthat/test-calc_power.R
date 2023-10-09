@@ -6,22 +6,17 @@ test_that("calc_power works", {
   }
   # copy everything to run_dir
 
-  #souce_dir <- file.path(system.file(package = "mbbe"),"tests", "test_files", "calc_power")
 
-  souce_dir <- file.path("u:","fda","mbbe","tests" ,"test_files", "calc_power")
+  source_dir <- test_path("../test_files", "calc_power")
   dir.create(file.path(run_dir,"MBBEsim1"))
   dir.create(file.path(run_dir,"MBBEsim2"))
 
-  file.copy(file.path(souce_dir, "MBBEsim1","NCAresults1.csv"),
+  file.copy(file.path(source_dir, "MBBEsim1","NCAresults1.csv"),
             file.path(run_dir,"MBBEsim1"))
-  file.copy(file.path(souce_dir, "MBBEsim2","NCAresults2.csv"),
+  file.copy(file.path(source_dir, "MBBEsim2","NCAresults2.csv"),
             file.path(run_dir,"MBBEsim2"))
-  #file.copy(file.path(system.file(package = "mbbe"),"tests", "test_files", "calc_power", "MBBEsim1","NCAresults1.csv"),
-  #          file.path(run_dir,"MBBEsim1"))
-  #file.copy(file.path(system.file(package = "mbbe"),"tests", "test_files", "calc_power", "MBBEsim2","NCAresults2.csv"),
-  #          file.path(run_dir,"MBBEsim2"))
 
-  referencepower <- read.csv(file.path(souce_dir, "All_results.csv"))[1:2,-1] # only 2 samples, remove first column
+  referencepower <- read.csv(file.path(source_dir, "All_results.csv"))[1:2,-1] # only 2 samples, remove first column
 
   testpower <-  calc_power(run_dir, 2, alpha = 0.05,  model_averaging_by = "study", NTID = FALSE)
 

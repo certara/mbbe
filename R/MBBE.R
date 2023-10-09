@@ -747,9 +747,9 @@ get_parameters <- function(run_dir, nmodels,
               )
               cat(
                 paste0(
-                  "BIC = ", round(BICS[this_samp, this_model], 3),
-                  ", identifiable = ", identifiable_ok["passes"],
-                  ", max_delta = ", round(identifiable_ok['max_delta'], 5)
+                  "BIC = ", round(BICS[this_samp, this_model], 3),", ",
+                  ", identifiable = ", identifiable_ok["passes"],", ",
+                  ", max_delta = ",identifiable_ok['max_delta'],", "
                 ),
                 file = lstFile, append = TRUE
               )

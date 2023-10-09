@@ -5,10 +5,9 @@ test_that("copy_model_files works", {
     dir.create(run_dir)
   }
   #when package is installed files in inst go to r library/package
-  #model1_file <- file.path(system.file(package = "mbbe"),"tests", "test_files", "copy_files","model1.mod")
-  #model2_file <- file.path(system.file(package = "mbbe"),"tests", "test_files", "copy_files","model2.mod")
-  model1_file <- file.path("u:","fda","mbbe","tests", "test_files", "copy_files","model1.mod")
-  model2_file <- file.path("u:","fda","mbbe","tests", "test_files", "copy_files","model2.mod")
+
+  model1_file <- test_path("../test_files", "copy_files","model1.mod")
+  model2_file <- test_path("../test_files", "copy_files","model2.mod")
   # make list of model files
   model_files <- c(model1_file, model2_file)
   nmodels <- mbbe:::copy_model_files(model_files, run_dir)

@@ -3,18 +3,16 @@ test_that("calc_NCA works", {
   if (!dir.exists(run_dir)) {
     dir.create(run_dir)
   }
-  # copy everything to run_dir
-   # need out.dat files for all
- # souce_dir <- file.path(system.file(package = "mbbe"),"tests" ,"test_files", "calc_nca")
-  souce_dir <- file.path("u:","fda","mbbe","tests" ,"test_files", "calc_nca")
+
+  source_dir <- test_path("..","test_files", "calc_nca")
   dir.create(file.path(run_dir,"MBBEsim1"))
   dir.create(file.path(run_dir,"MBBEsim2"))
-  file.copy(file.path(souce_dir, "MBBEsim1","out.dat"),
+  file.copy(file.path(source_dir, "MBBEsim1","out.dat"),
             file.path(run_dir,"MBBEsim1"))
-  file.copy(file.path(souce_dir, "MBBEsim2","out.dat"),
+  file.copy(file.path(source_dir, "MBBEsim2","out.dat"),
             file.path(run_dir,"MBBEsim2"))
-  nca_ref1 <- read.csv(file.path(souce_dir,"MBBEsim1","NCAresults1.csv"))
-  nca_ref2 <- read.csv(file.path(souce_dir,"MBBEsim2","NCAresults2.csv"))
+  nca_ref1 <- read.csv(file.path(source_dir,"MBBEsim1","NCAresults1.csv"))
+  nca_ref2 <- read.csv(file.path(source_dir,"MBBEsim2","NCAresults2.csv"))
   calc_NCA(run_dir, 4, c(1,2), c(3,4),72, 2)
   nca_test1  <- read.csv(file.path(run_dir,"MBBEsim1","NCAresults1.csv"))
   nca_test2  <- read.csv(file.path(run_dir,"MBBEsim2","NCAresults2.csv"))
