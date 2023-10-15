@@ -13,9 +13,6 @@ test_that("check_requirements works", {
   source_nmfe <- test_path("../test_files",  "check_requirements","nmfetest.bat")
 
   source_models <- test_path("../test_files", "copy_files")
-  #source_models <- file.path("u:","fda","mbbe","tests" ,"test_files", "copy_files")
-  #$DATA  U:\\fda\\mbbe\\inst\\examples\\data_seq.csv does not exist so we must
-  # update path in control file and write .mod files with new data path
   model1 <- suppressWarnings(readLines(file.path(source_models,"model1.mod")))
   model2 <- suppressWarnings(readLines(file.path(source_models,"model2.mod")))
   data_file <- file.path(source_models, "..", "data_seq.csv")

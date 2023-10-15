@@ -197,7 +197,7 @@ check_requirements <- function(run_dir,
         sep = "\n"
       )
   } else {
-    for (this_model in length(model_list)) {
+    for (this_model in 1:length(model_list)) {
       if (!file.exists(model_list[this_model])) {
         msg <-
           paste(msg,
@@ -732,7 +732,7 @@ get_parameters <- function(run_dir, nmodels,
               }
             },
             error = function(e) {
-              message("error in get_parameters, read data, inner loop, error  = ", cond, ", sample ", this_samp, ", model = ", this_model)
+              message("error in get_parameters, read data, inner loop, error  = ", e, ", sample ", this_samp, ", model = ", this_model)
               identifiable_ok <- c(passes = FALSE, max_delta = -999, max_delta_parm = -999)
               all_identifiables[this_model] <- identifiable_ok["passes"]
               BICS[this_samp, this_model] <- crash_value
@@ -854,7 +854,6 @@ get_parameters <- function(run_dir, nmodels,
 #' }
 #' @return list of the original models, prior to editing for BS data sets
 get_base_model <- function(run_dir, nmodels) {
-  # need error trapping for no ;;;;;.*Start EST
   base_models <- vector(mode = "list", length = 0) # all but $THETA, $SIM, $TABLE
 
   for (this_model in 1:nmodels) {
@@ -939,7 +938,7 @@ write_sim_controls <- function(run_dir, parms,
       for (this_parm in parms$parameters[[this_samp]]) {
         full_control <- c(full_control, paste0(this_parm, "  ;; THETA(", this_parm, ")"))
       }
-      full_control <- c(full_control, "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+      full_control <- c(full_control, "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
       full_control <- c(full_control, paste0(";;Sample #", this_samp, "; Selected sample = ",current_runable_samp, "\n"))
       full_control <- c(full_control, paste0(";;Source = model #", which.model, ", numparms = ", ntheta, "\n"))
 
@@ -1123,9 +1122,9 @@ check_identifiable <- function(run_dir,
 #' ID
 #' GROUP
 #' SEQ
-#' OCC
+#' PERIOD
 #' Note that for MBBE, the simulation control file is written by the write_sim function and will include:
-#'  "$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+#'  "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
 #' reads $TABLE output from simulation (file name out.dat)
 #' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 #' if check.identifiability, do that with delta_parms as criteria
@@ -1176,7 +1175,7 @@ getNCA <- function(run_dir,
           period_seq <- group_data %>%
             dplyr::group_by(ID) %>%
             dplyr::distinct(ID, .keep_all = TRUE) %>%
-            dplyr::select(ID, OCC, SEQ) %>%
+            dplyr::select(ID, PERIOD, SEQ) %>%
             dplyr::arrange(ID)
 
           # insert conc=0 at time = 0, but remove if duplicated??
@@ -1227,7 +1226,7 @@ getNCA <- function(run_dir,
           group_NCA_results <- data.frame(
             ID = AUCinf$ID,
             treatment = treatment,
-            period = period_seq$OCC,
+            period = period_seq$PERIOD,
             sequence = period_seq$SEQ,
             Cmax = CMAX$PPORRES,
             AUCinf = AUCinf$PPORRES,
@@ -1833,7 +1832,7 @@ run_mbbe <- function(crash_value, ngroups,
 
         message("\n", format(Sys.time(), digits = 0), " Getting bootstrap model parameters, samples 1-", samp_size)
         if(user_R_code){
-          message("and running user provided R code from ", R_code_path)
+          message("and executing user provided R code from ", R_code_path)
         }
         parms <- get_parameters(
           run_dir, nmodels,

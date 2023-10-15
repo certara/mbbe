@@ -7,7 +7,7 @@
 MBBE_RPenaltyCode <- function(run_dir,
                        this_model,
                        this_samp){
-
+  library(dplyr)
   ngroups <-  4
   NCA_end_time <- 72
   crash_value <- 99999
@@ -27,7 +27,7 @@ MBBE_RPenaltyCode <- function(run_dir,
             Cmax = as.numeric(), AUCinf = as.numeric(), AUClast = as.numeric()
           )
           data <- read.table(NMoutFile, skip = 1, header = TRUE)
-          colnames(data) <- c("ID","TIME","GROUP","TRT","DV","IPRED","EVID","OCC","SEQ")
+          colnames(data) <- c("ID","TIME","GROUP","TRT","DV","IPRED","EVID","PERIOD","SEQ")
           data <- data %>%
             dplyr::filter(EVID == 0) %>%
             dplyr::filter(DV > 0, TIME <= NCA_end_time)
@@ -40,7 +40,7 @@ MBBE_RPenaltyCode <- function(run_dir,
             period_seq <- group_data %>%
               dplyr::group_by(ID) %>%
               dplyr::distinct(ID, .keep_all = TRUE) %>%
-              dplyr::select(ID, OCC, SEQ) %>%
+              dplyr::select(ID, PERIOD, SEQ) %>%
               dplyr::arrange(ID)
 
             # insert conc=0 at time = 0, but remove if duplicated??

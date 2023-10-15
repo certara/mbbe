@@ -38,9 +38,9 @@ The $TABLE file output by the simulation must include:
 ID
 GROUP
 SEQ
-OCC
+PERIOD
 Note that for MBBE, the simulation control file is written by the write_sim function and will include:
-"$TABLE ID TIME GROUP OCC SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
+"$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
 reads $TABLE output from simulation (file name out.dat)
 and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 if check.identifiability, do that with delta_parms as criteria

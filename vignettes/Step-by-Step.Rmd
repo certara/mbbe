@@ -17,20 +17,24 @@ knitr::opts_chunk$set(
 ```{r setup, echo=FALSE}
 
 ```
-
+  
 ## First you need model(s)
 
 Five models are provided with the MBBE package. These models were selected using [pyDarwin](https://certara.github.io/pyDarwin/html/index.html). The data source for these model is
 
-?????
-
-These model need not have a \$COV record, unless that is needed for any user defined R code. There are few restriction on the structure of the model. The restriction are in the \$INPUT record. It is recommended that the full path to the data set be provided in the \$DATA record.
+These model need not have a \$COV record (unless that is needed for any user defined R code). There are few restriction on the structure of the model. The restriction are in the \$INPUT record. It is recommended that the full path to the data set be provided in the \$DATA record.
 
 ## Next you need two data sets (although they can be the same one)
 
-Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. In general, the analysis data set, for bootstrap, will not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting inflatables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. The typical scenario is to use a different study design that the study(ies) that generated the observed data, assuming that if the observed data were from an adequate BE study, those data would be used to assess BE.
+Two formatted data set is provide here (), data_seq.csv and data_sim.csv. Note that there two data sets are identical. In general, the analysis data set, for bootstrap, will not be the same as the simulation data. For example, only sparse data may be available for analysis (e.g., clinical scenarios were few samples can be collected), or a cross over study may not be feasible (e.g., long acting injectables). Still the simulation must be done using a traditional study design, e.g., 4 period, cross over study. The typical scenario is to use a different study design that the study(ies) that generated the observed data, assuming that if the observed data were from an adequate BE study, those data would be used to assess BE.
 
-"simulation_data_path": "U:/mbbe/mbbe/inst/examples/data_sim.csv",
+```{r include=FALSE}
+data_path <- file.path(system.file(package = "mbbe"),"examples","data.csv")
+```
+```{r}
+cat(data_path)
+```
+
 
 Several notes on the data:
 
@@ -42,11 +46,7 @@ Several notes on the data:
 
 ### 
 
-First is the data set for the bootstrap analysis. Second is the data set for the Monte Carlo Simulation. Note that these can be the same. The analysis data set is specified on the \$DATA record in the NONMEM control files for the bootstrap. The 2nd is specified as the
-
-simulation_data_path
-
-options. Note again, they can be the same file.
+First is the data set for the bootstrap analysis. Second is the data set for the Monte Carlo Simulation. Note that these can be the same. The analysis data set is specified on the \$DATA record in the NONMEM control files for the bootstrap. The 2nd is specified as the options. Note again, they can be the same file.
 
 ## User supplied penalty R code
 
