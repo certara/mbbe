@@ -1,12 +1,13 @@
 test_that("sample_data works", {
-  run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)))
-  if (!dir.exists(run_dir)) {
-   dir.create(run_dir)
+   run_dir <-  tempdir()
+  if (dir.exists(run_dir)) {
+    unlink(run_dir,TRUE,TRUE)
   }
+  dir.create(run_dir)
   #when package is installed files in inst go to r library/package
 
-  model1_dir <- test_path("../test_files", "model_files", "model1")
-  model2_dir <- test_path("../test_files", "model_files", "model2")
+  model1_dir <- testthat::test_path("../test_files", "model_files", "model1")
+  model2_dir <- testthat::test_path("../test_files", "model_files", "model2")
 
   file.copy(from = model1_dir, to = run_dir, recursive = TRUE)
   file.copy(from = model2_dir, to = run_dir, recursive = TRUE)
@@ -53,10 +54,10 @@ test_that("sample_data works", {
       )
   }
 
-  expect_equal(data_samp$data_samp1, read.csv(file.path(run_dir, "data_samp1.csv")))
-  expect_equal(data_samp$data_samp2, read.csv(file.path(run_dir, "data_samp2.csv")))
-  expect_equal(data_samp$data_samp3, read.csv(file.path(run_dir, "data_samp3.csv")))
-  expect_equal(data_samp$data_samp4, read.csv(file.path(run_dir, "data_samp4.csv")))
+  testthat::expect_equal(data_samp$data_samp1, read.csv(file.path(run_dir, "data_samp1.csv")))
+  testthat::expect_equal(data_samp$data_samp2, read.csv(file.path(run_dir, "data_samp2.csv")))
+  testthat::expect_equal(data_samp$data_samp3, read.csv(file.path(run_dir, "data_samp3.csv")))
+  testthat::expect_equal(data_samp$data_samp4, read.csv(file.path(run_dir, "data_samp4.csv")))
 
   unlink(run_dir, recursive = TRUE)
 })

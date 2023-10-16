@@ -1,16 +1,17 @@
 test_that("check_requirements works", {
 
-  run_dir <- paste0(tempdir(), do.call(paste0, replicate(4, sample(LETTERS, 1, TRUE), FALSE)),"chk")
-  if (!dir.exists(run_dir)) {
-    dir.create(run_dir)
+  run_dir <-  tempdir()
+  if (dir.exists(run_dir)) {
+    unlink(run_dir,TRUE,TRUE)
   }
+  dir.create(run_dir)
   models_dir <- paste0(tempdir(), do.call(paste0, replicate(4, sample(LETTERS, 1, TRUE), FALSE)),"chk")
   if (!dir.exists(models_dir)) {
     dir.create(models_dir)
   }
   # copy nmfe74.bat to run_dir
 
-  source_nmfe <- test_path("../test_files",  "check_requirements","nmfetest.bat")
+  source_nmfe <- testthat::test_path("../test_files",  "check_requirements","nmfetest.bat")
 
   source_models <- test_path("../test_files", "copy_files")
   model1 <- suppressWarnings(readLines(file.path(source_models,"model1.mod")))
@@ -32,7 +33,7 @@ test_that("check_requirements works", {
   model_list <-  c(model1_temp_path, model2_temp_path)
   dir.create(file.path(run_dir,"MBBEsim1"))
 
-  source_sim_data <- test_path("../test_files","data_seq.csv")
+  source_sim_data <- testthat::test_path("../test_files","data_seq.csv")
 
 
   with_mock(
@@ -49,7 +50,7 @@ test_that("check_requirements works", {
                                               source_sim_data,
                                               FALSE)
   )
-  expect_true(test_ReturnedValue$rval)
+  testthat::expect_true(test_ReturnedValue$rval)
   unlink(run_dir, recursive = TRUE)
   unlink(models_dir,  recursive = TRUE)
 })

@@ -1002,7 +1002,7 @@ calc_NCA <-
            test_groups,
            NCA_end_time,
            samp_size) {
-    # still need to parallelize
+    # still need to parallelize this
     tryCatch(
       {
         for (this_samp in 1:samp_size) {
@@ -1789,7 +1789,8 @@ run_mbbe <- function(crash_value, ngroups,
       dir.create(cur_path)
     }
   }
-
+  message("BICs values will be written to ", file.path(run_dir,"BIC.csv"))
+  message("Total Model averaging penalties will be written to ", file.path(run_dir,"Total_penalties.csv"))
   set.seed(rndseed)
 #
 #
@@ -1910,7 +1911,7 @@ run_mbbe <- function(crash_value, ngroups,
             dplyr::filter(AUCinf_BE != -999) %>%
             dplyr::summarise(Power = mean(AUCinf_BE))
           power <- c(Cmax_power, AUCinf_power, AUClast_power)
-          write.csv(power, file.path(run_dir, "Power.csv"))
+          #write.csv(power, file.path(run_dir, "Power.csv"))
         } else {
           message("Failed in calc_power")
           message(msg$msg, " exiting")

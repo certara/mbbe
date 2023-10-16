@@ -1,10 +1,11 @@
 test_that("calc_NCA works", {
-  run_dir <- paste0(tempdir(), do.call(paste0, replicate(5, sample(LETTERS, 1, TRUE), FALSE)))
-  if (!dir.exists(run_dir)) {
-    dir.create(run_dir)
+  run_dir <- tempdir()
+  if (dir.exists(run_dir)) {
+    unlink(run_dir,TRUE,TRUE)
   }
+  dir.create(run_dir)
 
-  source_dir <- test_path("..","test_files", "calc_nca")
+  source_dir <- testthat::test_path("..","test_files", "calc_nca")
   dir.create(file.path(run_dir,"MBBEsim1"))
   dir.create(file.path(run_dir,"MBBEsim2"))
   file.copy(file.path(source_dir, "MBBEsim1","out.dat"),
@@ -13,11 +14,11 @@ test_that("calc_NCA works", {
             file.path(run_dir,"MBBEsim2"))
   nca_ref1 <- read.csv(file.path(source_dir,"MBBEsim1","NCAresults1.csv"))
   nca_ref2 <- read.csv(file.path(source_dir,"MBBEsim2","NCAresults2.csv"))
-  calc_NCA(run_dir, 4, c(1,2), c(3,4),72, 2)
+  calc_NCA(run_dir, 4, c(1,2), c(3,4), 72, 2)
   nca_test1  <- read.csv(file.path(run_dir,"MBBEsim1","NCAresults1.csv"))
   nca_test2  <- read.csv(file.path(run_dir,"MBBEsim2","NCAresults2.csv"))
-  expect_equal(nca_test1, nca_ref1)
-  expect_equal(nca_test2, nca_ref2)
+  testthat::expect_equal(nca_test1, nca_ref1)
+  testthat::expect_equal(nca_test2, nca_ref2)
 
   unlink(run_dir, recursive = TRUE)
 })

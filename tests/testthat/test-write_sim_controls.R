@@ -1,10 +1,11 @@
 test_that("get_parameters works", {
-  run_dir <- paste0(tempdir(), do.call(paste0, replicate(4, sample(LETTERS, 1, TRUE), FALSE)),"parms")
-  if (!dir.exists(run_dir)) {
-    dir.create(run_dir)
+  run_dir <-  tempdir()
+  if (dir.exists(run_dir)) {
+    unlink(run_dir,TRUE,TRUE)
   }
+  dir.create(run_dir)
   # copy everything to run_dir
-  source_dir <- test_path("..","test_files", "get_parms")
+  source_dir <- testthat::test_path("..","test_files", "get_parms")
   dir.create(file.path(run_dir,"model1"))
   dir.create(file.path(run_dir,"model1","1"))
 
@@ -39,7 +40,7 @@ test_that("get_parameters works", {
 
   final_models <- write_sim_controls(run_dir, parms, base_models, 1, file.path(run_dir,"data_sim.csv"))
   testBICs <- read.csv(file.path(run_dir,"BICS.csv"))
-  expect_equal(testBICs, referenceBICs)
+  testthat::expect_equal(testBICs, referenceBICs)
 
   unlink(run_dir, recursive = TRUE)
 })

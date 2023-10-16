@@ -5,7 +5,7 @@ Authors@R:
     person("Mark", "Sale", , "mark.sale@certara.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6239-2359"))
 Description: Uses several NONMEM models (as NONMEM control files) to perform bootstrap model averaging 
-    and Monte Carlo simulation for model based Model Based Bio-Equivalence (MBBE). Power is returned 
+    and Monte Carlo Simulation for Model Based Bio-Equivalence (MBBE). Power is returned 
     as the fraction of the simulations with successful BE test, for Cmax, AUClast and AUCinf.
 License: LGPL-3
 Encoding: UTF-8
