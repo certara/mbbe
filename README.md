@@ -5,7 +5,7 @@ date: "11 May 2023"
 --- 
 
 # Model Based Bioequivalence (MBBE)
- 
+Funded by FDA/NIH grant 1U01FD007355\
 Model Based Bioequivalence\
 Currently hard coded to be saved in u:\fda\mbbe\modelaveraging (source.dir), and run in c:\fda\mbbe\modelaveraging (home.dir). Path to data file (U:\fda\mbbe\Modelaveraging\data_seq.csv) is harded code in the .mod files
 Algorithm: 
