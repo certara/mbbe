@@ -6,7 +6,8 @@ Authors@R:
            family = "Sale", 
            email = "mark.sale@certara.com", 
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-6239-2359")),
+           comment = c(ORCID = "0000-0002-6239-2359".
+                      "Funded by FDA/NIH grant 1U01FD007355")),
       person(given = "James", 
            family = "Craig", 
            email = "james.craig@certara.com", 
