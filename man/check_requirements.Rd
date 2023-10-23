@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{check_requirements}
 \alias{check_requirements}
-\title{check_requirements}
+\title{Check Requirements for Model-Based BE Assessment}
 \usage{
 check_requirements(
   run_dir,
@@ -19,48 +19,44 @@ check_requirements(
 )
 }
 \arguments{
-\item{run_dir}{source  model files}
+\item{run_dir}{Character string specifying the directory containing the source model files.}
 
-\item{samp_size}{number of samples - must be integer}
+\item{samp_size}{Integer specifying the number of samples.}
 
-\item{model_list}{list of model control files to be used for model averaging}
+\item{model_list}{List of character strings representing the model control files to be utilized for model averaging.}
 
-\item{ngroups}{number of groups for BE testing in data set}
+\item{ngroups}{Integer representing the number of groups for BE testing in the dataset.}
 
-\item{reference_groups}{Which groups are reference}
+\item{reference_groups}{Character vector indicating the groups classified as "reference".}
 
-\item{test_groups}{Which groups are Test}
+\item{test_groups}{Character vector indicating the groups classified as "test".}
 
-\item{nmfe_path}{nmfe??.bat}
+\item{nmfe_path}{Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).}
 
-\item{use_check_identifiable}{\itemize{
-\item logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
-}}
+\item{use_check_identifiable}{Logical. Determines whether to verify the identifiability by checking if \code{SADDLE_RESET} is present in $EST.}
 
-\item{simulation_data_path}{path to the data file}
+\item{simulation_data_path}{Character string specifying the path to the data file used for simulation.}
 
-\item{user_R_code}{\itemize{
-\item logical, whether to call user define R code after the NONMEM run for bootstrap,
-}}
+\item{user_R_code}{Logical. Should user-defined R code be executed post the NONMEM run for bootstrap?}
 
-\item{R_code_path}{\itemize{
-\item path to user defined R code to be run after NONMEM bootstrap. Returns a penalty to be added to the BIC
-}}
+\item{R_code_path}{Optional. Character string indicating the path to the user-defined R code to be executed post the NONMEM bootstrap. This returns a penalty value to be appended to the BIC.}
+}
+\value{
+\code{TRUE} if all requirements pass and \code{FALSE} if any failures.
 }
 \description{
-Check if all the requirements for model based BE assessment are present
+This function verifies the necessary requirements for conducting a model-based bioequivalence (BE) assessment.
 }
 \details{
-Check to see if:
-Request permission to delete the run_dir
+The function checks for the following:
 \enumerate{
-\item Does that .mod file contain ;;;;.*Start EST
-\item Is the sum of reference_groups and test_groups == ngroups?
-\item Any duplicates in Reference and Test groups?
-\item check if data file is present
-\item check if nmfe path is correct
-\item check for saddle_reset if requested for check_identifiability
-\item check for repeat IDs in data set
-\item see if simulation data available
+\item Presence of the \code{.mod} file containing \verb{;;;;.*Start EST}.
+\item Verification that the sum of reference and test groups equals \code{ngroups}.
+\item Absence of duplicate values in both reference and test groups.
+\item Presence of the specified data file.
+\item Validity of the provided \code{nmfe_path}.
+\item (If requested) Verification for \code{SADDLE_RESET} in the context of identifiability.
+\item Absence of repeat IDs in the dataset.
+\item Availability of simulation data.
 }
 }

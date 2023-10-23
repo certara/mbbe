@@ -2,37 +2,48 @@
 % Please edit documentation in R/MBBE.R
 \name{calc_power}
 \alias{calc_power}
-\title{Calculate power}
+\title{Calculate Bioequivalence Power}
 \usage{
 calc_power(run_dir, samp_size, alpha, model_averaging_by, NTID)
 }
 \arguments{
-\item{run_dir}{character, run directory}
+\item{run_dir}{Character string specifying the run directory where simulation outputs are located.}
 
-\item{samp_size}{integer, how many samples}
+\item{samp_size}{Integer indicating the number of samples to be used in the analysis.}
 
-\item{alpha}{numeric, range, >0 and < 1 alpha error rate}
+\item{alpha}{Numeric value representing the alpha error rate. It must lie between 0 and 1.}
 
-\item{model_averaging_by}{character "subject" or "study"}
+\item{model_averaging_by}{Character string indicating the method for model averaging, either "subject" or "study".}
 
-\item{NTID}{logical, is this narrow therapeutic index drug}
+\item{NTID}{Logical indicating if the drug being tested is a narrow therapeutic index drug.}
 }
 \value{
-a list of Cmax_result, AUCinf_result, AUClast_result power (0-1)
+A list containing the results for:
+\itemize{
+\item \code{Cmax_result}: Power for the Cmax parameter.
+\item \code{AUCinf_result}: Power for the AUCinf parameter.
+\item \code{AUClast_result}: Power for the AUClast parameter.
+All power values range between 0 and 1.
+}
 }
 \description{
-Calculated power by doing EMA standards statistics on each Monte Carlo simulation, then counting the number that pass BE
+Computes the power for bioequivalence (BE) testing based on EMA standards statistics
+applied to each Monte Carlo simulation. The power is determined by the proportion of
+simulations that meet the BE criteria.
 }
 \details{
-The simulation is done by study (e.g., one model per study) this will result in model averaging
-by study. If model_averaging_by == "subject", the by-study data are recombined, randomly chosing one subject
-(without replacement) from all studies to reassemble each study data set
-The function loops over each sample, read the NCAresultsN where N is the sample number
-Then calculates whether that sample passes or fails BE testing
+When the simulation is conducted by study (i.e., a unique model for each study),
+this results in model averaging at the study level. If \code{model_averaging_by} is set to "subject",
+data from different studies are merged. For each study dataset, subjects are randomly selected
+(without replacement) from across all studies.
+
+The function iterates over each sample, reading the corresponding NCAresults (designated by the
+sample number). Subsequently, it determines if each sample meets or fails the BE testing criteria.
 }
 \examples{
 \dontrun{
 nca_results <- system.file(package = "mbbe", "nca_results")
 calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
 }
+
 }

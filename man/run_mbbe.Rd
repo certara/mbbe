@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{run_mbbe}
 \alias{run_mbbe}
-\title{run_mbbe}
+\title{Execute MBBE Analysis}
 \usage{
 run_mbbe(
   crash_value,
@@ -28,92 +28,61 @@ run_mbbe(
 )
 }
 \arguments{
-\item{crash_value}{\itemize{
-\item value to be returned for BIC in models that crash, either in bootstrap or simulation
-}}
+\item{crash_value}{Numeric. Value to be returned for BIC in models that crash during either bootstrap or simulation.}
 
-\item{ngroups}{\itemize{
-\item number of groups in simulated data, e.g., ABBA design has 4 groups
-}}
+\item{ngroups}{Integer. Number of groups in the simulated data (e.g., an ABBA design has 4 groups).}
 
-\item{reference_groups}{\itemize{
-\item which of the groups are reference formulation e.g., ABBA design might be c(2,3)
-}}
+\item{reference_groups}{Numeric vector. Indices of the groups representing the reference formulation (e.g., c(2,3) for an ABBA design).}
 
-\item{test_groups}{\itemize{
-\item which of the groups are test formulation e.g., ABBA design might be c(1,4)
-}}
+\item{test_groups}{Numeric vector. Indices of the groups representing the test formulation (e.g., c(1,4) for an ABBA design).}
 
-\item{num_parallel}{\itemize{
-\item number of NONMEM (bootstrap and simulation) to be run in parallel
-}}
+\item{num_parallel}{Integer. Number of NONMEM processes (both bootstrap and simulation) to run concurrently.}
 
-\item{samp_size}{\itemize{
-\item size of bootstrap and simulation sample
-}}
+\item{samp_size}{Integer. Size of the bootstrap and simulation samples.}
 
-\item{run_dir}{\itemize{
-\item where to run NONMEM
-}}
+\item{run_dir}{Character string. Directory for NONMEM execution.}
 
-\item{model_source}{\itemize{
-\item NONMEM control files to be used/averaged over
-}}
+\item{model_source}{Character string. Paths to the NONMEM control files for model averaging.}
 
-\item{nmfe_path}{\itemize{
-\item path to nmfe??.bat
-}}
+\item{nmfe_path}{Character string. Path to the nmfe executable.}
 
-\item{delta_parms}{\itemize{
-\item difference in parameters used to define identifiability
-}}
+\item{delta_parms}{Numeric. Parameter difference threshold defining identifiability.}
 
-\item{use_check_identifiable}{\itemize{
-\item logical, whether to use identifiability (defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951))
-}}
+\item{use_check_identifiable}{Logical. Should identifiability be checked based on the criterion defined by \href{https://www.page-meeting.org/default.asp?abstract=5951}{Aoki}?}
 
-\item{NCA_end_time}{\itemize{
-\item NCA calculation will start at 0, end at NCA_end_time
-}}
+\item{NCA_end_time}{Numeric. The NCA calculation will start at 0 and end at this value.}
 
-\item{rndseed}{\itemize{
-\item random seed
-}}
+\item{rndseed}{Integer. Random seed for reproducibility.}
 
-\item{simulation_data_path}{\itemize{
-\item path to simulation data set
-}}
+\item{simulation_data_path}{Character string. Path to the simulation dataset.}
 
-\item{plan}{\itemize{
-\item the parallel exection plan, one of "multisession", "sequential", "multicore"
-}}
+\item{plan}{Character string (default: "multisession"). Parallel execution plan. Can be "multisession", "sequential", or "multicore".}
 
-\item{alpha_error}{alpha error for statistical testing}
+\item{alpha_error}{Numeric (default: 0.05). Alpha error rate for statistical tests.}
 
-\item{NTID}{logical , whether the drug is a narrow therapeutic index drug}
+\item{NTID}{Logical (default: FALSE). Is the drug a narrow therapeutic index drug?}
 
-\item{model_averaging_by}{one "study", "subject"}
+\item{model_averaging_by}{Character string (default: "study"). Method of model averaging, either "study" or "subject".}
 
-\item{user_R_code}{\itemize{
-\item logical, whether user provide code us used for the penalty for selectin models
-}}
+\item{user_R_code}{Logical (default: FALSE). Should custom R code be used for model penalty?}
 
-\item{R_code_path}{\itemize{
-\item if user_R_code, required path to R code
-}}
+\item{R_code_path}{Character string. If \code{user_R_code} is TRUE, this parameter defines the path to the custom R script.}
 }
 \value{
-Cmax_power,
-AUClast_power,
-AUCinf_power,
-run_dir,
-Num_identifiable,
-BICS
+A list containing:
+\itemize{
+\item \code{Cmax_power}: Power for Cmax
+\item \code{AUClast_power}: Power for AUClast
+\item \code{AUCinf_power}: Power for AUCinf
+\item \code{run_dir}: Directory where the function was executed
+\item \code{Num_identifiable}: Number of identifiable parameters
+\item \code{BICS}: Bayesian Information Criterion Scores
+}
 }
 \description{
-Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+This function runs the MBBE analysis. It's typically called by \code{run_mbbe_json}
+which provides the necessary options via a JSON file.
 }
 \details{
-{
-Typically called from run_mbbe_json}
+This function is primarily intended to be called by \code{run_mbbe_json}, which provides input parameters through a JSON configuration.
 }

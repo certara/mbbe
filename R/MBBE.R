@@ -1,5 +1,5 @@
 #' @importFrom stats coef confint filter lag lm na.exclude qchisq reshape runif qf
-#' @importFrom utils read.csv read.table write.csv capture.output head tail askYesNo
+#' @importFrom utils read.csv read.table write.csv capture.output head tail askYesNo packageVersion
 #' @importFrom magrittr %>%
 #' @rawNamespace import(future, except = run)
 #' @importFrom processx run
@@ -64,33 +64,37 @@ delete_files <- function(folder) {
     }
   })
 }
-
-#' check_requirements
+#' Check Requirements for Model-Based BE Assessment
 #'
-#' Check if all the requirements for model based BE assessment are present
+#' This function verifies the necessary requirements for conducting a model-based bioequivalence (BE) assessment.
 #'
-#' @param run_dir source  model files
-#' @param samp_size number of samples - must be integer
-#' @param model_list list of model control files to be used for model averaging
-#' @param ngroups number of groups for BE testing in data set
-#' @param reference_groups Which groups are reference
-#' @param test_groups Which groups are Test
-#' @param nmfe_path nmfe??.bat
-#' @param use_check_identifiable - logical, whether to check for identifability, will check if SADDLE_RESET is in $EST
-#' @param simulation_data_path   path to the data file
-#' @param user_R_code - logical, whether to call user define R code after the NONMEM run for bootstrap,
-#' @param R_code_path - path to user defined R code to be run after NONMEM bootstrap. Returns a penalty to be added to the BIC
+#' @param run_dir Character string specifying the directory containing the source model files.
+#' @param samp_size Integer specifying the number of samples.
+#' @param model_list List of character strings representing the model control files to be utilized for model averaging.
+#' @param ngroups Integer representing the number of groups for BE testing in the dataset.
+#' @param reference_groups Character vector indicating the groups classified as "reference".
+#' @param test_groups Character vector indicating the groups classified as "test".
+#' @param nmfe_path Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).
+#' @param use_check_identifiable Logical. Determines whether to verify the identifiability by checking if `SADDLE_RESET` is present in $EST.
+#' @param simulation_data_path Character string specifying the path to the data file used for simulation.
+#' @param user_R_code Logical. Should user-defined R code be executed post the NONMEM run for bootstrap?
+#' @param R_code_path Optional. Character string indicating the path to the user-defined R code to be executed post the NONMEM bootstrap. This returns a penalty value to be appended to the BIC.
+#'
+#' @details The function checks for the following:
+#' \enumerate{
+#'   \item Presence of the `.mod` file containing `;;;;.*Start EST`.
+#'   \item Verification that the sum of reference and test groups equals `ngroups`.
+#'   \item Absence of duplicate values in both reference and test groups.
+#'   \item Presence of the specified data file.
+#'   \item Validity of the provided `nmfe_path`.
+#'   \item (If requested) Verification for `SADDLE_RESET` in the context of identifiability.
+#'   \item Absence of repeat IDs in the dataset.
+#'   \item Availability of simulation data.
+#'}
+#'
+#' @return \code{TRUE} if all requirements pass and \code{FALSE} if any failures.
+#'
 #' @export
-#' @details Check to see if:
-#' Request permission to delete the run_dir
-#' 1. Does that .mod file contain ;;;;.*Start EST
-#' 2. Is the sum of reference_groups and test_groups == ngroups?
-#' 3. Any duplicates in Reference and Test groups?
-#' 4. check if data file is present
-#' 5. check if nmfe path is correct
-#' 6. check for saddle_reset if requested for check_identifiability
-#' 7. check for repeat IDs in data set
-#' 8. see if simulation data available
 check_requirements <- function(run_dir,
                                samp_size,
                                model_list,
@@ -969,32 +973,34 @@ write_sim_controls <- function(run_dir, parms,
 }
 #'
 
-#' calc_NCA
+#' Calculate Non-Compartmental Analysis (NCA) Parameters
 #'
-#' perform NCA (Cmax, AUCin,AUClst, from 0 to NCA_end_time)
+#' This function performs Non-Compartmental Analysis (NCA) to derive key pharmacokinetic parameters such as Cmax, AUCinf, and AUClast for specified time intervals.
 #'
-#' @param run_dir character;  folder path of run directory
-#' @param ngroups numeric; integer value specifying how many groups, e.g., 4 for ABBA
-#' @param reference_groups numeric vector; specifying which groups are reference
-#' @param test_groups numeric vector; specifying which groups are test
-#' @param NCA_end_time numeric; end time for AUClast and AUCinf
-#' @param samp_size numeric; integer value specifying sample size
+#' @param run_dir Character string specifying the path to the run directory.
+#' @param ngroups Integer specifying the total number of groups (e.g., 4 for an ABBA design).
+#' @param reference_groups Numeric vector indicating the group IDs that are designated as reference.
+#' @param test_groups Numeric vector indicating the group IDs that are designated as test.
+#' @param NCA_end_time Numeric value specifying the end time for calculations of AUClast and AUCinf.
+#' @param samp_size Integer indicating the sample size or the total number of samples for the analysis.
+#'
+#' @details
+#' The `calc_NCA` function internally calls `getNCA` for each sample in the sequence from 1 to `samp_size`. Note that the function is currently executed in a serial manner and is not parallelized.
+#'
 #' @examples
 #' \dontrun{
 #' run_dir <- "c:/Workspace/mbbe"
 #' ngroups <- 4
 #' reference_groups <- c(1,2)
-#' samp_size <- 6
 #' test_groups <- c(3,4)
 #' NCA_end_time <- 7
+#' samp_size <- 6
 #' calc_NCA(run_dir, ngroups, reference_groups, test_groups, NCA_end_time, samp_size)
 #' }
-#' @details
-#' calc_NCA calls getNCA for each sample in 1:samp_size
-#' Currently not parallelized
 #'
+#' @return The function returns a list containing the derived NCA parameters for each sample.
 #'
-#'@export
+#' @export
 calc_NCA <-
   function(run_dir,
            ngroups,
@@ -1024,29 +1030,35 @@ calc_NCA <-
     return()
   }
 
-#' check_identifability
+#' Check Model Identifiability Based on Parameter Differences
 #'
-#' Identifability is defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951)
-#' Briefly, a saddle_reset is required for the NONMEM minimzation. The pre-reset parameters are compared to the
-#' post-reset parameters. If the fractional difference between any pre and post reset parameter exceeds delta_parms
-#' the model fails identifiability
-#' Algorithm: reads .lst file, find out where saddle reset occurs (doesn't seem to be recorded anywhere else)
-#' then get parameter before reset from .ext file (Pre.parms)
-#' compare with final parameters (Post.parms), see if any differ by delta_parms
+#' Evaluates model identifiability based on the definitions by Aoki (https://www.page-meeting.org/default.asp?abstract=5951).
+#' The check involves evaluating the differences between pre-reset and post-reset parameters during the NONMEM minimization process.
+#' If the fractional difference between any of these parameters exceeds a given threshold (`delta_parms`), the model is considered non-identifiable.
 #'
-#' @param run_dir home directory
-#' @param this_model integer
-#' @param this_sample integer
-#' @param delta_parms absolute difference in parameters criteria for failing identifability
-#' @param nparms number of parameters in the .ext file (can be less than the total)
+#' @param run_dir Character string specifying the home directory.
+#' @param this_model Integer representing the specific model being evaluated.
+#' @param this_sample Integer representing the specific sample being evaluated.
+#' @param delta_parms Numeric threshold for the absolute difference in parameters, above which the model fails identifiability criteria.
+#' @param nparms Integer specifying the number of parameters in the .ext file. This can be fewer than the total number of parameters.
+#'
+#' @details
+#' The algorithm involves:
+#' 1. Reading the .lst file to identify instances of saddle resets (which apparently aren't recorded elsewhere).
+#' 2. Extracting parameters before the reset from the .ext file (designated as "Pre.parms").
+#' 3. Comparing these with the final parameters (designated as "Post.parms") to determine if any differ by the `delta_parms` threshold.
+#'
 #' @return
-#' returns a list consisting of:
-#' passes - logical
-#' max_delta - maximum difference seen in pre and post reset parameters
-#' max_delta_parm which parameter in the .ext file have the largest difference
+#' A list containing:
+#' \itemize{
+#'   \item \strong{passes}: Logical indicating if the model passes the identifiability check.
+#'   \item \strong{max_delta}: Numeric value representing the maximum difference observed between pre and post reset parameters.
+#'   \item \strong{max_delta_parm}: Integer indicating the parameter in the .ext file that exhibits the largest difference.
+#' }
+#'
 #' @examples
 #' \dontrun{
-#' check_identifiable("c:/runmodels", 1, 1, 0.1)
+#' check_identifiable("c:/runmodels", 1, 1, 0.1, 5)
 #' }
 #'
 check_identifiable <- function(run_dir,
@@ -1112,36 +1124,36 @@ check_identifiable <- function(run_dir,
   }
 }
 
-#' getNCA
+#' Calculate NCA Parameters from NONMEM Output
 #'
-#' Calculated NCA parameters (Cmax, AUCinf, AUClast) by group from NONMEM output file
-#' NONMEM output file MUST be in the folder MBBEsimN where N is the simulation number
-#' $TABLE must include the ONEHEADER option
-#' The simulation must include an observation at T=
-#' The $TABLE file output by the simulation must include:
-#' ID
-#' GROUP
-#' SEQ
-#' PERIOD
-#' Note that for MBBE, the simulation control file is written by the write_sim function and will include:
-#'  "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-#' reads $TABLE output from simulation (file name OUT.DAT)
-#' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-#' if check.identifiability, do that with delta_parms as criteria
+#' This function extracts and calculates Non-Compartmental Analysis (NCA) parameters (Cmax, AUCinf, AUClast) by group
+#' from a NONMEM simulation output file. The output file must adhere to certain specifications,
+#' including naming conventions and table header options.
 #'
-#' @param run_dir home directory
-#' @param this_sample integer
-#' @param NumGroups integer how many groups, e.g., 4 for ABBA
-#' @param reference_groups list of arrays, which groups are reference
-#' @param test_groups list of arrays, which groups are test
-#' @param NCA_end_time numeric, end time for AUClast and AUCinf, calculation starts at TIME=0 (TIME=0 data point is required in simulated study)
-#' @export
-#' @return Logical
+#' @param run_dir Character string specifying the home directory where the NONMEM output files are located.
+#' @param this_sample Integer representing the specific sample being evaluated.
+#' @param NumGroups Integer specifying the total number of groups (e.g., 4 for an ABBA design).
+#' @param reference_groups Numeric vector indicating the group IDs that are designated as reference.
+#' @param test_groups Numeric vector indicating the group IDs that are designated as test.
+#' @param NCA_end_time Numeric value indicating the end time for the AUClast and AUCinf calculations.
+#'        Calculation starts at TIME=0. A data point at TIME=0 is mandatory in the simulated study.
+#'
+#' @details
+#' The NONMEM output file should be present in the folder named `MBBEsimN`, where `N` is the simulation number.
+#' The `$TABLE` in the NONMEM file must use the `ONEHEADER` option and include specific columns such as `ID`, `GROUP`, `SEQ`,
+#' and `PERIOD`. For MBBE, the simulation control file, usually created by the `write_sim` function, will have the
+#' table specifications like: "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER".
+#' This function reads the `$TABLE` output from the simulation (filename `OUT.DAT`) and performs NCA.
+#'
+#' @return
+#' Logical indicating the success or failure of the NCA calculation.
+#'
 #' @examples
 #' \dontrun{
-#' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
+#' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72)
 #' }
-
+#'
+#' @export
 getNCA <- function(run_dir,
                    this_sample,
                    NumGroups,
@@ -1273,28 +1285,40 @@ getNCA <- function(run_dir,
 
 
 
-#' Calculate power
+#' Calculate Bioequivalence Power
 #'
-#' Calculated power by doing EMA standards statistics on each Monte Carlo simulation, then counting the number that pass BE
+#' Computes the power for bioequivalence (BE) testing based on EMA standards statistics
+#' applied to each Monte Carlo simulation. The power is determined by the proportion of
+#' simulations that meet the BE criteria.
 #'
-#' @param run_dir character, run directory
-#' @param samp_size integer, how many samples
-#' @param alpha numeric, range, >0 and < 1 alpha error rate
-#' @param model_averaging_by character "subject" or "study"
-#' @param NTID logical, is this narrow therapeutic index drug
-#' @export
-#' @return a list of Cmax_result, AUCinf_result, AUClast_result power (0-1)
+#' @param run_dir Character string specifying the run directory where simulation outputs are located.
+#' @param samp_size Integer indicating the number of samples to be used in the analysis.
+#' @param alpha Numeric value representing the alpha error rate. It must lie between 0 and 1.
+#' @param model_averaging_by Character string indicating the method for model averaging, either "subject" or "study".
+#' @param NTID Logical indicating if the drug being tested is a narrow therapeutic index drug.
+#'
 #' @details
-#' The simulation is done by study (e.g., one model per study) this will result in model averaging
-#' by study. If model_averaging_by == "subject", the by-study data are recombined, randomly chosing one subject
-#' (without replacement) from all studies to reassemble each study data set
-#' The function loops over each sample, read the NCAresultsN where N is the sample number
-#' Then calculates whether that sample passes or fails BE testing
+#' When the simulation is conducted by study (i.e., a unique model for each study),
+#' this results in model averaging at the study level. If `model_averaging_by` is set to "subject",
+#' data from different studies are merged. For each study dataset, subjects are randomly selected
+#' (without replacement) from across all studies.
+#'
+#' The function iterates over each sample, reading the corresponding NCAresults (designated by the
+#' sample number). Subsequently, it determines if each sample meets or fails the BE testing criteria.
+#'
+#' @return
+#' A list containing the results for:
+#' - `Cmax_result`: Power for the Cmax parameter.
+#' - `AUCinf_result`: Power for the AUCinf parameter.
+#' - `AUClast_result`: Power for the AUClast parameter.
+#' All power values range between 0 and 1.
+#'
 #' @examples
 #' \dontrun{
 #' nca_results <- system.file(package = "mbbe", "nca_results")
 #' calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
 #' }
+#'
 #' @export
 
 calc_power <- function(run_dir,
@@ -1616,8 +1640,7 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 
 #' run_mbbe_json
 #'
-#' Runs MBBE from a json file of options
-#' Calls run_mbbe
+#' Runs MBBE from a json file of options e.g., calls `run_mbbe`
 #'
 #' @param Args.json, path to JSON file with arguments
 #' @export
@@ -1677,44 +1700,44 @@ run_mbbe_json <- function(Args.json) {
   }
 }
 
-#' run_mbbe
+#' Execute MBBE Analysis
 #'
-#' Runs MBBE, typically called by run_mbbe_json, using a json file that includes the required options
+#' This function runs the MBBE analysis. It's typically called by `run_mbbe_json`
+#' which provides the necessary options via a JSON file.
 #'
-#' @param crash_value - value to be returned for BIC in models that crash, either in bootstrap or simulation
-#' @param ngroups - number of groups in simulated data, e.g., ABBA design has 4 groups
-#' @param reference_groups - which of the groups are reference formulation e.g., ABBA design might be c(2,3)
-#' @param test_groups - which of the groups are test formulation e.g., ABBA design might be c(1,4)
-#' @param num_parallel - number of NONMEM (bootstrap and simulation) to be run in parallel
-#' @param samp_size - size of bootstrap and simulation sample
-#' @param run_dir - where to run NONMEM
-#' @param model_source - NONMEM control files to be used/averaged over
-#' @param nmfe_path - path to nmfe??.bat
-#' @param delta_parms - difference in parameters used to define identifiability
-#' @param use_check_identifiable - logical, whether to use identifiability (defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951))
-#' @param NCA_end_time - NCA calculation will start at 0, end at NCA_end_time
-#' @param rndseed - random seed
-#' @param simulation_data_path - path to simulation data set
-#' @param plan - the parallel exection plan, one of "multisession", "sequential", "multicore"
-#' @param alpha_error alpha error for statistical testing
-#' @param  NTID logical , whether the drug is a narrow therapeutic index drug
-#' @param model_averaging_by one "study", "subject"
-#' @param user_R_code - logical, whether user provide code us used for the penalty for selectin models
-#' @param R_code_path - if user_R_code, required path to R code
+#' @param crash_value Numeric. Value to be returned for BIC in models that crash during either bootstrap or simulation.
+#' @param ngroups Integer. Number of groups in the simulated data (e.g., an ABBA design has 4 groups).
+#' @param reference_groups Numeric vector. Indices of the groups representing the reference formulation (e.g., c(2,3) for an ABBA design).
+#' @param test_groups Numeric vector. Indices of the groups representing the test formulation (e.g., c(1,4) for an ABBA design).
+#' @param num_parallel Integer. Number of NONMEM processes (both bootstrap and simulation) to run concurrently.
+#' @param samp_size Integer. Size of the bootstrap and simulation samples.
+#' @param run_dir Character string. Directory for NONMEM execution.
+#' @param model_source Character string. Paths to the NONMEM control files for model averaging.
+#' @param nmfe_path Character string. Path to the nmfe executable.
+#' @param delta_parms Numeric. Parameter difference threshold defining identifiability.
+#' @param use_check_identifiable Logical. Should identifiability be checked based on the criterion defined by [Aoki](https://www.page-meeting.org/default.asp?abstract=5951)?
+#' @param NCA_end_time Numeric. The NCA calculation will start at 0 and end at this value.
+#' @param rndseed Integer. Random seed for reproducibility.
+#' @param simulation_data_path Character string. Path to the simulation dataset.
+#' @param plan Character string (default: "multisession"). Parallel execution plan. Can be "multisession", "sequential", or "multicore".
+#' @param alpha_error Numeric (default: 0.05). Alpha error rate for statistical tests.
+#' @param NTID Logical (default: FALSE). Is the drug a narrow therapeutic index drug?
+#' @param model_averaging_by Character string (default: "study"). Method of model averaging, either "study" or "subject".
+#' @param user_R_code Logical (default: FALSE). Should custom R code be used for model penalty?
+#' @param R_code_path Character string. If `user_R_code` is TRUE, this parameter defines the path to the custom R script.
+#'
 #' @details
-#' {
-#' Typically called from run_mbbe_json}
+#' This function is primarily intended to be called by `run_mbbe_json`, which provides input parameters through a JSON configuration.
 #'
+#' @return A list containing:
+#' - `Cmax_power`: Power for Cmax
+#' - `AUClast_power`: Power for AUClast
+#' - `AUCinf_power`: Power for AUCinf
+#' - `run_dir`: Directory where the function was executed
+#' - `Num_identifiable`: Number of identifiable parameters
+#' - `BICS`: Bayesian Information Criterion Scores
 #'
-#' @return
-#' Cmax_power,
-#' AUClast_power,
-#' AUCinf_power,
-#' run_dir,
-#' Num_identifiable,
-#' BICS
 #' @export
-#'
 run_mbbe <- function(crash_value, ngroups,
                      reference_groups, test_groups,
                      num_parallel, samp_size,

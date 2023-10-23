@@ -2,39 +2,45 @@
 % Please edit documentation in R/MBBE.R
 \name{check_identifiable}
 \alias{check_identifiable}
-\title{check_identifability}
+\title{Check Model Identifiability Based on Parameter Differences}
 \usage{
 check_identifiable(run_dir, this_model, this_sample, delta_parms, nparms)
 }
 \arguments{
-\item{run_dir}{home directory}
+\item{run_dir}{Character string specifying the home directory.}
 
-\item{this_model}{integer}
+\item{this_model}{Integer representing the specific model being evaluated.}
 
-\item{this_sample}{integer}
+\item{this_sample}{Integer representing the specific sample being evaluated.}
 
-\item{delta_parms}{absolute difference in parameters criteria for failing identifability}
+\item{delta_parms}{Numeric threshold for the absolute difference in parameters, above which the model fails identifiability criteria.}
 
-\item{nparms}{number of parameters in the .ext file (can be less than the total)}
+\item{nparms}{Integer specifying the number of parameters in the .ext file. This can be fewer than the total number of parameters.}
 }
 \value{
-returns a list consisting of:
-passes - logical
-max_delta - maximum difference seen in pre and post reset parameters
-max_delta_parm which parameter in the .ext file have the largest difference
+A list containing:
+\itemize{
+\item \strong{passes}: Logical indicating if the model passes the identifiability check.
+\item \strong{max_delta}: Numeric value representing the maximum difference observed between pre and post reset parameters.
+\item \strong{max_delta_parm}: Integer indicating the parameter in the .ext file that exhibits the largest difference.
+}
 }
 \description{
-Identifability is defined by Aoki (https://www.page-meeting.org/default.asp?abstract=5951)
-Briefly, a saddle_reset is required for the NONMEM minimzation. The pre-reset parameters are compared to the
-post-reset parameters. If the fractional difference between any pre and post reset parameter exceeds delta_parms
-the model fails identifiability
-Algorithm: reads .lst file, find out where saddle reset occurs (doesn't seem to be recorded anywhere else)
-then get parameter before reset from .ext file (Pre.parms)
-compare with final parameters (Post.parms), see if any differ by delta_parms
+Evaluates model identifiability based on the definitions by Aoki (https://www.page-meeting.org/default.asp?abstract=5951).
+The check involves evaluating the differences between pre-reset and post-reset parameters during the NONMEM minimization process.
+If the fractional difference between any of these parameters exceeds a given threshold (\code{delta_parms}), the model is considered non-identifiable.
+}
+\details{
+The algorithm involves:
+\enumerate{
+\item Reading the .lst file to identify instances of saddle resets (which apparently aren't recorded elsewhere).
+\item Extracting parameters before the reset from the .ext file (designated as "Pre.parms").
+\item Comparing these with the final parameters (designated as "Post.parms") to determine if any differ by the \code{delta_parms} threshold.
+}
 }
 \examples{
 \dontrun{
-check_identifiable("c:/runmodels", 1, 1, 0.1)
+check_identifiable("c:/runmodels", 1, 1, 0.1, 5)
 }
 
 }

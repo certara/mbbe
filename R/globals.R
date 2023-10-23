@@ -42,6 +42,7 @@ utils::globalVariables(
     "listfile",
     "ITERATION",
     "treatment",
-    "passes_identifiable"
+    "passes_identifiable",
+    "PERIOD"
     )
 )

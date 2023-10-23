@@ -22,6 +22,8 @@ Authors@R:
 Description: Uses several NONMEM models (as NONMEM control files) to perform bootstrap model averaging 
     and Monte Carlo Simulation for Model Based Bio-Equivalence (MBBE). Power is returned 
     as the fraction of the simulations with successful BE test, for Cmax, AUClast and AUCinf.
+URL: https://github.com/certara/mbbe
+BugReports: https://github.com/certara/mbbe/issues
 License: LGPL-3
 Encoding: UTF-8
 Imports:

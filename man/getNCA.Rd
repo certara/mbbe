@@ -2,7 +2,7 @@
 % Please edit documentation in R/MBBE.R
 \name{getNCA}
 \alias{getNCA}
-\title{getNCA}
+\title{Calculate NCA Parameters from NONMEM Output}
 \usage{
 getNCA(
   run_dir,
@@ -14,39 +14,37 @@ getNCA(
 )
 }
 \arguments{
-\item{run_dir}{home directory}
+\item{run_dir}{Character string specifying the home directory where the NONMEM output files are located.}
 
-\item{this_sample}{integer}
+\item{this_sample}{Integer representing the specific sample being evaluated.}
 
-\item{NumGroups}{integer how many groups, e.g., 4 for ABBA}
+\item{NumGroups}{Integer specifying the total number of groups (e.g., 4 for an ABBA design).}
 
-\item{reference_groups}{list of arrays, which groups are reference}
+\item{reference_groups}{Numeric vector indicating the group IDs that are designated as reference.}
 
-\item{test_groups}{list of arrays, which groups are test}
+\item{test_groups}{Numeric vector indicating the group IDs that are designated as test.}
 
-\item{NCA_end_time}{numeric, end time for AUClast and AUCinf, calculation starts at TIME=0 (TIME=0 data point is required in simulated study)}
+\item{NCA_end_time}{Numeric value indicating the end time for the AUClast and AUCinf calculations.
+Calculation starts at TIME=0. A data point at TIME=0 is mandatory in the simulated study.}
 }
 \value{
-Logical
+Logical indicating the success or failure of the NCA calculation.
 }
 \description{
-Calculated NCA parameters (Cmax, AUCinf, AUClast) by group from NONMEM output file
-NONMEM output file MUST be in the folder MBBEsimN where N is the simulation number
-$TABLE must include the ONEHEADER option
-The simulation must include an observation at T=
-The $TABLE file output by the simulation must include:
-ID
-GROUP
-SEQ
-PERIOD
-Note that for MBBE, the simulation control file is written by the write_sim function and will include:
-"$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-reads $TABLE output from simulation (file name OUT.DAT)
-and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
-if check.identifiability, do that with delta_parms as criteria
+This function extracts and calculates Non-Compartmental Analysis (NCA) parameters (Cmax, AUCinf, AUClast) by group
+from a NONMEM simulation output file. The output file must adhere to certain specifications,
+including naming conventions and table header options.
+}
+\details{
+The NONMEM output file should be present in the folder named \code{MBBEsimN}, where \code{N} is the simulation number.
+The \verb{$TABLE} in the NONMEM file must use the \code{ONEHEADER} option and include specific columns such as \code{ID}, \code{GROUP}, \code{SEQ},
+and \code{PERIOD}. For MBBE, the simulation control file, usually created by the \code{write_sim} function, will have the
+table specifications like: "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER".
+This function reads the \verb{$TABLE} output from the simulation (filename \code{OUT.DAT}) and performs NCA.
 }
 \examples{
 \dontrun{
-getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72, 0.1)
+getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72)
 }
+
 }

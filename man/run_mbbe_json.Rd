@@ -10,8 +10,7 @@ run_mbbe_json(Args.json)
 \item{Args.json, }{path to JSON file with arguments}
 }
 \description{
-Runs MBBE from a json file of options
-Calls run_mbbe
+Runs MBBE from a json file of options e.g., calls \code{run_mbbe}
 }
 \examples{
 \dontrun{
