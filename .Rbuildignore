@@ -4,3 +4,5 @@
 ^Meta$
 \.gitignore
 \.gitattributes
+inst/mbbe_logo.vectr
+inst/mbbe_logo.png

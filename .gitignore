@@ -6,6 +6,7 @@ inst/doc
 inst/examples/data_seq.csv
 inst/examples/data_sim.csv
 inst/examples/test_mbbe.r
+inst/mbbe_logo.vectr
 bsSamp7.lst
 MBBEArgs.json
 MBBEArgs_mega.json
