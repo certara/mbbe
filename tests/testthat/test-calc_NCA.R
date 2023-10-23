@@ -8,9 +8,9 @@ test_that("calc_NCA works", {
   source_dir <- testthat::test_path("..","test_files", "calc_nca")
   dir.create(file.path(run_dir,"MBBEsim1"))
   dir.create(file.path(run_dir,"MBBEsim2"))
-  file.copy(file.path(source_dir, "MBBEsim1","out.dat"),
+  file.copy(file.path(source_dir, "MBBEsim1","OUT.DAT"),
             file.path(run_dir,"MBBEsim1"))
-  file.copy(file.path(source_dir, "MBBEsim2","out.dat"),
+  file.copy(file.path(source_dir, "MBBEsim2","OUT.DAT"),
             file.path(run_dir,"MBBEsim2"))
   nca_ref1 <- read.csv(file.path(source_dir,"MBBEsim1","NCAresults1.csv"))
   nca_ref2 <- read.csv(file.path(source_dir,"MBBEsim2","NCAresults2.csv"))

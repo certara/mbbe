@@ -41,7 +41,7 @@ SEQ
 PERIOD
 Note that for MBBE, the simulation control file is written by the write_sim function and will include:
 "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-reads $TABLE output from simulation (file name out.dat)
+reads $TABLE output from simulation (file name OUT.DAT)
 and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 if check.identifiability, do that with delta_parms as criteria
 }

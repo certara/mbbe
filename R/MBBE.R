@@ -1125,7 +1125,7 @@ check_identifiable <- function(run_dir,
 #' PERIOD
 #' Note that for MBBE, the simulation control file is written by the write_sim function and will include:
 #'  "$TABLE ID TIME GROUP PERIOD SEQ DV EVID NOPRINT NOAPPEND FILE=OUT.DAT ONEHEADER")
-#' reads $TABLE output from simulation (file name out.dat)
+#' reads $TABLE output from simulation (file name OUT.DAT)
 #' and do NCA (Cmax, AUCin,AUClst, from 0 to end.time)
 #' if check.identifiability, do that with delta_parms as criteria
 #'
@@ -1151,7 +1151,7 @@ getNCA <- function(run_dir,
   output_file <- file.path(run_dir, paste0("MBBEsim", this_sample), paste0("NCAresults", this_sample, ".csv"))
   tryCatch(
     {
-      NMoutFile <- file.path(run_dir, paste0("MBBEsim", this_sample), "out.dat")
+      NMoutFile <- file.path(run_dir, paste0("MBBEsim", this_sample), "OUT.DAT")
       if (file.exists(NMoutFile)) {
         group_NCA_results <- data.frame(
           ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(),
