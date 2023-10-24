@@ -107,28 +107,25 @@ check_requirements <- function(run_dir,
                                user_R_code,
                                R_code_path = NULL) {
 
-    if(file.exists(run_dir)){
+    if(dir.exists(run_dir)){
        OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
       if(!is.na(OK)){
         if(OK){
           message("Continuing")
+          unlink(run_dir, recursive = TRUE, force = TRUE)
+          dir.create(run_dir)
         }else{
           stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
         }
       }else{
         stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
       }
+    } else {
+      dir.create(run_dir)
     }
 
   msg <- remove_old_files(run_dir, samp_size)
- # purr >=1.01
-  purrversion <-  as.numeric(substring(packageVersion("purrr"),1,1))
-  if (purrversion == 0){
-    msg <-
-      paste(msg,
-            "purrr version must be >= 1.01, current version is ", purrversion,
-            sep = "\n")
-  }
+
  if(!is.logical(user_R_code)){
    msg <-
      paste(msg,
@@ -1653,6 +1650,7 @@ run_mbbe_json <- function(Args.json) {
     message(Args.json, " file not found, exiting")
   } else {
     user_R_code  <- FALSE # default value
+    save_plots <- FALSE
     R_code_path <- NULL
     Args <- RJSONIO::fromJSON(Args.json)
     all_args <- list(
@@ -1686,10 +1684,32 @@ run_mbbe_json <- function(Args.json) {
       )
     } else {
 
-     return <- run_mbbe(
-        Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
-        Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed, Args$simulation_data_path,
-        Args$plan, Args$alpha_error, Args$NTID, Args$model_averaging_by, Args$user_R_code, Args$R_code_path
+      return <- run_mbbe(
+        Args$crash_value,
+        Args$ngroups,
+        Args$reference_groups,
+        Args$test_groups,
+        Args$num_parallel,
+        Args$samp_size,
+        Args$run_dir,
+        Args$model_source,
+        Args$nmfe_path,
+        Args$delta_parms,
+        Args$use_check_identifiable,
+        Args$NCA_end_time,
+        Args$rndseed,
+        Args$simulation_data_path,
+        Args$plan,
+        Args$alpha_error,
+        Args$NTID,
+        Args$model_averaging_by,
+        user_R_code = ifelse(is.null(Args$user_R_code),
+                             user_R_code,
+                             Args$user_R_code),
+        R_code_path = Args$R_code_path,
+        save_plots = ifelse(is.null(Args$save_plots),
+                            save_plots,
+                             Args$save_plots)
       )
       file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
       colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
@@ -1725,6 +1745,7 @@ run_mbbe_json <- function(Args.json) {
 #' @param model_averaging_by Character string (default: "study"). Method of model averaging, either "study" or "subject".
 #' @param user_R_code Logical (default: FALSE). Should custom R code be used for model penalty?
 #' @param R_code_path Character string. If `user_R_code` is TRUE, this parameter defines the path to the custom R script.
+#' @param save_plots Logical (default: \code{FALSE}). Set to \code{TRUE} to save plot output.
 #'
 #' @details
 #' This function is primarily intended to be called by `run_mbbe_json`, which provides input parameters through a JSON configuration.
@@ -1738,37 +1759,47 @@ run_mbbe_json <- function(Args.json) {
 #' - `BICS`: Bayesian Information Criterion Scores
 #'
 #' @export
-run_mbbe <- function(crash_value, ngroups,
-                     reference_groups, test_groups,
-                     num_parallel, samp_size,
-                     run_dir, model_source,
-                     nmfe_path, delta_parms,
+run_mbbe <- function(crash_value,
+                     ngroups,
+                     reference_groups,
+                     test_groups,
+                     num_parallel,
+                     samp_size,
+                     run_dir,
+                     model_source,
+                     nmfe_path,
+                     delta_parms,
                      use_check_identifiable,
-                     NCA_end_time, rndseed,
+                     NCA_end_time,
+                     rndseed,
                      simulation_data_path,
                      plan = c("multisession", "sequential", "multicore"),
-                     alpha_error = 0.05, NTID = FALSE,
+                     alpha_error = 0.05,
+                     NTID = FALSE,
                      model_averaging_by = "study",
-                     user_R_code = FALSE, R_code_path="") {
-  tictoc::tic()
-  if (unlink(run_dir, recursive = TRUE, force = TRUE)) {
-    stop("Unable to delete run directory ", run_dir," is a file or a command line open in that directory?")
-  }
+                     user_R_code = FALSE,
+                     R_code_path = "",
+                     save_plots = FALSE) {
 
-  # setup all models
-  if (plan == "multisession") {
-    old_plan <-
-      future::plan(future::multisession, workers = num_parallel)
-  } else if (plan == "multicore") {
-    old_plan <- future::plan(future::multicore, workers = num_parallel)
-  } else if (plan == "sequential") {
-    old_plan <- future::plan(future::sequential)
-  }
+  tictoc::tic()
+
+  plan <- match.arg(plan)
 
   oldOptions <- options()
-  on.exit(options(oldOptions))
+  oldPlan <- future::plan()
+  on.exit(options(oldOptions), add = TRUE)
+  on.exit(future::plan(oldPlan), add = TRUE)
   options(future.globals.onReference = "error")
-  on.exit(future::plan(old_plan))
+
+  if (plan == "multisession") {
+    future::plan(future::multisession, workers = num_parallel)
+  } else if (plan == "multicore") {
+    future::plan(future::multicore, workers = num_parallel)
+  } else if (plan == "sequential") {
+    future::plan(future::sequential)
+  }
+
+
   message(format(Sys.time(), digits = 0), " Start time\nModel file(s) =")
   for(this_model in model_source){message(this_model)}
   message("reference groups = ", toString(reference_groups),
@@ -1804,31 +1835,9 @@ run_mbbe <- function(crash_value, ngroups,
       message("Not using post run R code for model averaging selection")
        }
 
-  path_parents <- split_path(run_dir)
-  cur_path <- path_parents[1]
-  for (this_parent in 2:length(path_parents)) {
-    cur_path <- file.path(cur_path, path_parents[this_parent])
-    if (!dir.exists(cur_path)) {
-      dir.create(cur_path)
-    }
-  }
   message("BICs values will be written to ", file.path(run_dir,"BIC.csv"))
   message("Total Model averaging penalties will be written to ", file.path(run_dir,"Total_penalties.csv"))
   set.seed(rndseed)
-#
-#
-#   run_dir,
-#   samp_size,
-#   model_list,
-#   ngroups,
-#   reference_groups,
-#   test_groups,
-#   nmfe_path,
-#   use_check_identifiable,
-#   simulation_data_path,
-#   user_R_code,
-#   R_code_path = NULL) {
-
 
   msg <- check_requirements(
     run_dir, samp_size, model_source, ngroups,
@@ -1894,7 +1903,8 @@ run_mbbe <- function(crash_value, ngroups,
             samp_size,
             nmodels,
             reference_groups,
-            test_groups
+            test_groups,
+            savePlots = save_plots
           )
 
           message(format(Sys.time(), digits = 0), " Done making plots, calculating power")
@@ -1906,7 +1916,6 @@ run_mbbe <- function(crash_value, ngroups,
         } else {
           all_results <- NULL
         }
-        future::plan(old_plan)
         if (!is.null(all_results)) {
           output_file <- file.path(run_dir, "All_results.csv")
           count <- 0

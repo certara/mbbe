@@ -24,7 +24,8 @@ run_mbbe(
   NTID = FALSE,
   model_averaging_by = "study",
   user_R_code = FALSE,
-  R_code_path = ""
+  R_code_path = "",
+  save_plots = FALSE
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ run_mbbe(
 \item{user_R_code}{Logical (default: FALSE). Should custom R code be used for model penalty?}
 
 \item{R_code_path}{Character string. If \code{user_R_code} is TRUE, this parameter defines the path to the custom R script.}
+
+\item{save_plots}{Logical (default: \code{FALSE}). Set to \code{TRUE} to save plot output.}
 }
 \value{
 A list containing:
