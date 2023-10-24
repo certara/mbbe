@@ -36,7 +36,7 @@ Imports:
   nlme,
   emmeans,
   future,
-  furrr,
+  furrr (>= 0.3.1),
   processx,
   tictoc,
   ggplot2,
