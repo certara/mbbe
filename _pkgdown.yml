@@ -1,0 +1,20 @@
+template:
+  params:
+    bootswatch: united
+navbar:
+  structure:
+    left:  [home, reference, articles, news, CertaraR]
+    right: [github]
+    navbar:
+  components:
+    home: ~
+    articles:
+     text: Vignettes
+     menu:
+     - text: Introduction
+       href: articles/Introduction.html
+     - text: Step by Step
+       href: articles/Step-by-Step.html
+    CertaraR:
+     text: Certara.R
+     href: https://certara.github.io/R-Certara/index.html
