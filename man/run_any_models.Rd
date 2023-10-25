@@ -4,7 +4,7 @@
 \alias{run_any_models}
 \title{run_any_models}
 \usage{
-run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS)
+run_any_models(nmfe_path, run_dir, nmodels, samp_size, num_parallel, BS)
 }
 \arguments{
 \item{nmfe_path}{path to nmfe??.bat}
@@ -15,10 +15,12 @@ run_any_models(nmfe_path, run_dir, nmodels, samp_size, BS)
 
 \item{samp_size}{how many samples are there}
 
+\item{num_parallel}{number of models to run in parallel}
+
 \item{BS}{logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation}
 }
 \description{
-run the bootstrap or monte carlo models/samples
+run the bootstrap or Monte Carlo models/samples
 This function can use, if available, parallel execution with multicore or multisession
 The plan is set in run_mbbe
 }

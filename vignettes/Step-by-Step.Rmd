@@ -10,7 +10,8 @@ vignette: >
 ```{r options, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = ""
+  
 )
 ```
 
@@ -41,7 +42,7 @@ if( .Platform$OS.type == "windows" )
   models_path <- str_replace_all(models_path,"//","\\")
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(models_path)
 ```
 
@@ -65,7 +66,7 @@ if( .Platform$OS.type == "windows" )
   models_path <- str_replace_all(models_path,"//","\\")
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(models_path)
 ```
 
@@ -75,7 +76,7 @@ cat(models_path)
 
 \|;;;; Start EST.
 
-must appear immediately before the \$EST record.The reason for these two requirements is that the simulation control files are constructed from the analysis control files. All content in the analysis control file is copied, then everything after the line
+must appear immediately before the \$EST record. The reason for these two requirements is that the simulation control files are constructed from the analysis control files. All content in the analysis control file is copied, then everything after the line
 
 \|;;;; Start EST
 
@@ -85,9 +86,9 @@ is removed and replace with a \$SIM record, followed by the theta estimates extr
 
 -   PERIOD
 
--   SEQ
+-   SEQl
 
-and so these data must be available, either in the data set or calculated in the analysis control file. In addition the \$DATA record is editted to reference the simulation data set, rather than the anaysis data Note that the \$\$INPUT record is preserved between the analysis control file and the generated simulation control file, and so the structure of the analysis and simulation data sets must be the same.
+and so these data must be available, either in the data set or calculated in the analysis control file. In addition the \$DATA record is editted to reference the simulation data set, rather than the analysis data Note that the \$\$INPUT record is preserved between the analysis control file and the generated simulation control file, and so the structure of the analysis and simulation data sets must be the same.
 
 If identifiability check is requested, then the option "SADDLE_RESET=1" must be included in the \$ESTIMATION record.
 
@@ -104,7 +105,7 @@ if( .Platform$OS.type == "windows" )
   data_sim_path <- str_replace_all(data_sim_path,"//","\\")
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(data_path)
 cat(data_sim_path)
 ```
@@ -119,7 +120,7 @@ if( .Platform$OS.type == "windows" )
   MBBE_file <- str_replace_all(MBBE_file,"//","\\")
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(MBBE_file) 
 ```
 
@@ -163,7 +164,7 @@ if( .Platform$OS.type == "windows" )
   Rcode_path <- str_replace_all(Rcode_path,"//","\\")
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(Rcode_path)
 ```
 
@@ -178,7 +179,7 @@ if( .Platform$OS.type == "windows" )
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 cat(MBBE_file)
 ```
 
@@ -188,7 +189,7 @@ The key-value pairs are:
 
 ##### "run_dir":
 
-(string) parent directory where NONMEM is to be run. The bootstrap runs will be execucted in run_dir/modelM/N
+(string) parent directory where NONMEM is to be run. The bootstrap runs will be executed in run_dir/modelM/N
 
 Where M is the model number and N is the bootstrap sample number. The output (.lst) and xml (.xml) files will be bsSampM_N.lst and bsSampM_N.xml
 
@@ -315,3 +316,19 @@ run_dir/MBBEpower[data-time].csv
 where [data-time] is the analysis completion date and time.
 
 All statistical results are written to run_dir/All_results.csv.
+
+## Running the example.
+
+An example can run run using the provide contol files, data sets and mbbe options file with the command:
+
+mbbe::run_example(run_dir, nmfe??.bat, plan)
+
+where:
+
+run_dir is the parent directory for NONMEM execution
+
+nmfe??.bat is the full path the the nmfe??.bat file, where ?? is the NONMEM version (e.g., c:/nmfe74/util/nmfe74.bat)
+
+plan is one of "sequential", "multicore", "multisession" with an option of "multisession"
+
+The num_parallel will be set to the number of cores -1 or 1 if there is only 1 core, and the analysis executed. Execution on a 32 core machine takes \~20 minutes. The sample size for the bootstrap and Monte Carlo simulation is set to only 5, which will give a very poor estimate of power. That said the simulation data set has a very different Cmax for Test vs Reference, but a similar AUC, and the power estimate will reflect this, with power =0 for Cmax and power = 1 for both AUClast and AUCinf.

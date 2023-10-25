@@ -1,7 +1,7 @@
 $PROBLEM    Simulated BE
 $INPUT      ID TIME AMT RATE CMT CMTT DV WT EGFR AGE COV1 COV2 EVID
             PERIOD GROUP TRT SEQ
-$DATA      data.csv IGNORE=@ REWIND
+$DATA       data.csv IGNORE=@ REWIND
 $OMEGA
  1  FIX  ;  ETA(1) CL
  1  FIX  ;  ETA(2) V2

@@ -5,9 +5,113 @@
 #' @importFrom processx run
 #' @import stringr
 #' @import ps
+#' @import parallel
 NULL
 
 `%>%` <- magrittr::`%>%`
+#'  run_example for Model-Based BE Assessment
+#'
+#' This function calls the example models (model1-5.mod), performs the bootstrap, model averaging and the Monte Carlo simulation.
+#'
+#' @param run_dir Character string specifying the directory containing the parent folder where the models are to be run.
+#' @param nmfe_path Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).
+#' @param Plan for future execution, one of "sequential", "multisession","multicore", Default is multisession
+#'
+#' @details The function executes the mbbe::run_mbbe_json() function. A user supplied installation of NONMEM is required
+#'  run_dir is the parent folder where the models are to be run, nmfe_path is the path the nmfe??.bat where ?? is the version of NONMEM available
+#'  plan is "sequential", "multisession","multicore", defining the plan for parallel execution (sequential is non-parallel execution)
+#'  The function uses the inluded file mbbeargs.json as the options file for the run, and runs 5 supplied models for model averaging.
+#'  Monte Carlo Simulation is then done, with the number of samples set in the mbbearg.json file, to 10 (probaby more would be appropriate for
+#'  and actual power analysis)
+#'  The model selection for the model averaging also includes a penalty calculate by the script RPenaltyCode.r for missing Cmax, AUCinf and AUClast
+#'  Run time on 32 cores is ~40 minutes
+#'  and the output should include:
+#' @examples
+#' \dontrun{
+#' mbbe::run_examples("c:/mbbe","c:/nm74/util/nmfe74.bat","multisession")
+#' }
+#' @export
+run_example <- function(run_dir, nmfe_bat, plan = "multisession") {
+  message("if ", run_dir," exists, a dialog will appear asking permission to remove it, it may not be on top")
+  if(dir.exists(run_dir)){
+    OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
+    if(!is.na(OK)){
+      if(OK){
+        message("Continuing")
+        unlink(run_dir, recursive = TRUE, force = TRUE)
+        dir.create(run_dir)
+      }else{
+        stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
+      }
+    }else{
+      stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
+    }
+  } else {
+    dir.create(run_dir)
+  }
+  #library(parallel)
+
+  n_cores <- detectCores() - 1
+  if(n_cores == 0){n_cores <- 1}
+  mbbe_example_args <- system.file(package = "mbbe", "examples","mbbeargs.json")
+  message("Running example MBBE analysis from options file ", mbbe_example_args)
+  message("Estimated run time for example = ", round(1200*0.5/n_cores,0)," minutes")
+  Args <- RJSONIO::fromJSON(mbbe_example_args)
+  Args$num_parallel <- n_cores
+  Args$nmfe_path <- nmfe_bat
+  Args$simulation_data_path <- nmfe_bat
+  Args$plan <- plan
+  mbbe_example_files <- file.path(system.file(package = "mbbe", "examples"), Args$model_source)
+
+  sapply(mbbe_example_files, function(x) {
+    if (!file.copy(x, file.path(run_dir, basename(x)))) {
+      stop("Could not copy ", x, " to ", run_dir)
+    }
+  })
+  new_example_files <- file.path(run_dir, Args$model_source)
+  Args$model_source <- new_example_files
+  Args$run_dir <- file.path(run_dir,"example")
+  new_data_file <- file.path(system.file(package = "mbbe", "examples", "data.csv"))
+  for(model_path in new_example_files){
+    #model_path <- file.path(run_dir, paste0("model",i,".mod"))
+    model_file <- suppressWarnings(readLines(model_path))
+    model_file[4] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
+                         paste0("$DATA ", new_data_file, " IGNORE=@"),
+                         model_file[4])
+    con <- file(model_path, "w")
+    writeLines(model_file, con)
+    close(con)
+
+  }
+  Args$simulation_data_path <- new_data_file
+  return <- run_mbbe(
+    Args$crash_value,
+    Args$ngroups,
+    Args$reference_groups,
+    Args$test_groups,
+    Args$num_parallel,
+    Args$samp_size,
+    Args$run_dir,
+    Args$model_source,
+    Args$nmfe_path,
+    Args$delta_parms,
+    Args$use_check_identifiable,
+    Args$NCA_end_time,
+    Args$rndseed,
+    Args$simulation_data_path,
+    Args$plan,
+    Args$alpha_error,
+    Args$NTID,
+    Args$model_averaging_by,
+    user_R_code = ifelse(is.null(Args$user_R_code),
+                         user_R_code,
+                         Args$user_R_code),
+    R_code_path = Args$R_code_path,
+    save_plots = ifelse(is.null(Args$save_plots),
+                        save_plots,
+                        Args$save_plots)
+  )
+}
 
 #' delete_files
 #'
@@ -106,9 +210,9 @@ check_requirements <- function(run_dir,
                                simulation_data_path,
                                user_R_code,
                                R_code_path = NULL) {
-
     if(dir.exists(run_dir)){
-       OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
+      message("A dialog asking permission to remove ", run_dir, " will appear, it may not be on top")
+      OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
       if(!is.na(OK)){
         if(OK){
           message("Continuing")
@@ -519,7 +623,7 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 }
 #' run_any_models
 #'
-#' run the bootstrap or monte carlo models/samples
+#' run the bootstrap or Monte Carlo models/samples
 #' This function can use, if available, parallel execution with multicore or multisession
 #' The plan is set in run_mbbe
 #'
@@ -527,19 +631,20 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many samples are there
+#' @param num_parallel number of models to run in parallel
 #' @param BS logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation
 #' @export
 #' @examples
 #' \dontrun{
 #' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
 #' }
-run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
+run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, num_parallel, BS) {
 
   if (BS) {
     rval <- tryCatch(
       {
         total_runs <- samp_size * nmodels
-        message(format(Sys.time(), digits = 0), " Starting bootstrap sample models, total number = ", total_runs)
+        message(format(Sys.time(), digits = 0), " Starting bootstrap sample models, total number = ", total_runs, " with ", num_parallel," in parallel" )
         message("Progress bar is NONMEM bootstrap models started")
         output <- furrr::future_map(1:total_runs, function(this_num) {
           tryCatch(
@@ -557,7 +662,7 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
         }, .progress = TRUE, .options = furrr::furrr_options(seed = NULL))
       },
       error = function(cond) {
-        message("Failed running bootstrap in run_any_models, ", cond)
+        message("Failed running bootstrap in run_any_models for bootstrap, ", cond)
         return(FALSE)
       }
     )
@@ -573,7 +678,7 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, BS) {
               run_one_model(run_dir, nmfe_path, NULL, this_num, FALSE)
             },
             error = function(cond) {
-              message("Failed to run simulation in run_any_models, ", cond)
+              message("Failed to run simulation in run_any_models for Monte Carlo Simulation, ", cond)
               return(NULL)
             }
           )
@@ -1814,7 +1919,7 @@ run_mbbe <- function(crash_value,
   message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
   message("Narrow Therapeutic Index  = ", NTID)
   message("Alpha error rate for bioqulvalence testing = ", alpha_error)
-  message("Number parallel runs for bootstrap, simulations and NCA =", num_parallel)
+  message("Number parallel runs for bootstrap, simulations and NCA = ", num_parallel)
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
@@ -1858,7 +1963,7 @@ run_mbbe <- function(crash_value,
       message(format(Sys.time(), digits = 0), " Sampling data 1-", samp_size, " writing data to ", file.path(run_dir, "data_sampM.csv"), " where M is the bootstrap sample number")
       sample_data(run_dir, nmodels, samp_size)
       message(format(Sys.time(), digits = 0), " Starting bootstrap runs 1-", samp_size, " in ", file.path(run_dir, "modelN", "M"), " where N is the model number and M is the sample number")
-      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, TRUE)) {
+      if (!run_any_models(nmfe_path, run_dir, nmodels, samp_size, num_parallel, TRUE)) {
         message("Failed bootstrap")
       } else {
         # need to wait until all are done, this returns when all are started.
@@ -1880,7 +1985,7 @@ run_mbbe <- function(crash_value,
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
         final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, simulation_data_path) # don't really do anything with final models, already written to disc
         message(format(Sys.time(), digits = 0), " Running simulation models 1-", samp_size, " in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
-        if (run_any_models(nmfe_path, run_dir, NULL, samp_size, FALSE)) {
+        if (run_any_models(nmfe_path, run_dir, NULL, samp_size, num_parallel, FALSE)) {
           message("\n", format(Sys.time(), digits = 0), " Calculating NCA parameters for simulations 1-", samp_size, ", writing to ", file.path(run_dir, "MBBEsimM", "NCAresultsM.csv"), ",  where M is the simulation number")
           if (model_averaging_by == "subject") {
             message("\n Note the NCA parameters are by study, prior random selection by subject for model averaging")
