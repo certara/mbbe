@@ -5,116 +5,9 @@
 #' @importFrom processx run
 #' @import stringr
 #' @import ps
-#' @import parallel
 NULL
 
 `%>%` <- magrittr::`%>%`
-#'  run_example for Model-Based BE Assessment
-#'
-#' This function calls the example models (model1-5.mod), performs the bootstrap, model averaging and the Monte Carlo simulation.
-#'
-#' @param run_dir Character string specifying the directory containing the parent folder where the models are to be run.
-#' @param nmfe_path Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).
-#' @param Plan for future execution, one of "sequential", "multisession","multicore", Default is multisession
-#'
-#' @details The function executes the mbbe::run_mbbe_json() function. A user supplied installation of NONMEM is required
-#'  run_dir is the parent folder where the models are to be run, nmfe_path is the path the nmfe??.bat where ?? is the version of NONMEM available
-#'  plan is "sequential", "multisession","multicore", defining the plan for parallel execution (sequential is non-parallel execution)
-#'  The function uses the inluded file mbbeargs.json as the options file for the run, and runs 5 supplied models for model averaging.
-#'  Monte Carlo Simulation is then done, with the number of samples set in the mbbearg.json file, to 10 (probaby more would be appropriate for
-#'  and actual power analysis)
-#'  The model selection for the model averaging also includes a penalty calculate by the script RPenaltyCode.r for missing Cmax, AUCinf and AUClast
-#'  Run time on 32 cores is ~40 minutes
-#'  and the output should include:
-#' @examples
-#' \dontrun{
-#' mbbe::run_examples("c:/mbbe","c:/nm74/util/nmfe74.bat","multisession")
-#' }
-#' @export
-run_example <- function(run_dir, nmfe_bat, plan = "multisession") {
-  message("if ", run_dir," exists, a dialog will appear asking permission to remove it, it may not be on top")
-  if(dir.exists(run_dir)){
-    OK <- utils::askYesNo(paste("MBBE will delete the folder", run_dir, ", is this OK? (Yes|No)\n"))
-    if(!is.na(OK)){
-      if(OK){
-        message("Continuing")
-        unlink(run_dir, recursive = TRUE, force = TRUE)
-        dir.create(run_dir)
-      }else{
-        stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
-      }
-    }else{
-      stop("Removing the run directory is required, consider changing the run directory to one that can be removed, Exiting\n")
-    }
-  } else {
-    dir.create(run_dir)
-  }
-  library(parallel)
-
-  n_cores <- detectCores() - 1
-  if(n_cores == 0){n_cores <- 1}
-  mbbe_example_args <- system.file(package = "mbbe", "examples","mbbeargs.json")
-  message("Running example MBBE analysis from options file ", mbbe_example_args)
-  message("Estimated run time for example = ", round(1200*0.5/n_cores,0)," minutes")
-  R_code_path <- system.file(package = "mbbe", "examples","RPenaltyCode.r")
-  Args <- RJSONIO::fromJSON(mbbe_example_args)
-  Args$num_parallel <- n_cores
-  Args$nmfe_path <- nmfe_bat
-  Args$simulation_data_path <- nmfe_bat
-  Args$plan <- plan
-  mbbe_example_files <- file.path(system.file(package = "mbbe", "examples"), Args$model_source)
-
-  sapply(mbbe_example_files, function(x) {
-    if (!file.copy(x, file.path(run_dir, basename(x)))) {
-      stop("Could not copy ", x, " to ", run_dir)
-    }
-  })
-
-  new_example_files <- file.path(run_dir, Args$model_source)
-  Args$model_source <- new_example_files
-  Args$run_dir <- file.path(run_dir,"example")
-  Args$R_code_path <- R_code_path
-  new_data_file <- file.path(system.file(package = "mbbe", "examples", "data.csv"))
-  for(model_path in new_example_files){
-    #model_path <- file.path(run_dir, paste0("model",i,".mod"))
-    model_file <- suppressWarnings(readLines(model_path))
-    model_file[4] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
-                         paste0("$DATA ", new_data_file, " IGNORE=@"),
-                         model_file[4])
-    con <- file(model_path, "w")
-    writeLines(model_file, con)
-    close(con)
-
-  }
-  Args$simulation_data_path <- new_data_file
-  return <- run_mbbe(
-    Args$crash_value,
-    Args$ngroups,
-    Args$reference_groups,
-    Args$test_groups,
-    Args$num_parallel,
-    Args$samp_size,
-    Args$run_dir,
-    Args$model_source,
-    Args$nmfe_path,
-    Args$delta_parms,
-    Args$use_check_identifiable,
-    Args$NCA_end_time,
-    Args$rndseed,
-    Args$simulation_data_path,
-    Args$plan,
-    Args$alpha_error,
-    Args$NTID,
-    Args$model_averaging_by,
-    user_R_code = ifelse(is.null(Args$user_R_code),
-                         user_R_code,
-                         Args$user_R_code),
-    R_code_path = Args$R_code_path,
-    save_plots = ifelse(is.null(Args$save_plots),
-                        save_plots,
-                        Args$save_plots)
-  )
-}
 
 #' delete_files
 #'
@@ -1854,6 +1747,7 @@ run_mbbe_json <- function(Args.json) {
 #' @param user_R_code Logical (default: FALSE). Should custom R code be used for model penalty?
 #' @param R_code_path Character string. If `user_R_code` is TRUE, this parameter defines the path to the custom R script.
 #' @param save_plots Logical (default: \code{FALSE}). Set to \code{TRUE} to save plot output.
+#' @param ... Additional args
 #'
 #' @details
 #' This function is primarily intended to be called by `run_mbbe_json`, which provides input parameters through a JSON configuration.
@@ -1887,7 +1781,8 @@ run_mbbe <- function(crash_value,
                      model_averaging_by = "study",
                      user_R_code = FALSE,
                      R_code_path = "",
-                     save_plots = FALSE) {
+                     save_plots = FALSE,
+                     ...) {
 
   tictoc::tic()
 
@@ -1947,6 +1842,10 @@ run_mbbe <- function(crash_value,
   message("Total Model averaging penalties will be written to ", file.path(run_dir,"Total_penalties.csv"))
   set.seed(rndseed)
 
+  additional_args <- list(...)
+  if (!is.null(additional_args$bypass_check) && additional_args$bypass_check) {
+    msg <- list(rval=TRUE)
+  } else {
   msg <- check_requirements(
     run_dir, samp_size, model_source, ngroups,
     reference_groups, test_groups, nmfe_path,
@@ -1955,6 +1854,7 @@ run_mbbe <- function(crash_value,
     user_R_code,
     R_code_path
   )
+  }
   if (msg$rval) {
     message(
       "Passed requirements check\nCopying source control files from ", toString(model_source), " to ", file.path(run_dir, "modelN"),

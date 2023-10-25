@@ -25,7 +25,8 @@ run_mbbe(
   model_averaging_by = "study",
   user_R_code = FALSE,
   R_code_path = "",
-  save_plots = FALSE
+  save_plots = FALSE,
+  ...
 )
 }
 \arguments{
@@ -70,6 +71,8 @@ run_mbbe(
 \item{R_code_path}{Character string. If \code{user_R_code} is TRUE, this parameter defines the path to the custom R script.}
 
 \item{save_plots}{Logical (default: \code{FALSE}). Set to \code{TRUE} to save plot output.}
+
+\item{...}{Additional args}
 }
 \value{
 A list containing:
