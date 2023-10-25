@@ -49,13 +49,14 @@ run_example <- function(run_dir, nmfe_bat, plan = "multisession") {
   } else {
     dir.create(run_dir)
   }
-  #library(parallel)
+  library(parallel)
 
   n_cores <- detectCores() - 1
   if(n_cores == 0){n_cores <- 1}
   mbbe_example_args <- system.file(package = "mbbe", "examples","mbbeargs.json")
   message("Running example MBBE analysis from options file ", mbbe_example_args)
   message("Estimated run time for example = ", round(1200*0.5/n_cores,0)," minutes")
+  R_code_path <- system.file(package = "mbbe", "examples","RPenaltyCode.r")
   Args <- RJSONIO::fromJSON(mbbe_example_args)
   Args$num_parallel <- n_cores
   Args$nmfe_path <- nmfe_bat
@@ -68,9 +69,11 @@ run_example <- function(run_dir, nmfe_bat, plan = "multisession") {
       stop("Could not copy ", x, " to ", run_dir)
     }
   })
+
   new_example_files <- file.path(run_dir, Args$model_source)
   Args$model_source <- new_example_files
   Args$run_dir <- file.path(run_dir,"example")
+  Args$R_code_path <- R_code_path
   new_data_file <- file.path(system.file(package = "mbbe", "examples", "data.csv"))
   for(model_path in new_example_files){
     #model_path <- file.path(run_dir, paste0("model",i,".mod"))
