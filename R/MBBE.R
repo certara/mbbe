@@ -1797,7 +1797,6 @@ run_mbbe <- function(crash_value,
   oldPlan <- future::plan()
   on.exit(options(oldOptions), add = TRUE)
   on.exit(future::plan(oldPlan), add = TRUE)
-  options(future.globals.onReference = "error")
 
   if (plan == "multisession") {
     future::plan(future::multisession, workers = num_parallel)
