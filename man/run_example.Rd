@@ -4,12 +4,14 @@
 \alias{run_example}
 \title{run_example for Model-Based BE Assessment}
 \usage{
-run_example(run_dir, nmfe_path, plan = "multisession")
+run_example(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "multisession")
 }
 \arguments{
 \item{run_dir}{Character string specifying the directory containing the parent folder where the models are to be run.}
 
 \item{nmfe_path}{Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).}
+
+\item{Include_R_Code}{Logical, whether the include the code in R_Penalty_Code in model averaging algorithm, Deafult is FALSE}
 
 \item{plan}{for future execution, one of "sequential", "multisession","multicore", Default is multisession}
 }
@@ -20,15 +22,15 @@ This function calls the example models (model1-5.mod), performs the bootstrap, m
 The function executes the mbbe::run_mbbe_json() function. A user supplied installation of NONMEM is required
 run_dir is the parent folder where the models are to be run, nmfe_path is the path the nmfe??.bat where ?? is the version of NONMEM available
 plan is "sequential", "multisession","multicore", defining the plan for parallel execution (sequential is non-parallel execution)
-The function uses the inluded file mbbeargs.json as the options file for the run, and runs 5 supplied models for model averaging.
+The function uses the included file mbbeargs.json as the options file for the run, and runs 5 supplied models for model averaging.
 Monte Carlo Simulation is then done, with the number of samples set in the mbbearg.json file, to 10 (probaby more would be appropriate for
 and actual power analysis)
 The model selection for the model averaging also includes a penalty calculate by the script RPenaltyCode.r for missing Cmax, AUCinf and AUClast
-Run time on 32 cores is ~40 minutes
+Run time on 32 cores is ~3 minutes without the R code execution an 10 minutes with
 and the output should include:
 }
 \examples{
 \dontrun{
-mbbe::run_example("c:/mbbe","c:/nm74/util/nmfe74.bat","multisession")
+mbbe::run_example("c:/mbbe/example","c:/nm74g64/util/nmfe74.bat","multisession")
 }
 }

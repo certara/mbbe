@@ -26,8 +26,7 @@ URL: https://github.com/certara/mbbe
 BugReports: https://github.com/certara/mbbe/issues
 License: LGPL-3
 Encoding: UTF-8
-Imports:
-  RJSONIO,
+Imports: 
   dplyr,
   stringr,
   xml2,
@@ -40,7 +39,8 @@ Imports:
   processx,
   tictoc,
   ggplot2,
-  ps
+  ps,
+  jsonlite
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 

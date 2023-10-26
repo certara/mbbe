@@ -4,6 +4,7 @@
 #' @rawNamespace import(future, except = run)
 #' @importFrom processx run
 #' @import stringr
+#' @importFrom jsonlite fromJSON
 #' @import ps
 NULL
 
@@ -1652,8 +1653,9 @@ run_mbbe_json <- function(Args.json) {
   } else {
     user_R_code  <- FALSE # default value
     save_plots <- FALSE
+    bypass_check <-  FALSE
     R_code_path <- NULL
-    Args <- RJSONIO::fromJSON(Args.json)
+    Args <- jsonlite::fromJSON(Args.json)
     all_args <- list(
       Args$crash_value, Args$ngroups, Args$reference_groups, Args$test_groups, Args$num_parallel, Args$samp_size, Args$run_dir, Args$model_source,
       Args$nmfe_path, Args$delta_parms, Args$use_check_identifiable, Args$NCA_end_time, Args$rndseed,
@@ -1710,7 +1712,10 @@ run_mbbe_json <- function(Args.json) {
         R_code_path = Args$R_code_path,
         save_plots = ifelse(is.null(Args$save_plots),
                             save_plots,
-                             Args$save_plots)
+                             Args$save_plots),
+        bypass_check = ifelse(is.null(Args$bypass_check),
+                              bypass_check,
+                              Args$bypass_check)
       )
       file_out <- data.frame(return$Cmax_power, return$AUClast_power, return$AUCinf_power)
       colnames(file_out) <- c("Cmax power", "AUClast power", "AUCinf power")
@@ -1884,6 +1889,7 @@ run_mbbe <- function(crash_value,
 
         }
 
+
         base_models <- get_base_model(run_dir, nmodels) # get all nmodels base model
         message(format(Sys.time(), digits = 0), " Constructing simulation  models in ", file.path(run_dir, "MBBEsimM"), " where M is the simulation number")
         final_models <- write_sim_controls(run_dir, parms, base_models, samp_size, simulation_data_path) # don't really do anything with final models, already written to disc
@@ -1915,7 +1921,8 @@ run_mbbe <- function(crash_value,
             savePlots = save_plots
           )
 
-          message(format(Sys.time(), digits = 0), " Done making plots, calculating power")
+          message(format(Sys.time(), digits = 0), " Plots are saved in ", run_dir)
+          message(format(Sys.time(), digits = 0), " Calculating power")
           # read NCA output and do stats
           all_results <- calc_power(run_dir, samp_size,
                                     alpha = alpha_error,
