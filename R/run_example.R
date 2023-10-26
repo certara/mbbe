@@ -48,8 +48,14 @@ run_example <- function(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "mult
 
   n_cores <- future::availableCores() - 1
   if(n_cores == 0){n_cores <- 1}
-  base_ET <- 200
-  if(Include_R_Code) base_ET <- 500
+  if(Include_R_Code) {
+    base_ET <- 500
+    message("R code in ", file.path(run_dir,"RPenaltyCode.R")," will be used to calculate additional penalty for Model averaging")
+  }else{
+    base_ET <- 200
+    message("No additional penalty for model averaging will be used")
+  }
+  message("MBBE will be run ", n_cores," x parallel")
   message("Estimated run time for example = ", round(base_ET*0.5/n_cores, 0)," minutes")
 
   mbbe_example_dir <- system.file(package = "mbbe", "examples")
