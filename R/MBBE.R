@@ -1096,13 +1096,13 @@ check_identifiable <- function(run_dir,
         Post.parms <- ext %>%
           dplyr::filter(ITERATION == last.iteration)
         # nparms <- length(Pre.parms)  # includes the first column - 'ITERATION'
-        Passes_identifiability <- TRUE
+        passes_identifiability <- TRUE
 
         for (this_parm in 2:nparms) {
           if (Post.parms[this_parm] != 0) {
             difference <- abs((Pre.parms[this_parm] - Post.parms[this_parm]) / Post.parms[this_parm])
             if (difference > delta_parms) {
-              Passes_identifiability <- FALSE
+              passes_identifiability <- FALSE
             }
             if (difference > max_deltap) {
               max_deltap <- difference
@@ -1110,12 +1110,12 @@ check_identifiable <- function(run_dir,
             }
           }
         }
-        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
+        rval <- c(passes = passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
         names(rval) <- c("passes", "max_delta", "max_delta_parm")
         return(rval)
       },
       error = function(cond) {
-        rval <- c(passes = Passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
+        rval <- c(passes = passes_identifiability, max_delta = max_deltap, max_delta_parm = max_delta_parmp)
         names(rval) <- c("passes", "max_delta", "max_delta_parm")
         return(rval)
       }

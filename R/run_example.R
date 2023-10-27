@@ -5,7 +5,7 @@
 #'
 #' @param run_dir Character string specifying the directory containing the parent folder where the models are to be run.
 #' @param nmfe_path Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).
-#' @param Include_R_Code Logical, whether the include the code in R_Penalty_Code in model averaging algorithm, Deafult is FALSE
+#' @param Include_R_Code Logical, whether the include the code in R_Penalty_Code in model averaging algorithm, Default is FALSE
 #' @param plan for future execution, one of "sequential", "multisession","multicore", Default is multisession
 #' @importFrom jsonlite toJSON
 #' @details The function executes the mbbe::run_mbbe_json() function. A user supplied installation of NONMEM is required
@@ -101,11 +101,11 @@ run_example <- function(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "mult
     reference_groups = list(c(1, 2)),
     test_groups = list(c(3, 4)),
     num_parallel = unname(n_cores),
-    samp_size = 4,
+    samp_size = 5,
     model_source = list(model_source_files),
     nmfe_path = nmfe_path,
     delta_parms = 0.1,
-    use_check_identifiable = TRUE,
+    use_check_identifiable = FALSE,
     NCA_end_time = 72,
     rndseed = 1,
     simulation_data_path = sim_data_file,

@@ -11,7 +11,7 @@ run_example(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "multisession")
 
 \item{nmfe_path}{Character string indicating the path to the nmfe batch file (e.g., nmfe?.bat).}
 
-\item{Include_R_Code}{Logical, whether the include the code in R_Penalty_Code in model averaging algorithm, Deafult is FALSE}
+\item{Include_R_Code}{Logical, whether the include the code in R_Penalty_Code in model averaging algorithm, Default is FALSE}
 
 \item{plan}{for future execution, one of "sequential", "multisession","multicore", Default is multisession}
 }
