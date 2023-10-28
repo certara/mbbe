@@ -1825,7 +1825,7 @@ run_mbbe <- function(crash_value,
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
-  message("Simulation data set = ", simulation_data_path)
+  
   if(file.exists(simulation_data_path)){
     message("Simulation data path = ", simulation_data_path)
   }else{
