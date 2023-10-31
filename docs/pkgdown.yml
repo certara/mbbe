@@ -1,0 +1,8 @@
+pandoc: '2.18'
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  Introduction: Introduction.html
+  Step-by-Step: Step-by-Step.html
+last_built: 2023-10-31T13:40Z
+

@@ -1,4 +1,4 @@
-# mbbe <a href='https://github.com/certara/mbbe/'><img src="inst/mbbe_logo.png" align="right" style="float:right; height: 150px;" height="200"/></a>
+# mbbe <img src='vignettes/images/mbbe_logo.png' align="right"  style = "float:right; height: 150px;" />
 
 [![](https://img.shields.io/badge/devel%20version-0.1.0-green.svg)](https://github.com/certara/mbbe)
 
