@@ -347,10 +347,6 @@ split_path <- function(path, mustWork = FALSE) {
 #'
 #' @param model_source list of NONMEM model files
 #' @param run_dir Folder where models are to be run
-#' @examples
-#' \dontrun{
-#' copy_model_files("c:/mbbe/models/model1.mod","c:/mbbe/models/model2.mod"), "c:/mbbe/run")
-#' }
 #' @return nmodels how many models are there
 #'
 #'
@@ -1825,7 +1821,7 @@ run_mbbe <- function(crash_value,
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
-  
+
   if(file.exists(simulation_data_path)){
     message("Simulation data path = ", simulation_data_path)
   }else{

@@ -18,8 +18,3 @@ nmodels how many models are there
 copy NONMEM control files from a source to a run directory
 no change in control files
 }
-\examples{
-\dontrun{
-copy_model_files("c:/mbbe/models/model1.mod","c:/mbbe/models/model2.mod"), "c:/mbbe/run")
-}
-}
