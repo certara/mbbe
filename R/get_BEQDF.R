@@ -124,8 +124,8 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
       na.action = na.exclude,
       control = list(
         opt = "optim",
-        msMaxIter = 1000,
-        msMaxEval = 1000
+        msMaxIter = 10000,
+        msMaxEval = 10000
       )
     )
 
