@@ -2,6 +2,12 @@
 
 [![](https://img.shields.io/badge/devel%20version-0.1.0-green.svg)](https://github.com/certara/mbbe)
 
+## Installation
+
+```r
+remotes::install_github("certara/mbbe")
+```
+
 ## Model Based Bioequivalence (MBBE)
 
 Funded by FDA/NIH grant 1U01FD007355\
