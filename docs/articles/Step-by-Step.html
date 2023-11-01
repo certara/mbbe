@@ -180,7 +180,7 @@ Example models (model1.mod - model5.mod) are at:</p>
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>[<span class="dv">54</span>] <span class="st">"  ;;;; Start EST"</span>                                                                                            </span>
 <span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>[<span class="dv">55</span>] <span class="st">"$ESTIMATION METHOD=0  MAX=9999 NOABORT PRINT=50"</span>                                                             </span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>[<span class="dv">56</span>] <span class="st">"$THETA"</span>                                                                                                      </span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>[<span class="dv">57</span>] <span class="st">" 0.217655    </span><span class="sc">\t\t</span><span class="st">  ; THETA(1) LN(CL)"</span>                                                                        </span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>[<span class="dv">57</span>] <span class="st">" (-0.1,0.217655,1 )    </span><span class="sc">\t\t</span><span class="st">  ; THETA(1) LN(CL)"</span>                                                              </span>
 <span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>[<span class="dv">58</span>] <span class="st">" -8.01311 </span><span class="sc">\t</span><span class="st">    </span><span class="sc">\t</span><span class="st">; THETA(2) ADD ERROR"</span>                                                                      </span>
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>[<span class="dv">59</span>] <span class="st">" -2.97418 </span><span class="sc">\t\t</span><span class="st">    ; THETA(3) PROP ERROR"</span>                                                                     </span>
 <span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>[<span class="dv">60</span>] <span class="st">" -2.11537 </span><span class="sc">\t\t</span><span class="st">    ; THETA(4) LN(BSV) CL"</span>                                                                     </span>
@@ -188,12 +188,12 @@ Example models (model1.mod - model5.mod) are at:</p>
 <span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>[<span class="dv">62</span>] <span class="st">" (-2,-0.999677,1) </span><span class="sc">\t\t</span><span class="st">; THETA(6) LN(KA) reference"</span>                                                           </span>
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>[<span class="dv">63</span>] <span class="st">" (-2,-1.00021,1) </span><span class="sc">\t\t</span><span class="st">; THETA(7) LN(KA) test"</span>                                                                 </span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>[<span class="dv">64</span>] <span class="st">" (-2,-0.00145444,1)</span><span class="sc">\t</span><span class="st">; THETA(8) LN(F1) TEST"</span>                                                                 </span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>[<span class="dv">65</span>] <span class="st">" 0.0907959 </span><span class="sc">\t\t</span><span class="st">; THETA(9) init for V2"</span>                                                                       </span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>[<span class="dv">66</span>] <span class="st">" (-5,3.86313,5)</span><span class="sc">\t</span><span class="st">; THETA(10) LN(K32)"</span>                                                                        </span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>[<span class="dv">65</span>] <span class="st">" (-0.4,0.0907959,2) </span><span class="sc">\t\t</span><span class="st">; THETA(9) init for V2"</span>                                                              </span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>[<span class="dv">66</span>] <span class="st">" (-4,3.86313,5)</span><span class="sc">\t</span><span class="st">; THETA(10) LN(K32)"</span>                                                                        </span>
 <span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>[<span class="dv">67</span>] <span class="st">" (-5,-4.98,5) </span><span class="sc">\t</span><span class="st">; THETA(11) LN(K23)"</span>                                                                         </span>
 <span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>[<span class="dv">68</span>] <span class="st">" (-2,-0.500031,1)</span><span class="sc">\t</span><span class="st">; THETA(12) LN(ALAG) REFERENCE"</span>                                                           </span>
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>[<span class="dv">69</span>] <span class="st">" (-2,-0.501282,1) </span><span class="sc">\t</span><span class="st">; THETA(13) LN(ALAG) test"</span>                                                               </span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>[<span class="dv">70</span>] <span class="st">" (-10,-9.95133,0.1) </span><span class="sc">\t</span><span class="st">; THETA(14) BOVV"</span>                                                                      </span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>[<span class="dv">70</span>] <span class="st">" (-10,-9.95133,1) </span><span class="sc">\t</span><span class="st">; THETA(14) BOVV"</span>                                                                        </span>
 <span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>[<span class="dv">71</span>] <span class="st">" -0.0580956 </span><span class="sc">\t</span><span class="st">; THETA(15) CL~WT"</span>                                                                             </span>
 <span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>[<span class="dv">72</span>] <span class="st">" 0.466584 </span><span class="sc">\t\t</span><span class="st">; THETA(16) CL~AGE"</span>                                                                            </span>
 <span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>[<span class="dv">73</span>] <span class="st">" -2.01063 </span><span class="sc">\t\t</span><span class="st">; THETA(17) CL~EGFR"</span>                                                                           </span>
@@ -221,7 +221,7 @@ are:</p>
 block can be FIXed to 1 and ETAs and EPSs multiplied by a THETA, see
 examples at</li>
 </ol>
-<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/examples</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>The $ESTIMATION record, followed by the $THETA block MUST be the
 final two blocks in the control file (with the exception of any $TABLE
@@ -257,8 +257,8 @@ structure of the analysis and simulation data sets must be the same.</p>
 <h2 id="next-you-need-two-data-sets-although-they-can-be-the-same-one">Next you need two data sets (although they can be the same one)<a class="anchor" aria-label="anchor" href="#next-you-need-two-data-sets-although-they-can-be-the-same-one"></a>
 </h2>
 <p>Two formatted data set are provide here:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/examples/data.csv
-C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/examples/data_sim.csv</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/data.csv
+C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/data_sim.csv</code></pre>
 <p>Note that, in this case, these two data sets are identical. In
 general, the analysis data set, for bootstrap, will not be the same as
 the simulation data. For example, it may be the case that only sparse
@@ -273,7 +273,7 @@ BE.</p>
 <p>The analysis data set is specified on the $DATA record in the NONMEM
 control files for the bootstrap. The simulation data set is specified as
 in the MBBE specification file:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/examples/mbbeargs.json</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/mbbeargs.json</code></pre>
 <p>Several notes on the data:</p>
 <ol style="list-style-type: decimal">
 <li><p>Data item for “GROUP” (1,2 are reference, 3,4 are test in the
@@ -330,12 +330,12 @@ RPenaltyCode.R. This function requires that a 2nd problem (for
 simulation) be included in the control files. An example where
 RPenaltyCode.R returns a penalty for bias in prediction of Cmax is given
 in:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/example/RPenaltyCode.R</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/example/RPenaltyCode.R</code></pre>
 <div class="section level3">
 <h3 id="the-mbbe-specification-file">The MBBE Specification file<a class="anchor" aria-label="anchor" href="#the-mbbe-specification-file"></a>
 </h3>
 <p>An example MBBE specification file is given at:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpgHQE5D/temp_libpath4c2c58e53814/mbbe/inst/examples/mbbeargs.json</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/mbbeargs.json</code></pre>
 <p>The json file consists of key-value pairs. All pairs are required,
 except “R_code_path”: is not required if “user_R_code”: if set to
 false.</p>
