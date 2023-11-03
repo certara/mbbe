@@ -112,13 +112,18 @@ get_BEQDF <-
 #' as a result of mixed model analysis.
 #' @noRd
 get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
+  NCA.Set$ID <- as.factor(NCA.Set$ID)
+  NCA.Set$period <- as.factor(NCA.Set$period)
+  NCA.Set$sequence <- as.factor(NCA.Set$sequence)
+  NCA.Set$treatment <- as.factor(NCA.Set$treatment)
+
   modelABE <-
     nlme::lme(
       logpk ~ treatment + period + sequence,
       subset = !is.na(logpk),
       random = ~ treatment |
         ID,
-      weights = nlme::varIdent(form = ~treatment),
+      weights = nlme::varIdent(form = ~ treatment),
       data = NCA.Set,
       method = "REML",
       na.action = na.exclude,
