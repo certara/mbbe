@@ -1429,7 +1429,13 @@ calc_power <- function(run_dir,
     write.csv(all_nca_data, outfile)
   }
 
-
+# convert to factors
+  all_nca_data <- all_nca_data %>%
+    dplyr::mutate(sample = as.factor(sample),
+           ID = as.factor(ID),
+           treatment = as.factor(treatment),
+           period = as.factor(period),
+           sequence = as.factor(sequence) )
   message(format(Sys.time(), digits = 0), " Done reading NCA results, doing stats")
   if (!is.null(all_nca_data)) {
    sample_nums <- all_nca_data %>% dplyr::distinct(sample)
