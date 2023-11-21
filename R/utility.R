@@ -22,6 +22,7 @@ is.empty <- function(x, mode = NULL, ...) {
 #' \dontrun{
 #' get_block("$PROB", "$PROB test \n$INPUT ...")
 #' }
+#' @noRd
 get_block <- function(stem, control) {
   OneLineSemicolon <- "(?:;(?:\\\\\\n|[^\\n])*(?=$|\\n))"
 

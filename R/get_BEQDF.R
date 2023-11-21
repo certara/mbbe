@@ -25,7 +25,7 @@
 #'
 #' @return The data frame with results for the current `NCA.Set`.
 #'
-#'
+#' @noRd
 
 get_BEQDF <-
   function(NCA.Set = data.frame(),
@@ -110,7 +110,7 @@ get_BEQDF <-
 #'
 #' @return The ABE data frame with columns Ratio, lower.CL, upper.CL
 #' as a result of mixed model analysis.
-#'
+#' @noRd
 get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
   modelABE <-
     nlme::lme(
@@ -124,8 +124,8 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
       na.action = na.exclude,
       control = list(
         opt = "optim",
-        msMaxIter = 1000,
-        msMaxEval = 1000
+        msMaxIter = 10000,
+        msMaxEval = 10000
       )
     )
 
@@ -159,7 +159,7 @@ get_NCA.Set.ABE <- function(NCA.Set, alpha = 0.05) {
 #'
 #' @return A data frame with the RSABE results.
 #' with the columns swR, pe, critbound, VarianceCriterion
-#'
+#' @noRd
 get_NCA.Set.RSABE <-
   function(NCA.Set = data.frame(),
            alpha = 0.05,
@@ -318,6 +318,7 @@ get_NCA.Set.RSABE <-
 #'
 #' @return A data frame with the replicate numbers added.
 #'
+#' @noRd
 .get_NCA.Set.ReplicateNumber <- function(NCA.Set) {
   NCA.Set <-
     data.frame(NCA.Set[order(NCA.Set$ID, NCA.Set$treatment, NCA.Set$period), ])

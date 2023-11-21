@@ -1,14 +1,19 @@
-# mbbe <a href='https://github.com/certara/mbbe/'><img src="inst/mbbe_logo.png" align="right" style="float:right; height: 150px;" height="200"/></a>
+# mbbe <img src='vignettes/images/mbbe_logo.png' align="right"  style = "float:right; height: 150px;" />
 
 [![](https://img.shields.io/badge/devel%20version-0.1.0-green.svg)](https://github.com/certara/mbbe)
 
+## Installation
+
+```r
+remotes::install_github("certara/mbbe")
+```
+
 ## Model Based Bioequivalence (MBBE)
 
-Funded by FDA/NIH grant 1U01FD007355\
-Model Based Bioequivalence\
+Funded by FDA/NIH grant 1U01FD007355 - Model Based Bioequivalence
 
-1.  Read the nmodels (5 currently from the source directory (u:\fda\mbbe\modelaveraging\model1 - u:\fda\mbbe\modelaveraging\model5).
-2.  Parse the data file name (U:\fda\mbbe\Modelaveraging\data\_seq.csv).
+1.  Read the nmodels 
+2.  Parse the data file name 
 3.  Read the data file name, count the number of subjects.
 4.  Generate samp.size bootstrap samples (currently 100), and write to data_rep??.csv where ?? is the sample number (currently 1-100).
 5.  Edit the model file to read the data_rep??.csv file, copy new model file to b?.mod in each model?/? folder where ? is the model number (currently 1-5).
@@ -20,7 +25,7 @@ Model Based Bioequivalence\
 11. Do TOST on NCA for each Monte Carlo simulation (not done yet).
 12. Calculate power (not done yet).
 
-Command to run MBBE is:
+Command to run initialize is:
 
 ```r
 library(mbbe)

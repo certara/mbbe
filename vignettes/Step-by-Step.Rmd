@@ -52,14 +52,19 @@ example, models were selected using
 [pyDarwin](https://certara.github.io/pyDarwin/html/index.html). Example
 models (model1.mod - model5.mod) are at:
 
-```{r include=FALSE}
-models_path <- file.path(system.file(package = "mbbe"),"inst","examples")
-if( .Platform$OS.type == "windows" )
-  models_path <- str_replace_all(models_path,"//","\\")
+
+```{r}
+models_path <- system.file(package = "mbbe","examples")
 ```
 
-```{r, echo=FALSE}
-cat(models_path)
+```{r, echo=TRUE}
+list.files(models_path, pattern = "\\.mod$")
+```
+
+Let's view an example model file:
+
+```{r}
+readLines(list.files(models_path, pattern = "\\.mod$", full.names = TRUE)[1])
 ```
 
 These model need not have a \$COV record (unless that is needed for any

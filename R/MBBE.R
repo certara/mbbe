@@ -28,7 +28,7 @@ NULL
 #' nmprd4p.mod
 #' and file with the following extensions:
 #' exe, f90, grd, shk, cpu, shm, lnk, phi
-#'
+#' @noRd
 delete_files <- function(folder) {
   # need .ext for use_identifiable, keep .lst, .xml, .mod, FMSG, .shk, .shm
   # but can't delete all, need to keep $TABLE
@@ -95,7 +95,7 @@ delete_files <- function(folder) {
 #'
 #' @return \code{TRUE} if all requirements pass and \code{FALSE} if any failures.
 #'
-#' @export
+#' @noRd
 check_requirements <- function(run_dir,
                                samp_size,
                                model_list,
@@ -335,6 +335,7 @@ check_requirements <- function(run_dir,
 #' @param  path, string, path name to be split
 #' @param mustWork logical, optional, default = FALSE
 #' @returns list of path parents
+#' @noRd
 split_path <- function(path, mustWork = FALSE) {
   output <- c(strsplit(dirname(normalizePath(path, mustWork = FALSE)), "/|\\\\")[[1]], basename(path))
   return(output)
@@ -347,14 +348,10 @@ split_path <- function(path, mustWork = FALSE) {
 #'
 #' @param model_source list of NONMEM model files
 #' @param run_dir Folder where models are to be run
-#' @examples
-#' \dontrun{
-#' copy_model_files("c:/mbbe/models/model1.mod","c:/mbbe/models/model2.mod"), "c:/mbbe/run")
-#' }
 #' @return nmodels how many models are there
 #'
 #'
-#'@export
+#'@noRd
 copy_model_files <- function(model_source, run_dir) {
   if (!file.exists(run_dir)) {
     # split run_dir, check each parent
@@ -405,11 +402,11 @@ copy_model_files <- function(model_source, run_dir) {
 #' @param run_dir Folder where models are to be run
 #' @param nmodels how many models are there
 #' @param samp_size how many bootstrap samples
-#' @export
 #' @examples
 #' \dontrun{
 #' sample_data("c:/modelaveraging", 100, 4)
 #' }
+#' @noRd
 sample_data <- function(run_dir, nmodels, samp_size) {
   con <- file(file.path(run_dir, "model1", "bs1.mod"), "r")
   suppressWarnings(control <- readLines(con, encoding = "UTF-8"))
@@ -500,6 +497,7 @@ sample_data <- function(run_dir, nmodels, samp_size) {
 #' \dontrun{
 #'  run_one_model("c:/MBBE/rundir", "c:/nm74g64/util/nmfe74.bat", 1, 1, TRUE)
 #' }
+#' @noRd
 run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
   try({
     if (BS) {
@@ -530,11 +528,11 @@ run_one_model <- function(run_dir, nmfe_path, this_model, this_samp, BS) {
 #' @param samp_size how many samples are there
 #' @param num_parallel number of models to run in parallel
 #' @param BS logical TRUE = is bootstrap, FALSE is Monte Carlo Simulation
-#' @export
 #' @examples
 #' \dontrun{
 #' run.bootstrap("c:/nmfe744/util/nmfe74.bat", "c:/modelaveraging", 8)
 #' }
+#' @noRd
 run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, num_parallel, BS) {
 
   if (BS) {
@@ -603,11 +601,11 @@ run_any_models <- function(nmfe_path, run_dir, nmodels, samp_size, num_parallel,
 #' @param use_check_identifiable - logical, is check_identifiable to be used
 #' @param user_R_code - logical, whether user defined R code is to be run after the bootstrap for model averaging
 #' @param R_code_path if user_R_code is TRUE, the path to the R code to be run, default is NULL
-#' @export
 #' @examples
 #' \dontrun{
 #' get_parameters("c:/modelaveraging", 4, 100, 0.1, 999999, TRUE)
 #' }
+#' @noRd
 get_parameters <- function(run_dir, nmodels,
                            samp_size, delta_parms,
                            crash_value, use_check_identifiable,
@@ -850,12 +848,12 @@ get_parameters <- function(run_dir, nmodels,
 #'
 #' @param run_dir directory where models are run
 #' @param nmodels how many models are there
-#' @export
 #' @examples
 #' \dontrun{
 #' get_base_model("c:/mbbe/rundir", 4)
 #' }
 #' @return list of the original models, prior to editing for BS data sets
+#' @noRd
 get_base_model <- function(run_dir, nmodels) {
   base_models <- vector(mode = "list", length = 0) # all but $THETA, $SIM, $TABLE
 
@@ -887,11 +885,11 @@ get_base_model <- function(run_dir, nmodels) {
 #' @param base_models list of the text in each model used for the bootstrap
 #' @param samp_size how many samples are there
 #' @param simulation_data_path, path to the file to be used for simulation
-#' @export
 #' @examples
 #' \dontrun{
 #' write_sim_controls("c:/modelaveraging", parms, base_models, 100)
 #' }
+#' @noRd
 write_sim_controls <- function(run_dir, parms,
                                base_models, samp_size,
                                simulation_data_path) {
@@ -1059,7 +1057,7 @@ calc_NCA <-
 #' \dontrun{
 #' check_identifiable("c:/runmodels", 1, 1, 0.1, 5)
 #' }
-#'
+#' @noRd
 check_identifiable <- function(run_dir,
                                this_model,
                                this_sample,
@@ -1152,7 +1150,7 @@ check_identifiable <- function(run_dir,
 #' getNCA("c:/runmodels", 1, 4, c(1, 2), c(3, 4), 72)
 #' }
 #'
-#' @export
+#' @noRd
 getNCA <- function(run_dir,
                    this_sample,
                    NumGroups,
@@ -1431,7 +1429,13 @@ calc_power <- function(run_dir,
     write.csv(all_nca_data, outfile)
   }
 
-
+# convert to factors
+  all_nca_data <- all_nca_data %>%
+    dplyr::mutate(sample = as.factor(sample),
+           ID = as.factor(ID),
+           treatment = as.factor(treatment),
+           period = as.factor(period),
+           sequence = as.factor(sequence) )
   message(format(Sys.time(), digits = 0), " Done reading NCA results, doing stats")
   if (!is.null(all_nca_data)) {
    sample_nums <- all_nca_data %>% dplyr::distinct(sample)
@@ -1560,7 +1564,7 @@ calc_power <- function(run_dir,
 #' @param reference_groups, which GROUP (required item in NONMEM $TABLE) are reference formulation
 #' @param test_groups, which GROUP (required item in NONMEM $TABLE) are test formulation
 #' @param savePlots, logical whether to write the plot files to disc, default is FALSE
-#'
+#' @noRd
 make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, test_groups, savePlots = FALSE) {
   rval <- tryCatch(
     {
@@ -1825,7 +1829,7 @@ run_mbbe <- function(crash_value,
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
   }
-  message("Simulation data set = ", simulation_data_path)
+
   if(file.exists(simulation_data_path)){
     message("Simulation data path = ", simulation_data_path)
   }else{
