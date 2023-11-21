@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, echo=FALSE}
 library(mbbe)
-library(ggplot2) 
+suppressWarnings(library(ggplot2)) 
 
 ```
 
@@ -28,7 +28,7 @@ library(ggplot2)
 Traditional BE study design and statistical methods are well established
 (1,2) and are based on non compartmental analysis (NCA). There are
 however, a number of clinical scenarios were a traditional BE study is
-not feasible (3,4). Examples include:
+impractical (3,4). Examples include:
 
 -   Very long half life drugs
 
@@ -56,32 +56,31 @@ depend on the random seed chosen. A more general and robust answer
 regarding the likelihood BE can be obtained by simulating many studies,
 and examining the distribution of outcomes. The use of non linear mixed
 effect models and Monte Carlo simulation is well established for
-describing such distributions. Typically the study design that gives
-rise to the data used for model development not be a BE study, if it
-were then the simulated BE studies would not be needed, as real data are
-available.
+describing such distributions. Typically the data used for development of a 
+population PK model do not come from a BE study. They may come from other, 
+e.g. parallel design studies. If data from a well designed BE study were available,
+Model based Virtual BE studies would not be needed.
 
 #### Model uncetainty and model averaging
 
 "All model are wrong, some models are useful" [5]. We interpret this
-well known aphorism to mean that if you use a single model, you will be
-wrong (or at least not exactly correct), but is if you use "some" models
-(e.g., model averaging), it may be useful, or, perhaps at least less
+well known aphorism to mean that if a single model is used to describe the data, 
+the prediction will be wrong (or at least not exactly correct). But, if "some" 
+models (e.g., model averaging) are used, it may be useful, or, perhaps at least less
 wrong. In Monte Carlo simulation we typically include parameter
 uncertainty for a single model. With model averaging, we extend model
 uncertainty from a single model with uncertain parameters to uncertainty
-about the model structure as well. Rather than a single model, a number
+about the model structure as well. Rather than a single (incorrect) model, a number
 of "adequate" models are examined. Adequate models are model that meet
-some set of minimal requirements in describing the data. A set of
-bootstrap samples from the orginal data set are generated. NONMEM is
-then used to estimated parameters for each adequate model-bootstrap data
+some set of minimal requirements in describing the data. The method described by Aoki [8]
+is used for model averaging. A set of bootstrap samples from the original data set are generated. NONMEM is then used to estimated parameters for each adequate model-bootstrap data
 set combination is performed. For each sample, the model with the best
 (lowest) Bayesian Information Criteria (BIC [9]) is selected. The Monte
 Carlo simulation is then done with the model structure and parameter
 estimates selected for each bootstrap data set, thus capturing
 uncertainty in both the model structure and parameters. The simulations
 can be performed using a data set different from the source data, as,
-not uncommonly, the reason for doing MBBE is that there are no formal BE
+typically, the reason for doing MBBE is that there are no formal BE
 studies available. In this way, non-BE study data can be used for model
 definition and then a formal BE study (e.g., 4 period, single dose cross
 over study) can be simulated. The NCA parameters for each (simulated)
@@ -109,7 +108,7 @@ The workflow is:
     50 subjects).
 
 4.  Determine power of the analysis by calculating two one side t test
-    statistics (6) on each simulated study.
+    statistics [6] on each simulated study.
 
 Two options exist for how to combine those different models/parameter
 estimate. First, the data from each of the simulations can be used as
@@ -126,7 +125,7 @@ models within the population (similar to the distribution of
 parameters), so for any given subject, we have a prior value for the
 model, but uncertainty about which model this subject follows.
 
-An overall diagram (from Aoki) for model averaging is shown below:
+An overall diagram (from Aoki [8]) for model averaging is shown below:
 
 [![From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
 averaging of nonlinear mixed-effect models for robust phase III dose
