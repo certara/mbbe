@@ -7,7 +7,7 @@
 #' @importFrom jsonlite fromJSON
 #' @import ps
 NULL
-
+utils::globalVariables(c("period")) # just to avoid the note 'no visible binding for global variable 'period'' on devtools::check()
 `%>%` <- magrittr::`%>%`
 
 #' delete_files
@@ -1372,6 +1372,7 @@ calc_power <- function(run_dir,
     sample = as.integer(), ID = as.integer(), treatment = as.integer(), period = as.integer(), sequence = as.integer(), Cmax = as.numeric(),
     AUCinf = as.numeric(), AUClast = as.numeric()
   )
+
   nsubs <- NA
 
   for (this_samp in 1:samp_size) {

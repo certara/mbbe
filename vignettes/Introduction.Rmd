@@ -30,7 +30,7 @@ Traditional BE study design and statistical methods are well established
 however, a number of clinical scenarios were a traditional BE study is
 impractical (3,4). Examples include:
 
--   Very long half life drugs
+-   Very long half life drugs.
 
 -   Clinical scenarios were rich sampling is not feasible, for example,
     pediatrics or critically ill patients.
@@ -40,7 +40,7 @@ impractical (3,4). Examples include:
     volunteers.
 
 There is value in developing method to meet the regulatory requirements
-for such drug. Model based Bio Equivalence (MBBE) is one method to
+for such drugs. Model Based Bio Equivalence (MBBE) is one method to
 achieve this.
 
 ------------------------------------------------------------------------
@@ -58,28 +58,30 @@ and examining the distribution of outcomes. The use of non linear mixed
 effect models and Monte Carlo simulation is well established for
 describing such distributions. Typically the data used for development of a 
 population PK model do not come from a BE study. They may come from other, 
-e.g. parallel design studies. If data from a well designed BE study were available,
-Model based Virtual BE studies would not be needed.
+e.g. parallel design studies and/or sparse sampling. If data from a well designed BE study were available,
+Model Based Virtual BE studies would not be needed.
 
 #### Model uncetainty and model averaging
 
 "All model are wrong, some models are useful" [5]. We interpret this
-well known aphorism to mean that if a single model is used to describe the data, 
+well known aphorism to mean that if a single model (structure and parameters) is used to describe the data, 
 the prediction will be wrong (or at least not exactly correct). But, if "some" 
-models (e.g., model averaging) are used, it may be useful, or, perhaps at least less
+models (e.g., multiple models averaged together) are used, it may be useful, or, perhaps at least less
 wrong. In Monte Carlo simulation we typically include parameter
 uncertainty for a single model. With model averaging, we extend model
 uncertainty from a single model with uncertain parameters to uncertainty
 about the model structure as well. Rather than a single (incorrect) model, a number
-of "adequate" models are examined. Adequate models are model that meet
+of "adequate" models are examined. Adequate models are models that meet
 some set of minimal requirements in describing the data. The method described by Aoki [8]
-is used for model averaging. A set of bootstrap samples from the original data set are generated. NONMEM is then used to estimated parameters for each adequate model-bootstrap data
+is used for model averaging. A set of bootstrap samples from the original data set are generated. 
+NONMEM is then used to estimated parameters for each adequate-model/bootstrap-data
 set combination is performed. For each sample, the model with the best
 (lowest) Bayesian Information Criteria (BIC [9]) is selected. The Monte
 Carlo simulation is then done with the model structure and parameter
 estimates selected for each bootstrap data set, thus capturing
-uncertainty in both the model structure and parameters. The simulations
-can be performed using a data set different from the source data, as,
+uncertainty in both the model structure and parameters. 
+
+The simulations can be performed using a data set different from the source data, as,
 typically, the reason for doing MBBE is that there are no formal BE
 studies available. In this way, non-BE study data can be used for model
 definition and then a formal BE study (e.g., 4 period, single dose cross
@@ -90,7 +92,7 @@ The workflow is:
 1.  Develop model(s) of the data. Model development and criteria for an
     "adequate" model are not discussed, but typically would include
     separate estimation by formulation for all absorption parameters
-    (e..g, F, Ka, Lag time, zero order infusion duration, transit
+    (e.g, F, Ka, Lag time, zero order infusion duration, transit
     compartment rate constants etc). An adequate model may also include
     between occasion variability on Volume and elimination terms, if
     multiple periods are available in the observed data.
@@ -119,7 +121,7 @@ certain which one it is. Alternatively, the study data can be recombined
 such that each study has a population of individuals based on the
 representation of overall models. (the "model_averaging_by": "subject"
 option). For this option, any given study will be comprised of the same
-subjects (demographics, sample time etc), but have different structure
+set of subjects (demographics, sample time etc), but have different structure
 models. The interpretation here is that there is a distribution of
 models within the population (similar to the distribution of
 parameters), so for any given subject, we have a prior value for the
@@ -221,15 +223,15 @@ The MBBE options are described in a json formatted file. An example is:
 
 "model_source": [
 
-"u:/fda/mbbe/inst/examples/NM_05D01_11.mod",
+"u:/mbbe/inst/examples/NM_05D01_11.mod",
 
-"u:/fda/mbbe/inst/examples/NM_05D01_05.mod",
+"u:/mbbe/inst/examples/NM_05D01_05.mod",
 
-"u:/fda/mbbe/inst/examples/NM_04_085.mod",
+"u:/mbbe/inst/examples/NM_04_085.mod",
 
-"u:/fda/mbbe/inst/examples/NM_04_090.mod",
+"u:/mbbe/inst/examples/NM_04_090.mod",
 
-"u:/fda/mbbe/inst/examples/NM_05D01_12.MOD"
+"u:/mbbe/inst/examples/NM_05D01_12.MOD"
 
 ],
 
@@ -247,7 +249,7 @@ The MBBE options are described in a json formatted file. An example is:
 
 "rndseed": 1,
 
-"simulation_data_path": "U:/fda/mbbe/inst/examples/data_sim.csv",
+"simulation_data_path": "U:/mbbe/inst/examples/data_sim.csv",
 
 "ngroups": 4, "samp_size": 100,
 
@@ -265,7 +267,7 @@ The MBBE options are described in a json formatted file. An example is:
 
 "user_R\_code": true,
 
-"R_code_path": "u:/fda/mbbe/R/RPenaltyCode.r" }
+"R_code_path": "u:/mbbe/R/RPenaltyCode.r" }
 
 Descriptions of these options are below:
 
@@ -274,14 +276,14 @@ Descriptions of these options are below:
 -   model_source - a json formatted list of NONMEM control files to be
     used for model averaging
 
--   num_parallel: number of parallel NONMEM models to run for bootstrap
+-   num_parallel - number of parallel NONMEM models to run for bootstrap
     and Monte Carlo Simulation
 
--   crash_value- Value assigned for model "goodness" if the model fails
+-   crash_value - Value assigned for model "goodness" (BIC plus any other penalty) if the model fails
     to generate output. Should be larger than any "goodness" value for a
     model that completes
 
--   nmfe_path- path to nmfe??.bat file
+-   nmfe_path - path to nmfe??.bat file
 
 -   delta_parms - fractional difference in any parameter before and
     after a SADDLE_RESET that will be deemed not identifiable
@@ -291,7 +293,7 @@ Descriptions of these options are below:
 
 -   NCA_end_time - end time for NCA parameter calculation. Note that all
     NCA intervals will start at 0 (likely requiring a reset event in the
-    simulation data set for each period).
+    simulation data set for each period)
 
 -   rndseed - random seed for Bootstrap and Monte Carlo Simulation
 
@@ -303,27 +305,27 @@ Descriptions of these options are below:
     Simulation
 
 -   reference_groups - GROUP value indicating reference formulation in
-    the simulation dat set.
+    the simulation data set
 
--   test_groups - GROUP value indicating testformulation in the
+-   test_groups - GROUP value indicating test formulation in the
     simulation data set. Note that the total number of reference_groups
-    and test_groups must equal ngroups.
+    and test_groups must equal ngroups
 
 -   plan - parallel plan to be used for bootstrap and Monte Carlo
-    Simulations. Optons are
+    Simulations. Options are
 
     -   sequential
 
     -   multisession
 
-    -   multicore:
+    -   multicore
 
--   alpha_error": 0.05,
+-   alpha_error" - type 1 error for the two one sides tests, default = 0.05
 
--   NTID- Is this a Narrow Therapeutic Index Drug? (1)
+-   NTID - Is this a Narrow Therapeutic Index Drug? (1)
 
 -   model_averaging_by - should model averaging be by study or by
-    subject
+    subject (experimental)
 
 -   user_R\_code - will R code be used to calculate a penalty to be
     added to the Bayesian Information Criteria?
@@ -337,11 +339,11 @@ Descriptions of these options are below:
 The bootstrap analysis data set can have any form required for the
 NONMEM model. However, several data items are required. These are:
 
--   Period
+-   PERIOD
 
--   Sequence
+-   SEQUENCE
 
--   Treatment
+-   TREATMENT
 
 The analysis data set need not have multiple periods or sequences (in
 which case all values can be 0, or missing). However the \$INPUT record
@@ -353,12 +355,12 @@ Treatment data items for statistical testing.
 
 Typically, the simulation data set will be comprised of:
 
--   A least two period, cross over, single dose study, for a randomized
+-   A least two periods, cross over, single dose study, for a randomized
     sequence of test and reference. A four period study, with random
     sequence may be preferred.
 
 -   Rich sampling out to at least 3 half lives in the terminal phase for
-    nearly all subjects
+    nearly all subjects.
 
 -   The data set must include:
 

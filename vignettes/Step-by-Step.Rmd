@@ -1,5 +1,5 @@
 ---
-title: "Step-by-step"
+title: "Step-by-Step"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Step-by-step}
@@ -25,16 +25,15 @@ library(stringr)
 
 ### Files
 
-Three, with an optional fourth type of files are needed for execution of
-the MBBE package. These are:
+Several files are needed for execution of the MBBE package. These are:
 
 1.  Model files. Standard NONMEM control files, one or more describing
     one or more candidate models to be averaged.
 
-2.  Data file(s) - one or two. A analysis data set for the NONMEM model
-    estimation in the bootstrap is required. In addition data file for
-    simulation of the intended virtual BE study is required. These may
-    be the same file.
+2.  Data file(s) - one or two. An analysis data set for the NONMEM model
+    estimation in the bootstrap step is required. In addition, a data
+    file for simulation of the intended virtual BE study is typically
+    used. The analysis and simulation data sets may be the same file.
 
 3.  The MBBE specification file. A json format file describing the
     analysis methods and parameters.
@@ -52,18 +51,17 @@ example, models were selected using
 [pyDarwin](https://certara.github.io/pyDarwin/html/index.html). Example
 models (model1.mod - model5.mod) are at:
 
-
-```{r}
+```{r echo = FALSE}
 models_path <- system.file(package = "mbbe","examples")
 ```
 
-```{r, echo=TRUE}
-list.files(models_path, pattern = "\\.mod$")
+```{r, echo=FALSE}
+file.path(models_path,list.files(models_path, pattern = "\\.mod$"))
 ```
 
 Let's view an example model file:
 
-```{r}
+```{r, echo = FALSE}
 readLines(list.files(models_path, pattern = "\\.mod$", full.names = TRUE)[1])
 ```
 
@@ -82,8 +80,10 @@ are:
 
 -   PERIOD
 
--   SEQ Note, these data items must be provided in the analysis data
-    set, even if they are not used. The GROUP (treatment and reference
+-   SEQ
+
+    Note, these data items must be provided in the analysis data set,
+    even if they are not used. The GROUP (treatment and reference
     groups) must be used in the model. However, PERIOD and SEQ need not
     be included in the analysis model (and so can be all the same
     values, e.g., all "1"s). All three data items need to be included in
@@ -134,11 +134,11 @@ simulation control file will include:
 
 and so these data must be available, either (preferably) in both the
 analysis and simulation data sets or calculated in the analysis control
-file. In addition the \$DATA record is edited to reference the
-simulation data set, rather than the analysis data. Note that the
-\$\$INPUT record is preserved between the analysis control file and the
-generated simulation control file, and so the structure of the analysis
-and simulation data sets must be the same.
+file. In addition the \$DATA record is edited (grammatically by the R
+code) to reference the simulation data set, rather than the analysis
+data. Note that the \$INPUT record is preserved between the analysis
+control file and the generated simulation control file, and so the
+structure of the analysis and simulation data sets must be the same.
 
 If identifiability check is requested, then the option "SADDLE_RESET=1"
 must be included in the \$ESTIMATION record.
@@ -232,8 +232,9 @@ must be called MBBE_RPenaltyCode, and take the arguments:
 -   this_samp - the bootstrap sample number.
 
 These arguments can then be used to access any output from the NONMEM
-bootstrap model, such the .lst file, the .xml file. The file structure
-will be
+bootstrap model, such the .lst file, the .xml file. The path to the
+model output files (.xml, .lst, .ext etc, as well as any any \$TABLE
+output) will be
 
 run_dir/modelM/N
 
@@ -245,10 +246,11 @@ bsSampM_N.lst
 
 and bsSampM_N.xml
 
-respectively, Where M is the model number and N is the bootstrap sample
-number. Any \$TABLE file, including \$SIM output, that is specified in
-the analysis control files can be accesses as well, using the file
-structure information described above.
+respectively, shere M is the model number and N is the bootstrap sample
+number. Other standard NONMEM output (e.g., .ext, .cor etc) are
+similarly named. Any \$TABLE file output, including \$SIM output, that
+is specified in the analysis control files can be accesses as well,
+using the file structure information described above.
 
 The user defined R function should return, in all case, a numeric
 penalty. An example R script to return a penalty for bias in simulated
@@ -291,22 +293,22 @@ The key-value pairs are:
 ##### "run_dir":
 
 (string) parent directory where NONMEM is to be run. The bootstrap runs
-will be executed in run_dir/modelM/N
+will be executed in run_dir/modelM/N.
 
 Where M is the model number and N is the bootstrap sample number. The
 output (.lst) and xml (.xml) files will be bsSampM_N.lst and
-bsSampM_N.xml
+bsSampM_N.xml.
 
 ##### "model_source":
 
-(list) A list of paths to the candidate models. Json syntax for list is:
+(list) A list of paths to the candidate models. JSON syntax for list is:
 ["path1", "path2, ...]. Note that separator in path will be forward
-slash "/".
+slash "/" for any operating system.
 
 ##### "num_parallel":
 
 (integer) Number of NONMEM executions to be run in parallel. In general
-should not exceed the number cores
+should not exceed the number cores.
 
 ##### "crash_value":
 
@@ -335,11 +337,11 @@ simulation.
 
 ##### "NCA_end_time":
 
-(numeric) End time for calculation of AUC
+(numeric) End time for calculation of AUC.
 
 ##### "rndseed":
 
-(integer) Random seed for Bootstrap sampling and Monte Carlo Simulation
+(integer) Random seed for Bootstrap sampling and Monte Carlo Simulation.
 
 ##### "simulation_data_path":
 
@@ -352,36 +354,36 @@ will be forward slash "/" as is typical for a NONMEM control file.
 
 ##### "samp_size":
 
-(integer) Number of bootstrap and Monte Carlo Simulations
+(integer) Number of bootstrap and Monte Carlo Simulations.
 
 ##### "reference_groups":
 
-(list of integers) Which of the GROUPS are reference formulation
+(list of integers) Which of the GROUPs are reference formulation
 
 ##### "test_groups":
 
-(list of integers) Which of the GROUPS are test formulation
+(list of integers) Which of the GROUPs are test formulation
 
-\##### "plan":
+##### "plan":
 
 (string)- strategy for running R parallel. [Options
 are](https://rdrr.io/cran/future/man/plan.html):
 
-sequential: Resolves futures sequentially in the current R process, e.g.
-plan(sequential).
+-   sequential: Resolves futures sequentially in the current R process,
+    e.g. plan(sequential).
 
-multisession: Resolves futures asynchronously (in parallel) in separate
-R sessions running in the background on the same machine, e.g.
-plan(multisession) and plan(multisession, workers = 2).
+-   multisession: Resolves futures asynchronously (in parallel) in
+    separate R sessions running in the background on the same machine,
+    e.g. plan(multisession) and plan(multisession, workers = 2).
 
-multicore: Resolves futures asynchronously (in parallel) in separate
-forked R processes running in the background on the same machine, e.g.
-plan(multicore) and plan(multicore, workers = 2). This backend is not
-supported on Windows.
+-   multicore: Resolves futures asynchronously (in parallel) in separate
+    forked R processes running in the background on the same machine,
+    e.g. plan(multicore) and plan(multicore, workers = 2). This strategy
+    is not supported on Windows.
 
 ##### "alpha_error":
 
-(numeric)- alpha error for computing one sided T tests
+(numeric)- alpha error for computing one sided T tests.
 
 ##### "NTID":
 
@@ -391,11 +393,11 @@ drug.
 ##### "model_averaging_by":
 
 (string) "study" \| "subject". "study" is recommended, "subject" is
-experimental
+experimental.
 
 ##### "user_R\_code":
 
-(logical) true of false, if user supplied R code is to be run and
+(logical) true or false, if user supplied R code is to be run and
 included in model averaging penalty. If true, R_code_path is required.
 
 ##### "R_code_path":
@@ -422,7 +424,7 @@ MBBE and results of checks.
 When the bootstrap starts, MBBE will print out a progress line that
 describes what percent of the bootstrap models have been started.
 Completion of the bootstrap step will occur after all the models are
-started, and them completed.
+started, and then completed.
 
 Various status update message will be displayed as the bootstrap is
 completed, model parameters are collected, if requested, user supplied R
@@ -442,9 +444,11 @@ the confidence interval for the ratio.
 
 ### File output
 
-A comma separated file with BIC values will be written to
+Comma separated value (.csv) files with BIC values will be written to
 
-run_dir/BICS.csv and total penalties written to
+run_dir/BICS.csv
+
+and total penalties written to
 
 run_dir/Total_penalties.csv
 
@@ -482,13 +486,11 @@ where:
 
 The num_parallel will be set to the (number of cores - 1) or 1 if there
 is only 1 core, and the analysis executed. Execution on a 32 core
-machine with Include_R\_Code set to FALSE takes \~4 minutes. The sample
-size for the bootstrap and Monte Carlo simulation is set to only 4,
-which will give a very poor estimate of power. That said the, simulation
-data set has a very different Cmax for Test vs Reference, but a similar
-AUC, and the power estimate will reflect this, with power = 0 for Cmax
-and power = 1 for both AUClast and AUCinf. Further, to reduce execution
-time, the FO method is used for the bootstrap, rather than FOCEI.
+machine with Include_R\_Code set to FALSE takes \~4 minutes and \~8
+minutes on a 4 core machine. The sample size for the bootstrap and Monte
+Carlo simulation is set to only 4, which will give a very poor estimate
+of power. To reduce execution time, the FO method is used for the
+bootstrap, rather than FOCEI.
 
 Once the command is issued, the code will check if the run directory
 (run_dir) is present, and if so, will ask permission to delete it. The
@@ -589,7 +591,7 @@ displayed, e.g.,
 `5 9147.007 9181.334 9143.620 9167.294 9155.821    3           -999      -999`
 
 In this case, identifiability was not requested and so the
-Max_Delta_parm and Max_Delta are not available.
+Max_Delta_parm and Max_Delta are not available (value = -999).
 
 After the BIC values the total penalties (which is BIC+ any penalty from
 the user supplied R code) will be displayed. In this case, as no use

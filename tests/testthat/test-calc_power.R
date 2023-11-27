@@ -17,10 +17,11 @@ test_that("calc_power works", {
   file.copy(file.path(source_dir, "MBBEsim2","NCAresults2.csv"),
             file.path(run_dir,"MBBEsim2"))
 
-  referencepower <- read.csv(file.path(source_dir, "All_results.csv"))[1:2,-1] # only 2 samples, remove first column
+  referencepower <- read.csv(file.path(source_dir, "All_results.csv"))[,-1] # only 2 samples, remove first column
 
   testpower <-  calc_power(run_dir, 2, alpha = 0.05,  model_averaging_by = "study", NTID = FALSE)
-
+  # need to convert sample_num to integer
+  testpower <- testpower %>% dplyr::mutate(SampleNum = as.integer(SampleNum ))
   testthat::expect_equal(referencepower, testpower)
 
   unlink(run_dir, recursive = TRUE)
