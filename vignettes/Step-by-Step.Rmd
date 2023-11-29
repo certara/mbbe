@@ -76,20 +76,23 @@ are:
 
 1.  The values
 
+-   TRT (treatment)
+
 -   GROUP
 
 -   PERIOD
 
--   SEQ
+-   SEQ (sequence)
 
-    Note, these data items must be provided in the analysis data set,
-    even if they are not used. The GROUP (treatment and reference
-    groups) must be used in the model. However, PERIOD and SEQ need not
-    be included in the analysis model (and so can be all the same
-    values, e.g., all "1"s). All three data items need to be included in
-    the simulation data set (reflecting the multiple period cross over
-    study design), and so must also be in the analysis data set and the
-    \$INPUT record in the analysis control file(s).
+    Note, these data items must be provided in the analysis data set as
+    well as the simulation data set, even if they are not used. The
+    GROUP (treatment and reference groups) must be used in the model.
+    However, PERIOD and SEQ need not be included in the analysis model
+    (and so can be all the same values, e.g., all "1"s). All four data
+    items need to be included in the simulation data set (reflecting the
+    multiple period cross over study design), and so must also be in the
+    analysis data set and the \$INPUT record in the analysis control
+    file(s).
 
 2.  Only THETAs may be estimated. To accomplish this, \$OMEGA and
     \$SIGMA block can be FIXed to 1 and ETAs and EPSs multiplied by a
@@ -126,6 +129,8 @@ sample. A \$TABLE record is then added, with data items required for the
 power calculation. Note that this \$TABLE record appended to the
 simulation control file will include:
 
+-   TRT
+
 -   GROUP
 
 -   PERIOD
@@ -134,18 +139,20 @@ simulation control file will include:
 
 and so these data must be available, either (preferably) in both the
 analysis and simulation data sets or calculated in the analysis control
-file. In addition the \$DATA record is edited (grammatically by the R
+file. In addition the \$DATA record is edited (programmatically by the R
 code) to reference the simulation data set, rather than the analysis
-data. Note that the \$INPUT record is preserved between the analysis
-control file and the generated simulation control file, and so the
-structure of the analysis and simulation data sets must be the same.
+data. Note that the \$INPUT record is preserved unchanged between the
+user provided analysis control file and the generated simulation control
+file, and so the structure of the analysis and simulation data sets must
+be the same.
 
 If identifiability check is requested, then the option "SADDLE_RESET=1"
-must be included in the \$ESTIMATION record.
+must be included in the \$ESTIMATION record of the analysis control
+file.
 
 ## Next you need two data sets (although they can be the same one)
 
-Two formatted data set are provide here:
+Two formatted data set are provided here:
 
 ```{r include=FALSE}
 data_path <- file.path(system.file(package = "mbbe"),"inst","examples","data.csv")
@@ -192,7 +199,7 @@ Several notes on the data:
 1.  As discussed above, data item for "GROUP" (1,2 are reference, 3,4
     are test in the examples) are included both in the analysis data set
     and the simulation data set. This is the simplest way to include
-    these required variabiles in the simulation and anaysis. The example
+    these required variables in the simulation and analysis. The example
     simulation data set (data_sim.csv) and the source data set
     (data.csv) are both 4 period cross over studies, and so there are 4
     values for group (although only 2 formulations). It is not a
@@ -207,9 +214,9 @@ Several notes on the data:
     not included in the data set it must be calculated in the control
     file so it can be included in \$TABLE output for the simulations,
 
-3.  Data item for sequence ("SEQ") is provided (1-2). Presumable period
+3.  Data item for sequence ("SEQ") is provided (1-2). Presumably, period
     and sequence were tested in the model selection and not found to be
-    supported. However, similar to PERIOD, it are required for the Monte
+    supported. However, similar to PERIOD, SEQ is required for the Monte
     Carlo simulation and statistical testing to be available for output
     in the \$TABLE step.
 
@@ -222,10 +229,11 @@ test](https://www.page-meeting.org/pdf_assets/1345-PAGE_2017_SADDLE_RESET_Final.
 Another, more general option is to include a user defined R function, to
 return a penalty that is added to the BIC. The path to the file
 containing this function can be specified in the R_code_path option in
-the json file, and the user_R\_code option set to "true". The function
-must be called MBBE_RPenaltyCode, and take the arguments:
+the MBBE specification file, and the user_R\_code option set to "true".
+The function must be called MBBE_RPenaltyCode, and take the arguments:
 
--   run_dir - the parent run directory, as specified in the json file
+-   run_dir - the parent run directory, as specified in the MBBE
+    specification file
 
 -   this_model - the model number
 
@@ -233,21 +241,21 @@ must be called MBBE_RPenaltyCode, and take the arguments:
 
 These arguments can then be used to access any output from the NONMEM
 bootstrap model, such the .lst file, the .xml file. The path to the
-model output files (.xml, .lst, .ext etc, as well as any any \$TABLE
+model output files (.xml, .lst, .ext etc., as well as any \$TABLE
 output) will be
 
 run_dir/modelM/N
 
-Where run_dir is the run directory (run_dir) specified in the MBBEjson
-file, M is the model number and N is the bootstrap sample number. The
-NONMEM output (.lst) and xml (.xml) files will be called:
+Where run_dir is the run directory (run_dir) specified in the MBBE
+specification file, M is the model number and N is the bootstrap sample
+number. The NONMEM output (.lst) and xml (.xml) files will be called:
 
 bsSampM_N.lst
 
 and bsSampM_N.xml
 
-respectively, shere M is the model number and N is the bootstrap sample
-number. Other standard NONMEM output (e.g., .ext, .cor etc) are
+respectively, where M is the model number and N is the bootstrap sample
+number. Other standard NONMEM output (e.g., .ext, .cor etc.) are
 similarly named. Any \$TABLE file output, including \$SIM output, that
 is specified in the analysis control files can be accesses as well,
 using the file structure information described above.
@@ -319,14 +327,14 @@ any R penalty.
 ##### "nmfe_path":
 
 (string) Path to nmfe??.bat. Note that separator in path will be forward
-slash "/".
+slash "/" regardless of operating system.
 
 ##### "delta_parms":
 
 (numeric) Largest absolute fractional difference between any parameters
 before and after the SADDLE_RESET that is permitted. Any model/sample
 with a value larger than delta_parm will result in a failed
-idenfiability test for that model/sample and will be excluded for the
+identifiability test for that model/sample and will be excluded for the
 model averaging. If all models for a given sample fail the
 identifiability test, that sample is excluded from the Monte Carlo
 simulation.
@@ -346,7 +354,8 @@ simulation.
 ##### "simulation_data_path":
 
 (string) Path to simulation data set. Note that the separator in path
-will be forward slash "/" as is typical for a NONMEM control file.
+will be operating system dependent, as this text is simply copied
+unchanged into the \$INPUT record.
 
 ##### "ngroups":
 
@@ -435,7 +444,7 @@ displayed.
 
 When available, the estimated power for Cmax, AUC~last~ and
 AUC~infinity~ will be displayed and the number of bootstrap sample for
-each model that are identifable is output.
+each model that are identifiable is output.
 
 Finally, the statistical output includes, for each Monte Carlo
 simulation, whether the parameters (Cmax, AUC~last~ and AUC~infinity~)
@@ -465,7 +474,7 @@ All statistical results are written to run_dir/All_results.csv.
 
 ## Running the example.
 
-An example can run run using the provide control files, data sets and
+An example can be run using the provide control files, data sets and
 mbbe options file with the command:
 
 mbbe::run_example(run_dir, nmfe??.bat, Include_R\_Code, plan)
@@ -474,7 +483,7 @@ where:
 
 -   run_dir (string) is the parent directory for NONMEM execution
 
--   nmfe??.bat (string) is the full path the the nmfe??.bat file, where
+-   nmfe??.bat (string) is the full path to the nmfe??.bat file, where
     ?? is the NONMEM version (e.g., c:/nmfe74/util/nmfe74.bat)
 
 -   Include_R\_Code = (logical), whether to include the (provided)
@@ -543,7 +552,7 @@ example, where the run_dir is set to c://mbbe_ex is given below.
 
 `Narrow Therapeutic Index  = FALSE`
 
-`Alpha error rate for bioqulvalence testing = 0.05`
+`Alpha error rate for bioequilvalence testing = 0.05`
 
 `Number parallel runs for bootstrap, simulations and NCA = 7`
 
@@ -621,7 +630,7 @@ displayed:
 
 `2023-11-21 11:39:32 Plots are saved in c:/mbbe_ex/example`
 
-The elapse time is then shown, and, the power for finding BE is given
+The elapse time is then shown, and the power for finding BE is given
 for Cmax, AUClast and AUCinf:
 
 `$Cmax_power`
@@ -673,7 +682,8 @@ lower limits and whether BE is shown) are printed
 `5        1.0008522      TRUE     99.76512       0.9944545       1.0008582`
 
 The histograms for AUCinf, AUClast and Cmax for test and reference in
-the simulated studies are shown below.
+the simulated studies are shown below. This plots are also saved to the
+run directory.
 
 ![](images/All_models_AUCinf_histogram_by_treatment.jpeg){width="460"}
 

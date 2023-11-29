@@ -1825,7 +1825,7 @@ run_mbbe <- function(crash_value,
   }
   message("Bootstrap/Monte Carlo sample size = ", samp_size, "\nnmfe??.bat path = ", nmfe_path, "\nUse_check_identifiability = ", use_check_identifiable)
   message("Narrow Therapeutic Index  = ", NTID)
-  message("Alpha error rate for bioqulvalence testing = ", alpha_error)
+  message("Alpha error rate for bioequilvalence testing = ", alpha_error)
   message("Number parallel runs for bootstrap, simulations and NCA = ", num_parallel)
   if (use_check_identifiable) {
     message("Delta parameter for use_check_identifiable = ", delta_parms)
