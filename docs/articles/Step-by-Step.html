@@ -118,11 +118,11 @@ averaging. Must be called “RPenaltyCode.R”.</p></li>
 samples will be the number of models x the bootstrap sample size. In the
 present example, models were selected using <a href="https://certara.github.io/pyDarwin/html/index.html" class="external-link">pyDarwin</a>.
 Example models (model1.mod - model5.mod) are at:</p>
-<pre><code>[1] "C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/examples/model1.mod"
-[2] "C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/examples/model2.mod"
-[3] "C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/examples/model3.mod"
-[4] "C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/examples/model4.mod"
-[5] "C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/examples/model5.mod"</code></pre>
+<pre><code>[1] "C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/examples/model1.mod"
+[2] "C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/examples/model2.mod"
+[3] "C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/examples/model3.mod"
+[4] "C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/examples/model4.mod"
+[5] "C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/examples/model5.mod"</code></pre>
 <p>Let’s view an example model file:</p>
 <pre><code> [1] "$PROBLEM    Simulated"                                                                                       
  [2] "$INPUT      ID TIME AMT DROP CMT CMTT DV WT EGFR AGE COV1 COV2 EVID"                                         
@@ -232,7 +232,7 @@ and the $INPUT record in the analysis control file(s).</p>
 block can be FIXed to 1 and ETAs and EPSs multiplied by a THETA, see
 examples at</li>
 </ol>
-<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/examples</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>The $ESTIMATION record, followed by the $THETA block MUST be the
 final two blocks in the control file (with the exception of any $TABLE
@@ -272,8 +272,8 @@ analysis control file.</p>
 <h2 id="next-you-need-two-data-sets-although-they-can-be-the-same-one">Next you need two data sets (although they can be the same one)<a class="anchor" aria-label="anchor" href="#next-you-need-two-data-sets-although-they-can-be-the-same-one"></a>
 </h2>
 <p>Two formatted data set are provided here:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/data.csv
-C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/data_sim.csv</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/examples/data.csv
+C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/examples/data_sim.csv</code></pre>
 <p>Note that, in this case, these two data sets are identical. In
 general, the analysis data set, for bootstrap, will not be the same as
 the simulation data. For example, it may be the case that only sparse
@@ -288,7 +288,7 @@ rather than MBBE.</p>
 <p>The analysis data set is specified on the $DATA record in the NONMEM
 control files for the bootstrap. The simulation data set is specified as
 in the MBBE specification file:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/mbbeargs.json</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/examples/mbbeargs.json</code></pre>
 <p>Several notes on the data:</p>
 <ol style="list-style-type: decimal">
 <li><p>As discussed above, data item for “GROUP” (1,2 are reference, 3,4
@@ -353,12 +353,12 @@ Cmax is given in RPenaltyCode.R. This function requires that a 2nd
 problem (for simulation) be included in the control files. An example
 where RPenaltyCode.R returns a penalty for bias in prediction of Cmax is
 given in:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/example/RPenaltyCode.R</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/example/RPenaltyCode.R</code></pre>
 <div class="section level3">
 <h3 id="the-mbbe-specification-file">The MBBE Specification file<a class="anchor" aria-label="anchor" href="#the-mbbe-specification-file"></a>
 </h3>
 <p>An example MBBE specification file is given at:</p>
-<pre><code>C:/Users/jcraig/AppData/Local/R/win-library/4.3/mbbe/inst/examples/mbbeargs.json</code></pre>
+<pre><code>C:/Users/jcraig/AppData/Local/Temp/RtmpOuhlKa/temp_libpath5d8429e13254/mbbe/inst/examples/mbbeargs.json</code></pre>
 <p>The json file consists of key-value pairs. All pairs are required,
 except “R_code_path”: is not required if “user_R_code”: if set to
 false.</p>

@@ -202,7 +202,15 @@ distribution (THETA and OMEGA in NONMEM) for parameters, but uncertainty
 about the “true value” parameters.</p>
 <p>An overall diagram (from Aoki [8]) for model averaging is shown
 below:</p>
-<p><a href="Aoki,%20Y.,%20R%C3%B6shammar,%20D.,%20Hamr%C3%A9n,%20B.%20et%20al.%20Model%20selection%20and%20averaging%20of%20nonlinear%20mixed-effect%20models%20for%20robust%20phase%20III%20dose%20selection.%20J%20Pharmacokinet%20Pharmacodyn%2044,%20581%E2%80%93597%20(2017).%20https://doi.org/10.1007/s10928-017-9550-0" class="external-link"><img src="images/Average-Hooker-01.png" alt="From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and averaging of nonlinear mixed-effect models for robust phase III dose selection. J Pharmacokinet Pharmacodyn 44, 581–597 (2017). https://doi.org/10.1007/s10928-017-9550-0"></a></p>
+<p><br></p>
+<a href="https://doi.org/10.1007/s10928-017-9550-0" class="external-link">
+<figure><img src="images/Average-Hooker-01.png" alt="From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
+averaging of nonlinear mixed-effect models for robust phase III dose
+selection. J Pharmacokinet Pharmacodyn 44, 581--597 (2017)"><figcaption>
+From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
+averaging of nonlinear mixed-effect models for robust phase III dose
+selection. J Pharmacokinetic Pharmacodynamic 44, 581–597 (2017)
+</figcaption></figure><p></p></a>
 </div>
 </div>
 <div class="section level3">
@@ -210,12 +218,12 @@ below:</p>
 </h3>
 <p>Nyberg et. al [10] described using a SADDLE_RESET as a check for
 local non-identifiability. MBBE included an option</p>
-<p>“use_check_identifiable”: true,</p>
+<pre><code>"use_check_identifiable": true,</code></pre>
 <p>to instruct the algorithm to determine whether any model resulting
 from the bootstrap is identifiable, based on the largest absolute
 fractional difference between pre and post saddle reset parameters of
 delta_parms. delta_parms can be set in the json argument file e.g:</p>
-<p>“delta_parms”: 0.2,</p>
+<pre><code>"delta_parms": 0.2,</code></pre>
 <div class="section level4">
 <h4 id="power">Power:<a class="anchor" aria-label="anchor" href="#power"></a>
 </h4>
@@ -243,25 +251,55 @@ file. Sample files with explanation is given below.</p>
 <div class="section level3">
 <h3 id="input-json-file">Input json File<a class="anchor" aria-label="anchor" href="#input-json-file"></a>
 </h3>
-<p>{ “run_dir”: “c:/fda/mbbe”,</p>
-<p>“model_source”: [],</p>
-<p>“num_parallel”: 32,</p>
-<p>“crash_value”: 999999,</p>
-<p>“nmfe_path”: “c:/nm74g64/util/nmfe74.bat”,</p>
-<p>“delta_parms”: 0.2,</p>
-<p>“use_check_identifiable”: true,</p>
-<p>“NCA_end_time”: 72,</p>
-<p>“rndseed”: 1,</p>
-<p>“simulation_data_path”: “U:/mbbe/inst/examples/data_sim.csv”,</p>
-<p>“ngroups”: 4, “samp_size”: 100,</p>
-<p>“reference_groups”: [ 1, 2 ],</p>
-<p>“test_groups”: [3, 4 ],</p>
-<p>“plan”: “multisession”,</p>
-<p>“alpha_error”: 0.05,</p>
-<p>“NTID”: false,</p>
-<p>“model_averaging_by”: “study”,</p>
-<p>“user_R_code”: true,</p>
-<p>“R_code_path”: “u:/mbbe/R/RPenaltyCode.r” }</p>
+<pre><code>{ "run_dir": "c:/fda/mbbe",
+
+"model_source": [
+
+"u:/mbbe/inst/examples/NM_05D01_11.mod",
+
+"u:/mbbe/inst/examples/NM_05D01_05.mod",
+
+"u:/mbbe/inst/examples/NM_04_085.mod",
+
+"u:/mbbe/inst/examples/NM_04_090.mod",
+
+"u:/mbbe/inst/examples/NM_05D01_12.MOD"
+
+],
+
+"num_parallel": 32,
+
+"crash_value": 999999,
+
+"nmfe_path": "c:/nm74g64/util/nmfe74.bat",
+
+"delta_parms": 0.2,
+
+"use_check_identifiable": true,
+
+"NCA_end_time": 72,
+
+"rndseed": 1,
+
+"simulation_data_path": "U:/mbbe/inst/examples/data_sim.csv",
+
+"ngroups": 4, "samp_size": 100,
+
+"reference_groups": [ 1, 2 ],
+
+"test_groups": [3, 4 ],
+
+"plan": "multisession",
+
+"alpha_error": 0.05,
+
+"NTID": false,
+
+"model_averaging_by": "study",
+
+"user_R\_code": true,
+
+"R_code_path": "u:/mbbe/R/RPenaltyCode.r" }</code></pre>
 <p>Descriptions of these options are below:</p>
 <ul>
 <li><p>run_dir - run directory where bootstrap samples will be

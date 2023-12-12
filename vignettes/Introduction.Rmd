@@ -132,24 +132,37 @@ for parameters, but uncertainty about the "true value" parameters.
 
 An overall diagram (from Aoki [8]) for model averaging is shown below:
 
-[![From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
+<br>
+
+<a href="https://doi.org/10.1007/s10928-017-9550-0">
+    <figure>
+        <img src="images/Average-Hooker-01.png" alt="From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
 averaging of nonlinear mixed-effect models for robust phase III dose
-selection. J Pharmacokinet Pharmacodyn 44, 581--597 (2017).
-https://doi.org/10.1007/s10928-017-9550-0](images/Average-Hooker-01.png)](Aoki,%20Y.,%20Röshammar,%20D.,%20Hamrén,%20B.%20et%20al.%20Model%20selection%20and%20averaging%20of%20nonlinear%20mixed-effect%20models%20for%20robust%20phase%20III%20dose%20selection.%20J%20Pharmacokinet%20Pharmacodyn%2044,%20581–597%20(2017).%20https://doi.org/10.1007/s10928-017-9550-0)
+selection. J Pharmacokinet Pharmacodyn 44, 581--597 (2017)">
+        <figcaption>From Aoki, Y., Röshammar, D., Hamrén, B. et al. Model selection and
+averaging of nonlinear mixed-effect models for robust phase III dose
+selection. J Pharmacokinetic Pharmacodynamic 44, 581--597 (2017)</figcaption>
+    </figure>
+</a>
+
 
 ### Identifiability:
 
 Nyberg et. al [10] described using a SADDLE_RESET as a check for local
 non-identifiability. MBBE included an option
 
+```
 "use_check_identifiable": true,
+```
 
 to instruct the algorithm to determine whether any model resulting from
 the bootstrap is identifiable, based on the largest absolute fractional
 difference between pre and post saddle reset parameters of delta_parms.
 delta_parms can be set in the json argument file e.g:
 
+```
 "delta_parms": 0.2,
+```
 
 #### Power:
 
@@ -173,7 +186,7 @@ MBBE is an R package available on CRAN. Details of implementation are provide in
 
 ### Input json File
  
-
+```
 { "run_dir": "c:/fda/mbbe",
 
 "model_source": [
@@ -223,6 +236,7 @@ MBBE is an R package available on CRAN. Details of implementation are provide in
 "user_R\_code": true,
 
 "R_code_path": "u:/mbbe/R/RPenaltyCode.r" }
+```
 
 Descriptions of these options are below:
 
