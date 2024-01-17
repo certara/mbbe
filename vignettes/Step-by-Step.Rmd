@@ -40,7 +40,9 @@ Several files are needed for execution of the MBBE package. These are:
 
 4.  (Optional) User supplied R code that returns a value that can be
     added to the default model selection criteria (BIC) used for model
-    averaging. Must be called "RPenaltyCode.R".
+    averaging. The file must be called "RPenaltyCode.R" and include a 
+    function called MBBE_RPenaltyCode. The function MBBE_RPenaltyCode must return a 
+    numeric penalty.
 
 ## First you need model(s)
 
@@ -230,7 +232,7 @@ Another, more general option is to include a user defined R function, to
 return a penalty that is added to the BIC. The path to the file
 containing this function can be specified in the R_code_path option in
 the MBBE specification file, and the user_R\_code option set to "true".
-The function must be called MBBE_RPenaltyCode, and take the arguments:
+The function must take the arguments:
 
 -   run_dir - the parent run directory, as specified in the MBBE
     specification file
