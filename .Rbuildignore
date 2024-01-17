@@ -4,8 +4,6 @@
 ^Meta$
 \.gitignore
 \.gitattributes
-inst/mbbe_logo.vectr
-inst/mbbe_logo.png
 ^\.github$
 _pkgdown.yml
 ^docs$

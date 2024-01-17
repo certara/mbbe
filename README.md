@@ -4,11 +4,19 @@
 
 ## Installation
 
+### Development
+
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
 remotes::install_github("certara/mbbe")
+```
+
+### CRAN
+
+```r
+install.packages("mbbe")
 ```
 
 ## Model Based Bioequivalence (MBBE)
