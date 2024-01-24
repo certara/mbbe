@@ -19,8 +19,12 @@
 #'  and the output should include:
 #' @examples
 #' \dontrun{
-#' mbbe::run_example("c:/mbbe/example","c:/nm74g64/util/nmfe74.bat","multisession")
+#' run_dir <- tempdir()
+#' mbbe::run_example(run_dir = run_dir,
+#'   nmfe_path = "c:/nm74g64/util/nmfe74.bat",
+#'   plan = "multisession")
 #' }
+#' @inherit run_mbbe return
 #' @export
 #'
 run_example <- function(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "multisession") {
@@ -80,7 +84,7 @@ run_example <- function(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "mult
   for(model_path in model_source_files){
     model_file <- suppressWarnings(readLines(model_path))
     model_file[4] <- sub("\\$DATA[[:space:]]*(.*?)[[:space:]]*IGNORE=@",
-                         paste0("$DATA ", data_file, " IGNORE=@"),
+                         paste0("$DATA ", gsub("\\\\", "\\\\\\\\", data_file), " IGNORE=@"),
                          model_file[4])
     con <- file(model_path, "w")
     writeLines(model_file, con)
@@ -96,7 +100,7 @@ run_example <- function(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "mult
   }
   args <- c(
     crash_value = 999999,
-    run_dir = file.path(run_dir,"example"),
+    run_dir = file.path(run_dir, "example"),
     ngroups = 4,
     reference_groups = list(c(1, 2)),
     test_groups = list(c(3, 4)),

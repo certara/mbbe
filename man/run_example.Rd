@@ -15,6 +15,17 @@ run_example(run_dir, nmfe_path, Include_R_Code = FALSE, plan = "multisession")
 
 \item{plan}{for future execution, one of "sequential", "multisession","multicore", Default is multisession}
 }
+\value{
+A list containing:
+\itemize{
+\item \code{Cmax_power}: Power for Cmax
+\item \code{AUClast_power}: Power for AUClast
+\item \code{AUCinf_power}: Power for AUCinf
+\item \code{run_dir}: Directory where the function was executed
+\item \code{Num_identifiable}: Number of identifiable parameters
+\item \code{BICS}: Bayesian Information Criterion Scores
+}
+}
 \description{
 This function calls the example models (model1-5.mod), performs the bootstrap, model averaging and the Monte Carlo simulation.
 }
@@ -31,6 +42,9 @@ and the output should include:
 }
 \examples{
 \dontrun{
-mbbe::run_example("c:/mbbe/example","c:/nm74g64/util/nmfe74.bat","multisession")
+run_dir <- tempdir()
+mbbe::run_example(run_dir = run_dir,
+  nmfe_path = "c:/nm74g64/util/nmfe74.bat",
+  plan = "multisession")
 }
 }

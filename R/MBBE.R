@@ -1650,8 +1650,9 @@ make_NCA_plots <- function(BICS, run_dir, samp_size, nmodels, reference_groups, 
 #' @export
 #' @examples
 #' \dontrun{
-#' run_mbbe_json(Args.json)
+#' run_mbbe_json("Args.json")
 #' }
+#' @inherit run_mbbe return
 run_mbbe_json <- function(Args.json) {
   if (!file.exists(Args.json)) {
     message(Args.json, " file not found, exiting")
