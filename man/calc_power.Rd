@@ -41,9 +41,12 @@ The function iterates over each sample, reading the corresponding NCAresults (de
 sample number). Subsequently, it determines if each sample meets or fails the BE testing criteria.
 }
 \examples{
-\dontrun{
-nca_results <- system.file(package = "mbbe", "nca_results")
-calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
-}
+calc_power(
+ run_dir = system.file(package = "mbbe", "examples", "calc_power"),
+ samp_size = 5,
+ alpha = 0.05,
+ model_averaging_by = "study",
+ NTID = FALSE
+)
 
 }

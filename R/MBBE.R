@@ -1311,10 +1311,13 @@ getNCA <- function(run_dir,
 #' All power values range between 0 and 1.
 #'
 #' @examples
-#' \dontrun{
-#' nca_results <- system.file(package = "mbbe", "nca_results")
-#' calc_power("c:/MBBErundir", 100, 0.05, "study", FALSE)
-#' }
+#' calc_power(
+#'  run_dir = system.file(package = "mbbe", "examples", "calc_power"),
+#'  samp_size = 5,
+#'  alpha = 0.05,
+#'  model_averaging_by = "study",
+#'  NTID = FALSE
+#' )
 #'
 #' @export
 
