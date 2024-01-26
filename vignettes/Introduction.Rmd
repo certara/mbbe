@@ -174,7 +174,7 @@ not dependent on a single draw from a distribution, that is, the power
 of the given study design to find that the formulae are bioequivalent.
 The success of each study is then calculated based on the method
 described by
-[Schütz](https://cran.r-project.org/web/packages/replicateBE/replicateBE.pdf)
+[Schütz](https://cran.r-project.org/package=replicateBE)
 (11) in the replicateBE package in R. The resulting power then is simply
 the fraction of simulated studies that successfully demonstrate
 bioequivalence for each NCA endpoint.
